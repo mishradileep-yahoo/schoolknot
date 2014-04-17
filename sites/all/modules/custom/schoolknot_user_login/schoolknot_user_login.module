@@ -1,0 +1,488 @@
+<?php
+/**
+ * Implements hook_permission().
+ */
+function schoolknot_user_login_permission () {
+  return array(
+      'schoolknot user login' => array(
+          'title' => t('schoolknot user login'),
+          'description' => t('Allow anonymous user for 2 stepped login.')
+      ),
+      'schoolknot user agreement' => array(
+          'title' => t('schoolknot user Agreement'),
+          'description' => t('Allow Parent users to sign up user agreement.')
+      ),
+      'schoolknot create user' => array(
+          'title' => t('schoolknot create user'),
+          'description' => t('Allow school admin to create edit student record.')
+      )
+      
+  );
+}
+
+function schoolknot_user_login_menu() {
+  $items = array();
+  $items['schoolknot_user_login/step1'] = array(
+  	'title' => 'User Login - Step 1',
+    'description' => 'User Login - Step 1',
+  	'page callback' => 'drupal_get_form',
+	'page arguments' => array('schoolknot_user_login_step1'),
+  	'access arguments' 	=> array('schoolknot user login'),
+  	'type' => MENU_LOCAL_ACTION,
+  );
+  $items['schoolknot_user_login/step2/%'] = array(
+  	'title' => 'User Login - Step 1',
+    'description' => 'User Login - Step 1',
+  	'page callback' => 'drupal_get_form',
+	'page arguments' => array('schoolknot_user_login_step2', 2),
+  	'access arguments' 	=> array('schoolknot user login'),
+  	'type' => MENU_LOCAL_ACTION,
+  );
+  $items['schoolknot_user_login/school_autocomplete'] = array(
+  	'title' => 'School name autocomplete',
+    'description' => 'School name autocomplete',
+  	'page callback' => 'school_name_autocomplete',
+  	'access arguments' 	=> array('schoolknot user login'),
+  	'type' => MENU_LOCAL_ACTION,
+  );
+  $items['schoolknot_user_login/user_agreement'] = array(
+  	'title' => 'Student Parent User Agreement',
+    'description' => 'Student Parent User Agreement',
+  	'page callback' => 'drupal_get_form',
+	'page arguments' => array('schoolknot_user_agreeement'),
+  	'access arguments' 	=> array('schoolknot user agreement'),
+  	'type' => MENU_LOCAL_ACTION,
+  );
+  $items['create_student'] = array(
+  	'title' => 'Create an individual student',
+    'description' => 'Create an individual student',
+  	'page callback' => 'drupal_get_form',
+	'page arguments' => array('schoolknot_create_user'),
+  	'access arguments' 	=> array('schoolknot create user'),
+  	'type' => MENU_LOCAL_ACTION,
+  );
+  $items['edit_student/%'] = array(
+  	'title' => 'Create an individual student',
+    'description' => 'Create an individual student',
+  	'page callback' => 'drupal_get_form',
+	'page arguments' => array('schoolknot_edit_user', 1),
+  	'access arguments' 	=> array('schoolknot create user'),
+  	'type' => MENU_LOCAL_ACTION,
+  );
+  return $items;
+}
+
+function schoolknot_user_login_step1($form, &$form_state) {
+	$form['title'] = array(
+		'#type' => 'textfield',
+		'#title' => t('School Name'), 
+		'#description' => t('Type school name and select desired school from options below.'),
+		'#autocomplete_path' => 'schoolknot_user_login/school_autocomplete',
+		'#size' => 60,
+		'#maxlength' => 128,
+		'#required' => TRUE,
+		'#attributes' => array('placeholder' => array('Type school name')),
+	);
+	$form['actions']['submit'] = array(
+		'#type' => 'submit',
+		'#value' => t('Login'),
+	);
+		
+	return $form;
+}
+
+function schoolknot_user_login_step1_submit($form, &$form_state) {
+	drupal_goto('schoolknot_user_login/step2/' . base64_encode($form_state['values']['title']));
+}
+
+function schoolknot_user_login_step2($form, &$form_state, $school_name) {
+	
+	$form['school_name'] = array(
+		'#type' => 'textfield',
+		'#title' => t('School name'),
+		'#disabled' =>TRUE, 
+		'#size' => 60,
+		'#maxlength' => 128,
+		'#default_value' => base64_decode($school_name),
+	);
+	$form['username'] = array(
+		'#type' => 'textfield',
+		'#title' => t('Username'), 
+		'#size' => 60,
+		'#maxlength' => 128,
+		'#required' => TRUE,
+		'#attributes' => array('placeholder' => array('Username')),
+	);
+	$form['password'] = array(
+		'#type' => 'password',
+		'#title' => t('Password'), 
+		'#size' => 60,
+		'#maxlength' => 128,
+		'#required' => TRUE,
+		'#attributes' => array('placeholder' => array('Password')),
+	);
+	$form['school_title'] = array(
+		'#type' => 'hidden',
+		'#value' => $school_name,
+		
+	);
+	$form['actions']['submit'] = array(
+		'#type' => 'submit',
+		'#value' => t('Login'),
+	);
+	
+	return $form;	
+}
+
+function schoolknot_user_login_step2_submit($form, &$form_state) {
+	// Get School from school name
+	$query = db_select('node', 'n');
+	$query->fields('n', array('nid'))
+		->condition('n.title', base64_decode($form_state['values']['school_title']), '=')
+		->condition('n.type', 'school', '=')
+		->condition('n.status', '1', '=')
+		->range(0, 1);
+	$result = $query->execute()->fetchAll();
+	
+	$username = $result[0]->nid . '_' . $form_state['values']['username'];
+	$password = $form_state['values']['password'];
+	
+	if ($uid = user_authenticate($username, $password)) {
+		global $user;
+		$user = user_load($uid);
+		
+		$login_array = array ('name' => $username);
+		user_login_finalize($login_array);
+		drupal_goto('messages');
+	}
+	else {
+		drupal_set_message('Sorry, unrecognized username or password.' . l('Have you forgotten your password?', 'user/password'), 'error');
+	}
+	
+}
+
+function school_name_autocomplete($string = '') {
+	if ($string) {
+		$query = db_select('node', 'n');
+		$query->fields('n', array('title'))
+			->condition('n.title', db_like($string) . '%', 'LIKE')
+			->condition('n.type', 'school', '=')
+			->condition('n.status', '1', '=')
+			->range(0, 10);
+		$result = $query->execute();	
+		foreach ($result as $school) {
+			$matches[$school->title] = check_plain($school->title);
+		}
+	}
+	drupal_json_output($matches);
+}
+
+
+function schoolknot_user_login_preprocess_page(&$vars) {
+    global $user;
+    $agrs = arg();
+    if(in_array('Parent', $user->roles)) {
+    	$useObj = user_load($user->uid);
+    	if(!isset($useObj->field_agreement_status['und']) || $useObj->field_agreement_status['und'][0]['value'] != 1) {
+    		if(drupal_is_front_page() || ($agrs[0] != 'schoolknot_user_login' && $agrs[1] != 'user_agreement')) {
+    			drupal_goto('schoolknot_user_login/user_agreement');
+    		}
+    	}
+    }
+}
+
+function schoolknot_user_agreeement($form, &$form_state) {
+	drupal_set_title('Terms and Conditions');
+	$url = 'terms-and-conditions';
+	$path = drupal_lookup_path('source', $url);
+	$agreement_node = menu_get_object('node', 1, $path);    
+	
+	$form['user_agreement'] = array(
+		'#markup' => '<div id="user-agreement-signup">' . $agreement_node->body['und'][0]['value'] . '</div>',
+	);
+	$form['actions']['agreed'] = array(
+		'#type' => 'submit',
+		'#value' => t('I Agree'),
+	);
+	$form['actions']['disagree'] = array(
+		'#type' => 'submit',
+		'#value' => t('I Disgree'),
+	);
+		
+	return $form;
+}
+
+function schoolknot_user_agreeement_submit($form, &$form_state) {
+	global $user;
+	$logedInUser = user_load($user->uid);
+	if($form_state['values']['op'] == 'I Agree') {
+		$logedInUser->field_agreement_status['und'][0]['value'] = 1;
+		user_save($logedInUser);
+		drupal_goto('messages');
+	}
+	else {
+		drupal_set_message('You can not access schoolknot.com as a parent untill you don\'t agree on Terma and conditions.', 'error');
+	}
+}
+
+function schoolknot_create_user($form, &$form_state) {
+	
+	$form['field_student_registration_id'] = array(
+		'#type' => 'textfield', 
+		'#title' => t('Student Registration ID'), 
+		'#size' => 60, 
+		'#maxlength' => 128,
+		'#required' => TRUE,
+	);
+	$form['field_student_email_id'] = array(
+		'#type' => 'textfield', 
+		'#title' => t('Student Email ID'), 
+		'#size' => 60, 
+		'#maxlength' => 128,
+		'#required' => TRUE,
+	);
+	$form['field_student_first_name'] = array(
+		'#type' => 'textfield', 
+		'#title' => t('Student First Name'), 
+		'#size' => 60, 
+		'#maxlength' => 128, 
+		'#required' => TRUE,
+	);
+	$form['field_student_first_name'] = array(
+		'#type' => 'textfield', 
+		'#title' => t('Student First Name'), 
+		'#size' => 60, 
+		'#maxlength' => 128, 
+		'#required' => TRUE,
+	);
+	$form['field_student_middle_name'] = array(
+		'#type' => 'textfield', 
+		'#title' => t('Student Middle Name'), 
+		'#size' => 60, 
+		'#maxlength' => 128, 
+	);
+	$form['field_student_last_name'] = array(
+		'#type' => 'textfield', 
+		'#title' => t('Student Last Name'), 
+		'#size' => 60, 
+		'#maxlength' => 128, 
+	);
+	
+	$form['field_student_date_of_birth'] = array(
+		'#type' => 'date', 
+		'#title' => 'Student Date of Birth', 
+		'#required' => TRUE,
+	);
+	
+	// Get School Classes
+	global $user;
+	$result = db_select('node')
+		->fields('node', array('nid', 'title'))
+		->condition('uid', $user->uid, '=')
+		->condition('type', 'classes', '=')
+		->execute()->fetchAll();
+	$class_options = array();
+	foreach($result as $class) {
+		$class_options[$class->nid] = $class->title;
+	}
+	
+	$form['field_class'] = array(
+		'#type' => 'select',
+		'#title' => t('Class'),
+		'#options' => $class_options,
+	);
+
+	$form['actions']['submit'] = array(
+		'#type' => 'submit',
+		'#value' => t('Create Student'),
+	);
+	
+	return $form;
+}
+
+function schoolknot_create_user_validate($form, &$form_state) {
+	global $user;
+  	$user_groups = og_get_groups_by_user();
+  	$user_school = reset($user_groups['node']);
+	
+	$username = $user_school . '_' . $form_state['values']['field_student_registration_id'];
+	$username = strtolower($username);
+	$username = preg_replace('@[^a-z0-9_]+@','_',$username);
+	
+	$validate_user = user_load_by_name($username);
+	if($validate_user){
+		form_set_error('field_student_registration_id', t('Student with same registration id alreday exist.'));
+	}
+	
+	$validate_user = user_load_by_mail($form_state['values']['field_student_email_id']);
+	if($validate_user){
+		form_set_error('field_student_email_id', t('Email ID already exist.'));
+	}
+	
+	$form_state['values']['username'] = $username;
+	$form_state['values']['og_user_node'] = $user_school;
+	
+	$usersample = user_load(102);
+//	pr($usersample); die;
+
+}
+
+function schoolknot_create_user_submit($form, &$form_state) {
+
+	$user_fields = array(
+		'name' => $form_state['values']['username'],
+		'mail' => $form_state['values']['field_student_email_id'],
+		'pass' => $form_state['values']['field_student_date_of_birth']['year'] . $form_state['values']['field_student_date_of_birth']['month'] . $form_state['values']['field_student_date_of_birth']['day'],
+		'status' => 1,
+		'roles' => array(
+			DRUPAL_AUTHENTICATED_RID => 'authenticated user',
+			5 => 'Parent',
+		),
+	);
+	$user_fields['field_student_registration_id']['und'][0]['value'] = $form_state['values']['field_student_registration_id'];
+	
+	$user_fields['field_student_first_name']['und'][0]['value'] = $form_state['values']['field_student_first_name'];
+	$user_fields['field_student_middle_name']['und'][0]['value'] = $form_state['values']['field_student_middle_name'];
+	$user_fields['field_student_last_name']['und'][0]['value'] = $form_state['values']['field_student_last_name'];
+	
+	$user_fields['field_student_date_of_birth']['und'][0]['value'] = $form_state['values']['field_student_date_of_birth']['year'] . '-' . $form_state['values']['field_student_date_of_birth']['month'] . '-' . $form_state['values']['field_student_date_of_birth']['day'] . ' 00:00:00';
+	
+	$user_fields['field_class']['und'][0]['target_id'] = $form_state['values']['field_class'];
+	$user_fields['og_user_node']['und'][0]['target_id'] = $form_state['values']['og_user_node'];
+	
+	$account = user_save('', $user_fields);
+
+	drupal_set_message('User created successfully.', 'status');
+	drupal_goto('school-admin-students-list');
+}
+
+
+function schoolknot_edit_user($form, &$form_state, $uid) {
+	
+	$edit_user = user_load($uid);
+	pr($edit_user);
+	$form['field_uid'] = array(
+		'#type' => 'hidden', 
+		'#value' => $uid,
+	);
+	
+	$form['field_student_registration_id'] = array(
+		'#type' => 'textfield', 
+		'#title' => t('Student Registration ID'), 
+		'#size' => 60, 
+		'#maxlength' => 128,
+		'#required' => TRUE,
+		'#default_value' => $edit_user->field_student_registration_id['und'][0]['value'],
+	);
+	/*
+	$form['field_student_email_id'] = array(
+		'#type' => 'textfield', 
+		'#title' => t('Student Email ID'), 
+		'#size' => 60, 
+		'#maxlength' => 128,
+		'#required' => TRUE,
+		'#default_value' => $edit_user->mail,
+	);
+	*/
+	$form['field_student_first_name'] = array(
+		'#type' => 'textfield', 
+		'#title' => t('Student First Name'), 
+		'#size' => 60, 
+		'#maxlength' => 128, 
+		'#required' => TRUE,
+		'#default_value' => $edit_user->field_student_first_name['und'][0]['value'],
+	);
+	$form['field_student_first_name'] = array(
+		'#type' => 'textfield', 
+		'#title' => t('Student First Name'), 
+		'#size' => 60, 
+		'#maxlength' => 128, 
+		'#required' => TRUE,
+		'#default_value' => $edit_user->field_student_first_name['und'][0]['value'],
+	);
+	$form['field_student_middle_name'] = array(
+		'#type' => 'textfield', 
+		'#title' => t('Student Middle Name'), 
+		'#size' => 60, 
+		'#maxlength' => 128,
+		'#default_value' => $edit_user->field_student_middle_name['und'][0]['value'],
+	);
+	$form['field_student_last_name'] = array(
+		'#type' => 'textfield', 
+		'#title' => t('Student Last Name'), 
+		'#size' => 60, 
+		'#maxlength' => 128,
+		'#default_value' => $edit_user->field_student_last_name['und'][0]['value'],
+	);
+	
+	$form['field_student_date_of_birth'] = array(
+		'#type' => 'date', 
+		'#title' => 'Student Date of Birth', 
+		'#required' => TRUE,
+		'#default_value' => _get_datefield_value_from_dob($edit_user->field_student_date_of_birth['und'][0]['value']),
+	);
+	
+	// Get School Classes
+	global $user;
+	$result = db_select('node')
+		->fields('node', array('nid', 'title'))
+		->condition('uid', $user->uid, '=')
+		->condition('type', 'classes', '=')
+		->execute()->fetchAll();
+	$class_options = array();
+	foreach($result as $class) {
+		$class_options[$class->nid] = $class->title;
+	}
+	
+	$form['field_class'] = array(
+		'#type' => 'select',
+		'#title' => t('Class'),
+		'#options' => $class_options,
+		'#default_value' => $edit_user->field_class['und'][0]['target_id'],
+	);
+	
+	$form['status'] = array(
+		'#type' => 'radios',
+		'#title' => t('Status'),
+		'#options' => array('Active' => 0, 'Block' => 1),
+		'#default_value' => $user->status,
+	);
+
+	$form['actions']['submit'] = array(
+		'#type' => 'submit',
+		'#value' => t('Update Student'),
+	);
+	return $form;
+}
+
+function schoolknot_edit_user_submit($form, &$form_state) {
+
+	$edit_user = user_load($form_state['values']['field_uid']);
+
+	/*
+	$user_fields = array(
+		'mail' => $form_state['values']['field_student_email_id'],
+	);
+	*/
+	$user_fields['field_student_registration_id']['und'][0]['value'] = $form_state['values']['field_student_registration_id'];
+	
+	$user_fields['field_student_first_name']['und'][0]['value'] = $form_state['values']['field_student_first_name'];
+	$user_fields['field_student_middle_name']['und'][0]['value'] = $form_state['values']['field_student_middle_name'];
+	$user_fields['field_student_last_name']['und'][0]['value'] = $form_state['values']['field_student_last_name'];
+	
+	$user_fields['field_student_date_of_birth']['und'][0]['value'] = $form_state['values']['field_student_date_of_birth']['year'] . '-' . $form_state['values']['field_student_date_of_birth']['month'] . '-' . $form_state['values']['field_student_date_of_birth']['day'] . ' 00:00:00';
+	
+	$user_fields['field_class']['und'][0]['target_id'] = $form_state['values']['field_class'];
+	
+	$account = user_save($edit_user, $user_fields);
+
+	drupal_set_message('User '.$form_state['values']['field_student_registration_id'].' edited successfully.', 'status');
+	drupal_goto('school-admin-students-list');
+	
+}
+
+function _get_datefield_value_from_dob($value) {
+	$valueArr = explode(' ', $value);
+	$date = explode('-', $valueArr[0]);
+	return array('year' => $date[0], 'month' => $date[1], 'day' => $date[2]);
+}
