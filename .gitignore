@@ -9,3 +9,4 @@ sites/*/private
 /.project
 /.settings
 /.buildpath
+/sites/default/settings.php
