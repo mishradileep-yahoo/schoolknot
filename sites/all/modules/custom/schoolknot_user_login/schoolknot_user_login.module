@@ -195,7 +195,8 @@ function schoolknot_user_agreeement($form, &$form_state) {
 	drupal_set_title('Terms and Conditions');
 	$url = 'terms-and-conditions';
 	$path = drupal_lookup_path('source', $url);
-	$agreement_node = menu_get_object('node', 1, $path);    
+	$node_id = explode('/', $path);
+	$agreement_node = node_load($node_id[1]);
 	
 	$form['user_agreement'] = array(
 		'#markup' => '<div id="user-agreement-signup">' . $agreement_node->body['und'][0]['value'] . '</div>',
