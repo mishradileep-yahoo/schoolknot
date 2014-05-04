@@ -32,6 +32,11 @@ $schoolId = _get_school_node_id_for_school_admin();
             <?php print render($page['help']); ?>
             </div>
             <?php endif; ?>
+						<?php $loged_in_as = _logged_in_as_block();
+
+						if($loged_in_as['as'] == 'Parent') {
+						//pr($loged_in_as);
+							?>
             	<div class="tabLists student-progress-tabs">
               	<ul>
               		<li><?php print l(t('<span>Notifications</span>'), 'messages', array('attributes' => array('class' => array('notification', $variables['notificationTabClass'])), 'html' => TRUE));?></li>
@@ -41,6 +46,7 @@ $schoolId = _get_school_node_id_for_school_admin();
                 	<li><?php print l(t('<span>School Showcase</span>'), 'school-showcase/'.$schoolId['nid'], array('attributes' => array('class' => array('showcase', $variables['addAnotherTabClass'])), 'html' => TRUE));?></li>
               	</ul>
             	</div>
+						<?php } ?>	
             <?php if ($action_links): ?>
             <ul class="action-links">
             <?php print render($action_links); ?>
