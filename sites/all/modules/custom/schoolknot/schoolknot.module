@@ -907,6 +907,15 @@ function schoolknot_theme() {
   );
 }
 
+function _get_download_timetable() {
+		global $user;
+
+		$class_id = $user->field_class['und'][0]['target_id'];
+		$node_class = node_load($class_id);
+		$image_fid = $node_class->field_time_table['und'][0]['fid'];
+		return l('Class Timetable Download','download/file/fid/'.$image_fid);
+}
+
 /*
 function schoolknot_cron() {
 	$currentDate_start = date('Y-m-d 00:00:00', strtotime('2014-01-01 00:00:00'));
