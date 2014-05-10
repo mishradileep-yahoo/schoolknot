@@ -40,7 +40,7 @@ global $user;
 				<?php } ?>
 			<?php } else {?>
 				<div><?php print $row['field_status_image'];?></div>
-				<div>
+				<div class="postBody">
 					<?php print _phonetic_apply_filter($row['body']);?>
 					<span class="liveTime"><em class="placeholder"><?php print $row['created'];?></em></span>
 				</div>
@@ -61,7 +61,9 @@ global $user;
 			}
 			?>
 			<div id="comment-small">
-			<?php print views_embed_view('classbell_status_updates', 'block_1', $row['nid']); ?>
+				<div id="post-comments-<?php print $row['nid']?>">
+					<?php print views_embed_view('classbell_status_updates', 'block_1', $row['nid']); ?>
+				</div>
 			<?php 
 			$view = views_get_view('classbell_status_updates');
 			$view->set_display('block_2');

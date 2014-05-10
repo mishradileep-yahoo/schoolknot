@@ -48,7 +48,7 @@ function corporateclean_page_alter($page) {
 		'#tag' => 'meta',
 		'#attributes' => array(
 		'name' =>  'viewport',
-		'content' =>  'width=device-width, initial-scale=1'
+		'content' =>  'initial-scale=1.0,width=device-width,user-scalable=yes'
 		)
 	);
 	
@@ -131,7 +131,7 @@ function corporateclean_preprocess_page(&$variables, $hook) {
   
   if($page_args[0] == 'user' && !isset($page_args[2])) {
     $profile_user = user_load($page_args[1]);
-    drupal_set_title('Student Progress Sheet', PASS_THROUGH);
+    //drupal_set_title('Student Progress Sheet', PASS_THROUGH);
   }
   
   if($page_args[0] == 'browse-schools-by-city' && isset($page_args[1])) {

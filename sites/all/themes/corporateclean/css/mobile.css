@@ -24,3 +24,27 @@
 .align_right {
   text-align: left;
 }
+
+/* Start Customization */
+
+#mainWrapper {
+    width: auto !important;
+}
+.messages.error{ display:none; }
+#sidebar-first.leftMenuWrap {
+	display:none;
+}
+
+#main.rightContainer {
+    width: auto;
+	float: none;
+}
+
+.posts {
+float: none !important;
+background: none;
+border-left: none;
+width: auto !important;
+padding-left: 0;
+clear: both;
+}
