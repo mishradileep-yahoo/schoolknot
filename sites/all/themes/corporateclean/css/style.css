@@ -844,10 +844,13 @@ div#views_infinite_scroll-ajax-loader {display: none;}
 }
 .compare-school-wrapper .cs-row .cell .text-teaser{word-wrap: break-word;}
 .compare-school-wrapper .cs-row .cell .text-full {display: none;}
-
-
-
-
-
-
 .messages.error {disp lay: none;}
+
+/* Mobile CSS */
+
+.navList {
+	display:none;
+}
+.mobileMenu{
+	display:none;	
+}
