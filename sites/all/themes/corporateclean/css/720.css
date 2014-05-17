@@ -355,9 +355,9 @@ body {
 .container_12 {
   zoom: 1;
 }
+
 /* Start Customization */
 body {
-overflow: hidden;
     width: 100%;
 }
 
@@ -452,4 +452,11 @@ ul.navList li > ul.mobileMenu li a {
     padding: 0 5px;
     resize: none;
     width: 100% !important;
+}
+.footer {
+    border-top: 1px solid #0C82DA;
+    margin-top: 4px;
+    overflow: hidden;
+    padding: 10px;
+    width: auto !important;
 }
