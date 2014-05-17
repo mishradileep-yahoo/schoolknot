@@ -30,6 +30,10 @@ body {
 overflow: hidden;
     width: 100%;
 }
+.logo-home-icon {
+	display:none;
+}
+
 
 #mainWrapper {
     width: auto !important;
@@ -40,7 +44,7 @@ overflow: hidden;
 }
 
 #main.rightContainer {
-    width: auto;
+  width: auto;
 	float: none;
 }
 
@@ -112,4 +116,14 @@ ul.navList li > ul.mobileMenu li a {
 }
 .show {
     display: block !important;
+}
+.postComment #comment_message textarea {
+    border: 1px solid #7CC5E8;
+    float: left;
+    font-family: Open Sans;
+    font-size: 12px;
+    height: 40px;
+    padding: 0 5px;
+    resize: none;
+    width: 100% !important;
 }

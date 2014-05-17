@@ -355,3 +355,101 @@ body {
 .container_12 {
   zoom: 1;
 }
+/* Start Customization */
+body {
+overflow: hidden;
+    width: 100%;
+}
+
+#mainWrapper {
+    width: auto !important;
+}
+.messages.error{ display:none; }
+#sidebar-first.leftMenuWrap {
+	display:none;
+}
+
+#main.rightContainer {
+  width: auto;
+	float: none;
+}
+
+.posts {
+float: none !important;
+background: none;
+border-left: none;
+width: auto !important;
+padding-left: 0;
+clear: both;
+}
+
+#header {
+    background: url("../images/headerBack.jpg") repeat-x scroll left top rgba(0, 0, 0, 0);
+    height: 91px;
+    overflow: visible;
+    position: fixed;
+    width: 100% !important;
+    z-index: 99;
+}
+
+#header .hdrRight {display:none;}
+#header .round-box.leftMenu{display:none;}
+.navList {
+    display: block !important;
+    float: right;
+    list-style: none outside none;
+    margin: 0;
+    padding: 16px;
+}
+ul.navList {
+    list-style: none outside none;
+}
+ul.navList li a {
+    display: block;
+}
+ul.navList li > ul.mobileMenu {
+    background: none repeat scroll 0 0 #F2F2F2;
+    display: none;
+    left: 0;
+    position: absolute;
+    top: 90px;
+    width: 100%;
+    z-index: 9999;
+}
+ul.navList li > ul.mobileMenu li {
+    border-bottom: 1px solid #CCCCCC;
+}
+.subMenu {
+    background-color: #FFFFFF;
+    display:none;
+}
+.sub-icon {
+	float:right;
+	padding-top:0px !important;
+}
+
+.menu {
+    padding-left: 0;
+}
+ul.navList li > ul.mobileMenu li a {
+    color: #0F81DA;
+    display: block;
+    font-family: NewsGothicMTW01-BoldCon;
+    font-size: 18px;
+    line-height: 18px;
+    padding: 11px 0 11px 20px;
+    text-transform: uppercase;
+}
+.show {
+    display: block !important;
+}
+.postComment #comment_message textarea {
+    border: 1px solid #7CC5E8;
+    float: left;
+    font-family: Open Sans;
+    font-size: 12px;
+    height: 40px;
+    padding: 0 5px;
+    resize: none;
+    width: 100% !important;
+}
