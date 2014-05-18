@@ -362,6 +362,20 @@ function schoolknot_edit_user($form, &$form_state, $uid) {
 	
 	$edit_user = user_load($uid);
 	//pr($edit_user);
+	
+	$label_student_registration_id = t('Student Registration ID');
+	$label_student_first_name = t('Student First Name');
+	$label_student_middle_name = t('Student Middle Name');
+	$label_student_last_name = t('Student Last Name');
+	$label_student_date_of_birth = t('Student Date of Birth');
+	if(in_array('Teacher', $edit_user->roles)) {
+	  $label_student_registration_id = t('Teacher Registration ID');
+  	$label_student_first_name = t('Teacher First Name');
+  	$label_student_middle_name = t('Teacher Middle Name');
+  	$label_student_last_name = t('Techer Last Name');
+  	$label_student_date_of_birth = t('Date of Joining');
+	}
+	
 	$form['field_uid'] = array(
 		'#type' => 'hidden', 
 		'#value' => $uid,
@@ -369,7 +383,7 @@ function schoolknot_edit_user($form, &$form_state, $uid) {
 	
 	$form['field_student_registration_id'] = array(
 		'#type' => 'textfield', 
-		'#title' => t('Student Registration ID'), 
+		'#title' => $label_student_registration_id, 
 		'#size' => 60, 
 		'#maxlength' => 128,
 		'#required' => TRUE,
@@ -387,15 +401,7 @@ function schoolknot_edit_user($form, &$form_state, $uid) {
 	*/
 	$form['field_student_first_name'] = array(
 		'#type' => 'textfield', 
-		'#title' => t('Student First Name'), 
-		'#size' => 60, 
-		'#maxlength' => 128, 
-		'#required' => TRUE,
-		'#default_value' => $edit_user->field_student_first_name['und'][0]['value'],
-	);
-	$form['field_student_first_name'] = array(
-		'#type' => 'textfield', 
-		'#title' => t('Student First Name'), 
+		'#title' => $label_student_first_name, 
 		'#size' => 60, 
 		'#maxlength' => 128, 
 		'#required' => TRUE,
@@ -403,14 +409,14 @@ function schoolknot_edit_user($form, &$form_state, $uid) {
 	);
 	$form['field_student_middle_name'] = array(
 		'#type' => 'textfield', 
-		'#title' => t('Student Middle Name'), 
+		'#title' => $label_student_middle_name, 
 		'#size' => 60, 
 		'#maxlength' => 128,
 		'#default_value' => $edit_user->field_student_middle_name['und'][0]['value'],
 	);
 	$form['field_student_last_name'] = array(
 		'#type' => 'textfield', 
-		'#title' => t('Student Last Name'), 
+		'#title' => $label_student_last_name, 
 		'#size' => 60, 
 		'#maxlength' => 128,
 		'#default_value' => $edit_user->field_student_last_name['und'][0]['value'],
@@ -418,11 +424,11 @@ function schoolknot_edit_user($form, &$form_state, $uid) {
 	
 	$form['field_student_date_of_birth'] = array(
 		'#type' => 'date', 
-		'#title' => 'Student Date of Birth', 
+		'#title' => $label_student_date_of_birth, 
 		'#required' => TRUE,
 		'#default_value' => _get_datefield_value_from_dob($edit_user->field_student_date_of_birth['und'][0]['value']),
 	);
-	
+	if(!in_array('Teacher', $edit_user->roles)) {
 	// Get School Classes
 	global $user;
 	//pr($user);
@@ -442,6 +448,7 @@ function schoolknot_edit_user($form, &$form_state, $uid) {
 		'#options' => $class_options,
 		'#default_value' => $edit_user->field_class['und'][0]['target_id'],
 	);
+	}
 	
 	$form['status'] = array(
 		'#type' => 'radios',
@@ -474,7 +481,9 @@ function schoolknot_edit_user_submit($form, &$form_state) {
 	
 	$user_fields['field_student_date_of_birth']['und'][0]['value'] = $form_state['values']['field_student_date_of_birth']['year'] . '-' . $form_state['values']['field_student_date_of_birth']['month'] . '-' . $form_state['values']['field_student_date_of_birth']['day'] . ' 00:00:00';
 	
-	$user_fields['field_class']['und'][0]['target_id'] = $form_state['values']['field_class'];
+	if(isset($form_state['values']['field_class'])) {
+	  $user_fields['field_class']['und'][0]['target_id'] = $form_state['values']['field_class'];
+	}
 	$user_fields['status'] = $form_state['values']['status'];
 	
 	$account = user_save($edit_user, $user_fields);
