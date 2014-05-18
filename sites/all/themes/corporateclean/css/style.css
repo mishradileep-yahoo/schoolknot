@@ -854,3 +854,22 @@ div#views_infinite_scroll-ajax-loader {display: none;}
 .mobileMenu{
 	display:none;	
 }
+
+.single-status-post.posts{
+	float: none;
+  overflow: hidden;
+  width: 650px;
+  background: none;
+  border: none;
+}
+.single-status-post .post-content{
+	width: 320px;
+	float: left;
+}
+.single-status-post .post-comments{
+	width: 320px;
+	float: left;
+}
+.single-status-post .postComment #comment_message textarea{
+	width: 300px;
+}

@@ -128,8 +128,10 @@ function corporateclean_preprocess_page(&$variables, $hook) {
       $variables['theme_hook_suggestions'][] = 'page__school';
     }
   }
-  
-  if($page_args[0] == 'user' && !isset($page_args[2])) {
+  if($page_args[0] == 'status-post' && !isset($page_args[2])) {
+   $variables['theme_hook_suggestions'][] = 'page__status_post';
+  }
+  if($page_args[0] == 'user' && isset($page_args[2])) {
     $profile_user = user_load($page_args[1]);
     //drupal_set_title('Student Progress Sheet', PASS_THROUGH);
   }

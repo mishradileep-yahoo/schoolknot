@@ -424,7 +424,7 @@ function classbellsu_status_comment_form ($form, &$form_state, $post_id) {
 	    '#maxlength' => 128,
 			'#prefix' => '<div id="comment_message">',
 			'#suffix' => '</div>',
-	    '#attributes' => array('placeholder' => array('comments...' . $post_id)),
+	    '#attributes' => array('placeholder' => array('comments...')),
 	);
 	$form['post_id'] = array(
 			'#value' => $post_id,

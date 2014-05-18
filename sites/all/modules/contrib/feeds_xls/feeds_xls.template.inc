@@ -154,6 +154,9 @@ if($feeds_importer->processor->id == 'teachers_bulk_upload_feeds_xls') {
     $objPHPExcel->getActiveSheet()->getColumnDimension('A')->setVisible(false);
     $objPHPExcel->getActiveSheet()->getColumnDimension('B')->setVisible(false);
   }
+if($feeds_importer->processor->id == 'student_attendance_imported') {
+    $objPHPExcel->getActiveSheet()->getColumnDimension('A')->setVisible(false);
+  }
   
   // Rename sheet
   $objPHPExcel->getActiveSheet()->setTitle('Template');

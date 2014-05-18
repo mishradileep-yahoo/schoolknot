@@ -73,7 +73,7 @@ global $user;
 			$view->execute();
 			$count = count( $view->result );
 			if ($count > 3 ) { ?>
-			<span class="load-more"><?php print l('Load More', 'post-details/' . $row['nid']); ?></span>
+			<span class="load-more"><?php print l('Load More', 'status-post/' . $row['nid'], array('attributes' => array('rel' => array('lightframe')))); ?></span>
 			</div>
 			<div id="comment-full">
 			<?php print views_embed_view('classbell_status_updates', 'block_2', $row['nid']); ?>

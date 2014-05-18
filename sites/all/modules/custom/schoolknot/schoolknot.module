@@ -107,7 +107,7 @@ function schoolknot_feeds_after_parse(FeedsSource $source, FeedsParserResult $re
   if($source->importer()->id == 'student_progress_data_feeds_xls_importer') {
     foreach($result->items as $key => $row) {
     	if($result->items[$key]['Student SR No'] == '') {
-    		drupal_set_message('Student Registration ID at row DILEEP' . ($key + 2) . ' is blank. Progress data can\'t be imported.', 'warning');
+    		drupal_set_message('Student Registration ID at row ' . ($key + 2) . ' is blank. Progress data can\'t be imported.', 'warning');
     		unset($result->items[$key]); continue;
     	}
     	if($result->items[$key]['Student SR No'] != '') {
@@ -220,6 +220,39 @@ function schoolknot_feeds_after_parse(FeedsSource $source, FeedsParserResult $re
     }
   }
   
+    if($source->importer()->id == 'student_attendance_imported') {
+    	$feed_source_node = node_load($source->feed_nid);
+    	$attendance_date = $feed_source_node->field_attendance_status_date['und'][0]['value'];
+    	$attendance_status_allowed_value = array('A', 'P', 'FH', 'SH');
+    	foreach($result->items as $key => $row) {
+    	  $student_SR_number = $result->items[$key]['Student ID'];
+    		if(!in_array($result->items[$key]['Attendance Status'], $attendance_status_allowed_value)) {
+    			drupal_set_message('Attendance Status at row ' . ($key + 2) . ' is not a valid status. Allowed value are A = Absunt, P = Present, FH = First Half Present, SF = Second Half Present. Progress data can\'t be imported.', 'warning');
+    			unset($result->items[$key]); continue;
+    		}
+    		if($result->items[$key]['Student ID'] == '') {
+    			drupal_set_message('Student ID at row ' . ($key + 2) . ' is blank. Progress data can\'t be imported.', 'warning');
+    			unset($result->items[$key]); continue;
+    		}
+    		if($result->items[$key]['Student ID'] != '') {
+    			$studentQuery = db_select('users');
+    			$studentQuery->join('field_data_field_student_registration_id', 'srid', 'users.uid = srid.entity_id');
+    			$studentQuery->fields('users', array('uid', 'name'))
+    			->condition('srid.field_student_registration_id_value', $result->items[$key]['Student ID'], '=');
+    			$studentRowCounts = $studentQuery->execute()->rowCount();
+    			if(!($studentRowCounts > 0)) {
+    				drupal_set_message('Student ID at row ' . ($key + 2) . ' doesn\'t exist. Progress data can\'t be imported.', 'warning');
+    				unset($result->items[$key]); continue;
+    			}
+    			else {
+    				$studentresults = $studentQuery->execute()->fetchAll();
+    				$result->items[$key]['Student ID'] = $studentresults[0]->uid;
+    			}
+    		}
+    		$result->items[$key]['Date'] = $attendance_date;
+    		$result->items[$key]['Title'] = 'Attendance for ' . $student_SR_number;
+    	}
+    }
 }
 
 
@@ -339,6 +372,58 @@ if($source->importer()->id == 'teachers_bulk_upload_feeds_xls') {
 		$entity->field_subject[$entity->language]['0']['target_id'] = $item['Subject'];
 		$entity->field_exam[$entity->language]['0']['target_id'] = $item['Exam'];
 	}
+	if($source->importer()->id == 'student_attendance_imported') {
+	  
+	  $student_user_object = user_load($item['Student ID']);
+		
+  	$node = array();
+  	$query = new EntityFieldQuery();
+  	$query->entityCondition('entity_type', 'node');
+  	$query->entityCondition('bundle', 'student_attendance');
+  	$query->propertyCondition('status', 1);
+  	$query->fieldCondition('field_student','target_id', $student_user_object->uid,'=');
+  	$query->range(0, 1);
+  	$result = $query->execute();
+  	
+  	if (isset($result['node'])) {
+  		$nids = array_keys($result['node']);
+  		$node = entity_load('node', $nids);
+    	$entity = $node[$nids[0]];
+    	$entity->field_student[$entity->language]['0']['target_id'] = $student_user_object->uid;
+  		switch($item['Attendance Status']) {
+  		  case 'P':
+  		    array_push($entity->field_present_dates[$entity->language], array('value' => $item['Date']));
+  		    break;
+  		  case 'A':
+  		    array_push($entity->field_absent_dates[$entity->language], array('value' => $item['Date']));
+  		    break;
+  		  case 'FH':
+  		    array_push($entity->field_first_half_dates[$entity->language], array('value' => $item['Date']));
+  		    break;
+  		  case 'SH':
+  		    array_push($entity->field_second_half_dates[$entity->language], array('value' => $item['Date']));
+  		    break;
+  		}
+  	}
+  	else {
+  	  $entity->field_student[$entity->language]['0']['target_id'] = $student_user_object->uid;
+  	  switch($item['Attendance Status']) {
+  		  case 'P':
+  		    $entity->field_present_dates[$entity->language][0]['value'] = $item['Date'];
+  		    break;
+  		  case 'A':
+  		    $entity->field_absent_dates[$entity->language][0]['value'] = $item['Date'];
+  		    break;
+  		  case 'FH':
+  		    $entity->field_first_half_dates[$entity->language][0]['value'] = $item['Date'];
+  		    break;
+  		  case 'SH':
+  		    $entity->field_second_half_dates[$entity->language][0]['value'] = $item['Date'];
+  		    break;
+  		}
+  	}
+	}
+	
 }
 
 
