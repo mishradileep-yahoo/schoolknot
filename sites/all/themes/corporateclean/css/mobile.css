@@ -106,7 +106,7 @@ background: none !important;
 	margin-bottom: 10px;
 }
 .posts > iframe {
-    width: auto;
+    width: 100%;
 }
 
 .schDtl {
