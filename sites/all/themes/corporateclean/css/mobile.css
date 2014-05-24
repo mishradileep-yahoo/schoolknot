@@ -93,7 +93,7 @@ clear: both;
 
 #header {
     background: url("../images/headerBack.jpg") repeat-x scroll left top rgba(0, 0, 0, 0);
-    height: 91px;
+    height: 91px !important;
     overflow: visible;
     position: fixed;
     width: 100% !important;
