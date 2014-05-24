@@ -37,8 +37,10 @@
             <?php endif; ?>
             
 
+            <div class="rwd-content-wrapper">
+            	<?php print render($page['content']); ?>
+            </div>
             
-            <?php print render($page['content']); ?>
             
             <?php print $feed_icons; ?>
             
