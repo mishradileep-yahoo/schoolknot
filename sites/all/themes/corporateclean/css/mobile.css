@@ -33,6 +33,37 @@ body {
 	display:none;
 }
 
+.logo > img {
+    padding-top: 6px !important;
+    width: 202px !important;
+}
+.profileWrap > img {
+    display: none;
+}
+.profileWrap .profileThumb {
+    top: 0px;
+}
+
+.profileWrap .profileThumb img {
+    border: 1px solid #FFFFFF;
+    height: 106px !important;
+    width: 152px;
+}
+
+.tabLists {
+	float: left;
+}
+.tabContainer {
+    margin-bottom: 30px;
+    overflow: hidden;
+    float:left;
+}
+.profileDetail .section span.lbl {
+    width: 31% !important;
+}
+.sub-icon > img {
+    height: 42px;
+}
 
 #mainWrapper {
     width: auto !important;
@@ -79,6 +110,7 @@ ul.navList {
 }
 ul.navList li a {
     display: block;
+    padding-top:10px;
 }
 ul.navList li > ul.mobileMenu {
     background: none repeat scroll 0 0 #F2F2F2;

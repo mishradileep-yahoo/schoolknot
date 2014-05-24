@@ -406,6 +406,7 @@ ul.navList {
 }
 ul.navList li a {
     display: block;
+    padding-top:15px;
 }
 ul.navList li > ul.mobileMenu {
     background: none repeat scroll 0 0 #F2F2F2;

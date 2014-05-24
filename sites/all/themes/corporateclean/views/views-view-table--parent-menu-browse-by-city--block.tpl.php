@@ -28,7 +28,7 @@
 			<ul class="mobileMenu">
 				<li><?php print l('Compare School<span></span>', 'compare/compare_schools', array('html' => TRUE,)); ?></li>
 				<li><?php print l('Research School<span></span>', 'school-research', array('html'=>TRUE, 'class' =>'active')); ?></li>
-				<li>	<a href="#" class="sub-icon"><img src="<?php print base_path() . drupal_get_path('theme', 'corporateclean') ;?>/images/rwd-nav.png"></a>
+				<li>	<a href="#" class="sub-icon"><img src="<?php print base_path() . drupal_get_path('theme', 'corporateclean') ;?>/images/mob_drpdwn.png"></a>
 				<?php print l('Browse schools by city<span></span>', 'browse_by_city', array('html'=>TRUE, 'class' =>'active')); ?>
 				
 					<ul class="subMenu">

@@ -16,7 +16,7 @@ blockquote, q {quotes: "" "";}
 body{background:url("../images/headerBack.jpg") repeat-x fixed left top rgba(0, 0, 0, 0);}
 #mainWrapper{width:980px;margin:0 auto; }
 #contentWrap{overflow:hidden; padding-top: 91px;}
-.logo{margin-top:5px;width:240px;display:inline-block; color:#FFFFFF; float: left}
+.logo{margin-top:5px;width:auto;display:inline-block; color:#FFFFFF; float: left}
 .logo-home-icon{float: left;
     height: 64px;
     margin-top: 10px;
@@ -64,6 +64,7 @@ select {border: 2px solid #B3B3B3;
     padding: 0;
     width: 40px;
 }
+
 #header .container-inline div.form-item{
 	display:block;
 	width:300px;

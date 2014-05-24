@@ -21,7 +21,7 @@
 	</div>
 	<ul class="navList">
 		<li>
-			<a href="#" class="list-icon"><img src="<?php print base_path() . drupal_get_path('theme', 'corporateclean') ;?>/images/rwd-nav.png"></a>
+			<a href="#" class="list-icon"><img src="<?php print base_path() . drupal_get_path('theme', 'corporateclean') ;?>/images/rwd_drpdwn.png"></a>
 			<?php print render($page['sidebar_first']); ?>
 		</li>
 	</ul>
