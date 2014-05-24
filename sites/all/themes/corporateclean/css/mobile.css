@@ -28,6 +28,9 @@
 /* Start Customization */
 body {
   width: 100%;
+  
+  background: none !important;
+  background-color: #D3D6DB !important;
 }
 .logo-home-icon {
 	display:none;
@@ -76,19 +79,40 @@ body {
 #main.rightContainer {
   width: auto;
 	float: none;
+	padding: 0px;
+	
+}
+.blockWrap {
+	background: none repeat scroll 0 0 #FFFFFF;
+	border: 1px solid #C9C9C9;
+	clear: both;
+	margin: 10px;
+	overflow: hidden;
+	padding: 10px;
 }
 
 .posts {
 float: none !important;
 background: none;
-border-left: none;
+border: none !important;
 width: auto !important;
-padding-left: 0;
+padding: 0 !important;
 clear: both;
+background: none !important;
 }
-
+.blockWrap .schoolInfo{
+	width: 100% !important;
+	float: left;
+	margin-bottom: 10px;
+}
 .posts > iframe {
     width: auto;
+}
+
+.schDtl {
+    float: left !important;
+    margin-left: 5px !important;
+    width: 70% !important;
 }
 
 #header {
@@ -143,8 +167,6 @@ ul.navList li > ul.mobileMenu li {
 ul.navList li > ul.mobileMenu li a {
     color: #0F81DA;
     display: block;
-    font-family: NewsGothicMTW01-BoldCon;
-    font-size: 15px;
     line-height: 15px;
     padding: 11px 0 11px 20px;
     text-transform: uppercase;
