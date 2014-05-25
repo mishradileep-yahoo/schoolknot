@@ -29,7 +29,7 @@ $schoolId = _get_school_node_id_for_school_admin();
 	<ul>
 		<li><?php print l(t('<span>Notifications</span>'), 'messages', array('attributes' => array('class' => array('notification')), 'html' => TRUE));?></li>
 		<li><?php print l(t('<span>Progress Sheet</span>'), 'student-tracker/progress-sheet', array('attributes' => array('class' => array('progress')), 'html' => TRUE));?></li>
-		<li><?php print l(t('<span>Attendance</span>'), '/', array('attributes' => array('class' => array('attendance')), 'html' => TRUE));?></li>
+		<!-- <li><?php // print l(t('<span>Attendance</span>'), '/', array('attributes' => array('class' => array('attendance')), 'html' => TRUE));?></li> -->
 		<li><?php print l(t('<span>Add Another Student</span>'), '/account_merge/merge', array('attributes' => array('class' => array('add-another')), 'html' => TRUE));?></li>
 		<li><?php print l(t('<span>School Showcase</span>'), 'school-showcase/'.$schoolId['nid'], array('attributes' => array('class' => array('showcase')), 'html' => TRUE));?></li>
 	</ul>
