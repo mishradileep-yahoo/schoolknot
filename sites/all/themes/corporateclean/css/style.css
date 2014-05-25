@@ -195,7 +195,7 @@ overflow: hidden;margin-top:4px;}
 .status-update-form .tabs{overflow: hidden;}
 .status-update-form .tabs li.active{background:url("../images/status-update-active.png") no-repeat scroll center 40px rgba(0, 0, 0, 0);}
 .status-update-form .tabs li{float:left; margin-right:50px; color:#2F79B2; font-weight:600; height:50px;}
-.status-update-form .tabs li span{display:inline-block; width:36px; height:36px;}
+.status-update-form .tabs li span{display:inline-block; width:45px; height:36px;}
 .status-update-form .tabs li.text span{background:url(../images/status-update-text.png) left 4px no-repeat;}
 .status-update-form .tabs li.image span{background:url(../images/status-update-image.png) left 4px no-repeat;}
 .status-update-form .tabs li.video span{background:url(../images/status-update-video.png) left 4px no-repeat;}
