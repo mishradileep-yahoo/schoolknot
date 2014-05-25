@@ -46,6 +46,22 @@
 				<?php } // End Schol?>
 				
 				<?php print _get_school_rating_link_for_parent(); ?>
+				
+				<?php if($user->uid == 0){ ?>
+				<li><?php print l('Register your school', 'user/register')?></li>
+				<li><?php print l('Parent Login', 'schoolknot_user_login/step1'); ?></li>
+			<?php } else { ?>
+			
+        <?php 
+        	$loged_in_as = _logged_in_as_block();
+        	if($loged_in_as['as'] == 'Parent') {
+        	?>
+        <li><?php print l('Student Progress Sheet', 'student-tracker/progress-sheet' ); ?></li>
+        <li><?php print l('Notifications', 'messages' ); ?></li>
+        <li><?php print l('Reset Password', 'user/password'); ?></li>
+        <?php } ?>
+				
+			<?php } ?>
 			</ul>
 		</li>
 	</ul>

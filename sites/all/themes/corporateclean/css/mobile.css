@@ -93,8 +93,6 @@ body {
 #main.rightContainer {
   width: auto;
 	float: none;
-	padding: 0px;
-	
 }
 .blockWrap {
 	background: none repeat scroll 0 0 #FFFFFF;
@@ -227,4 +225,10 @@ ul.navList li > ul.mobileMenu li a {
 }
 .profileDetail{
 	padding: 0 !important;
+}
+
+.mobile-body .rightContainer{
+	background: none repeat scroll 0 0 #FFFFFF;
+  margin: 10px;
+  padding: 10px;
 }
