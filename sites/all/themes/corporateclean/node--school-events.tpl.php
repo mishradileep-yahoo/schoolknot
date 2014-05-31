@@ -33,6 +33,7 @@
       
       <div class="section">
           <span class="lbl">Time</span> 
+          <?php echo $node->field_event_date['und'][0]['value']?>
           <span class="dtl"><?php print format_start_end_date_comma_sepearted_new($node->field_event_date['und'][0]['value'], $node->field_event_date['und'][0]['value2']);?></span>
       		<div class="clearer"></div>
       </div>
