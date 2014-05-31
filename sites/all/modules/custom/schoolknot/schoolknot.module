@@ -566,6 +566,26 @@ function schoolknot_node_insert($node){
     $recipient_type = 3;
   	 _send_private_message($recipients, $subject, $message, $recipient_type);
 	}
+	if($node->type == 'school_events') {
+    $school_id = _get_school_node_id_for_school_admin();
+    $node->og_group_ref[$node->language][0]['target_id'] = $school_id['nid'];
+    
+    $parents_list = _get_all_parents_for_school($school_id['nid']);
+    $parent_ids = array();
+    foreach($parents_list as $parent) {
+      $parent_ids[] = $parent->uid;
+    }
+    $suject = 'School Created "' . $node->title . '" Event';
+    $message = 'Dear Parent,' . "\n";
+    $message .= 'An event was created by school of your child.' . "\n";
+    $message .= $node->title . "\n";
+    $message .= $node->body[$node->language][0]['value'] . "\n\n";
+    
+    $message .= 'Please click below link for more detail' . "\n";
+    $message .= l('School Event', 'node/'.$node->nid) . "\n";
+    $users = user_load_multiple($parent_ids);
+    privatemsg_new_thread($users, $suject, $message);
+  }
 }
 
 function _get_school_node_id_for_school_admin() {
@@ -710,26 +730,7 @@ function _user_full_name_by_user_obj($user) {
 
 /* Sent Notification on Event Creation */
 function schoolknot_node_presave($node) {
-  if($node->type == 'school_events') {
-    $school_id = _get_school_node_id_for_school_admin();
-    $node->og_group_ref[$node->language][0]['target_id'] = $school_id['nid'];
-    
-    $parents_list = _get_all_parents_for_school($school_id['nid']);
-    $parent_ids = array();
-    foreach($parents_list as $parent) {
-      $parent_ids[] = $parent->uid;
-    }
-    $suject = 'School Created "' . $node->title . '" Event';
-    $message = 'Dear Parent,' . "\n";
-    $message .= 'An event was created by school of your child.' . "\n";
-    $message .= $node->title . "\n";
-    $message .= $node->body[$node->language][0]['value'] . "\n\n";
-    
-    $message .= 'Please click below link for more detail' . "\n";
-    $message .= l('School Event', 'node/'.$node->nid) . "\n";
-    $users = user_load_multiple($parent_ids);
-    privatemsg_new_thread($users, $suject, $message);
-  }
+  
 }
 
 /*
@@ -765,6 +766,9 @@ function schoolknot_form_alter (&$form, &$form_state, $form_id) {
 			case 'classbellsu_status_comment_form' :
 				$form['comment_text']['#prefix'] .= "<div><p>Allowed to accept only 500 characters per comment.</p></div>";
 			break;
+			//case 'user_pass' :
+				//$form['#submit'][] = 'my_module_profile_form_submit';
+			//break;	
 			// case 'user_profile_form' :
 				// unset($form['account']['name']);
 				// unset($form['account']['mail']);
@@ -777,10 +781,15 @@ function schoolknot_form_alter (&$form, &$form_state, $form_id) {
 	  if(($form_id == 'students_bulk_upload_importer_node_form')||($form_id =='students_progress_bulk_upload_im_node_form')){
 	  	$form['actions']['submit']['#value'] = "upload and save data";
 	  }
-		//if($form_id == 'students_bulk_upload_importer_node_form')
-	
-}
+		if($form_id == 'user_pass') {
+			$form['#submit'][] = 'schoolknot_profile_form_submit';
+		}
 
+		
+}
+function schoolknot_profile_form_submit($form, &$form_state) {
+  $form_state['redirect'] = '<front>';
+}
 // function schoolknot_user_register_form_validate($form, &$form_state) {
 	// if($form_state['values']['pass']){
 		// if (!preg_match('/^.*(?=.{6,}).*$/', $form_state['values']['pass'])) {
