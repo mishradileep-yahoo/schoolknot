@@ -217,6 +217,7 @@ function schoolknot_feeds_after_parse(FeedsSource $source, FeedsParserResult $re
     									$classResult[0]->nid . '_' . 
     									$examResult[0]->nid . '_' . 
     									$subjectResult[0]->nid;
+    	//pr($result->items[$key]['Title']); die('asdasdadsa');
     }
   }
   
@@ -367,6 +368,7 @@ if($source->importer()->id == 'teachers_bulk_upload_feeds_xls') {
 	
 	if($source->importer()->id == 'student_progress_data_feeds_xls_importer') {
 		$student_user_object = user_load($item['Student SR No']);
+		$entity->title = $student_user_object->uid;
 		$entity->field_student[$entity->language]['0']['target_id'] = $student_user_object->uid;
 		$entity->field_class[$entity->language]['0']['target_id'] = $item['Class'];
 		$entity->field_subject[$entity->language]['0']['target_id'] = $item['Subject'];

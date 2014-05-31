@@ -93,6 +93,7 @@ body {
 #main.rightContainer {
   width: auto;
 	float: none;
+	overflow: hidden;
 }
 .blockWrap {
 	background: none repeat scroll 0 0 #FFFFFF;
