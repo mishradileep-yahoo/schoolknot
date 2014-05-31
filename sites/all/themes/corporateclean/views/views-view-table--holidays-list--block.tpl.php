@@ -24,7 +24,7 @@
 		<h2 class="holidyheadng">Holidays List</h2>
 		<ul>
 			<?php foreach ($rows as $row_count => $row):?> 
-				<li><?php print $row['field_holiday_date'];?></li>
+				<li><?php print $row['title'];?></li>
 			<?php endforeach;  ?>
 			<li><?php print l(t('View All'), 'list-of-holidays');?></li>
 		</ul>
