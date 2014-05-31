@@ -23,7 +23,15 @@
 <div class="commennts">
     <div class="comment">
         <p>
-        Parent of  <?php print l($row['field_student_first_name'] . ' ' . $row['field_student_last_name'], 'user/' . $row['uid']);?> : <?php print _phonetic_apply_filter($row['comment_body'])?> </p>
+        <?php if($row['field_student_first_name'] != '') {?>
+        Parent of  <?php print $row['field_student_first_name'] . ' ' . $row['field_student_last_name'];?> 
+        <?php } else {?>
+        <?php $commenting_school = _get_school_node_id_for_school_admin_user($row['uid']); 
+              print l($commenting_school['title'], 'node/' . $commenting_school['nid']);
+        ?>
+        <?php } ?>
+        
+        : <?php print _phonetic_apply_filter($row['comment_body'])?> </p>
     	<span class="liveTime"><?php print $row['created']?></span>
     	
     </div>
