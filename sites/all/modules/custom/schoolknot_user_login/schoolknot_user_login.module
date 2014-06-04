@@ -150,10 +150,17 @@ function schoolknot_user_login_step2_submit($form, &$form_state) {
 	if ($uid = user_authenticate($username, $password)) {
 		global $user;
 		$user = user_load($uid);
-		
 		$login_array = array ('name' => $username);
 		user_login_finalize($login_array);
-		drupal_goto('messages');
+		
+		if(in_array('Parent', $user->roles)) {
+		  drupal_goto('messages');
+		}
+		elseif(in_array('Teacher', $user->roles)) {
+		  $school_id = $user->og_user_node['und'][0]['target_id'];
+		  drupal_goto('node/' . $school_id);
+		}
+		
 	}
 	else {
 		drupal_set_message('Sorry, unrecognized username or password.' . l('Have you forgotten your password?', 'user/password'), 'error');

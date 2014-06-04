@@ -49,7 +49,7 @@
 				
 				<?php if($user->uid == 0){ ?>
 				<li><?php print l('Register your school', 'user/register')?></li>
-				<li><?php print l('Parent Login', 'schoolknot_user_login/step1'); ?></li>
+				<li><?php print l('Parent or Teacher Login', 'schoolknot_user_login/step1'); ?></li>
 			<?php } else { ?>
 			
         <?php 

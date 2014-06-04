@@ -33,7 +33,7 @@
 				<li class="login">Login
 					<ul id="login-submenu">
 						<li><?php print l('School Admin Login', 'user/login')?></li>
-						<li><?php print l('Parent Login', 'schoolknot_user_login/step1'); ?></li>
+						<li><?php print l('Parent or Teacher Login', 'schoolknot_user_login/step1'); ?></li>
 					</ul>
 				</li>
 			</ul>

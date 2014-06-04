@@ -270,3 +270,6 @@ display: block !important;
 .cs-hr{
 	clear:both; border-top: 1px dotted #E5F4FE; margin-top: 10px
 }
+
+html.js input.form-autocomplete,
+.form-text {width: 95%}
