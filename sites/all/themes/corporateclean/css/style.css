@@ -441,12 +441,12 @@ select.subject_wise_line{
     margin-bottom:10px;
 }
 #compare-schools-autocomplate .form-autocomplete {
-	border: 2px solid #B3B3B3;
+	bord er: 2px solid #B3B3B3;
 	padding: 4px;
-	background-position: 100% 6px;	
+	background-position: 100% 8px;	
 }
 #compare-schools-autocomplate input.throbbing {
-    background-position: 100% -14px;
+    background-position: 100% -13px;
 }
 
 #compare-schools-autocomplate input.form-submit{
@@ -874,3 +874,22 @@ div#views_infinite_scroll-ajax-loader {display: none;}
 .single-status-post .postComment #comment_message textarea{
 	width: 300px;
 }
+
+.form-text {
+	border: 2px solid #E5F4FE;
+  color: #2E79B2;
+  font-family: open sans;
+  height: 20px;
+  padding: 5px;
+}
+html.js input.form-autocomplete {
+    background-position: 100% 10px;
+}
+html.js input.throbbing {
+  background-position: 100% -11px; /* LTR */
+}
+.cs-row-mbl,
+.label-logo-mlb,
+.cs-row-logo  .cs-logo-sch,
+.cs-hr{display: none;}
+.cs-row-dsk{display: block;}

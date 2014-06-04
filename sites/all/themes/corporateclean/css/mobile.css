@@ -233,3 +233,40 @@ ul.navList li > ul.mobileMenu li a {
   margin: 10px;
   padding: 10px;
 }
+.cs-row-mbl{display: block !important;}
+.cs-row-dsk{display: none !important;}
+.cs-row-mbl .label,
+.label-logo-mlb {
+    background-color: #2E79B2;
+    color: #FFFFFF !important;
+    float: none !important;
+    padding: 10px 5px !important;
+    width: 100% !important;
+}
+
+.cs-row-mbl .label{
+	float: none;	
+}
+.compare-school-wrapper .cs-row.cs-row-mbl .cell-1of4,
+.compare-school-wrapper .cs-row.cs-row-mbl .cell-1of3,
+.compare-school-wrapper .cs-row.cs-row-mbl .cell-1of2{
+	width: 100%;
+	padding: 10px 0 0;
+}
+.compare-school-wrapper .cs-row.cs-row-mbl .text-full{
+	margin-left: 15px;
+}
+.cs-logo{
+	float: none !important;
+  width: 50% !important;
+}
+.cs-row-logo .label-logo-dsk{
+	display: none;
+}
+.cs-row-logo  .cs-logo-sch{
+width: 100% !important;
+display: block !important;
+}
+.cs-hr{
+	clear:both; border-top: 1px dotted #E5F4FE; margin-top: 10px
+}

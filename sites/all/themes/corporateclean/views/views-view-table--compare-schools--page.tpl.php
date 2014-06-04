@@ -96,7 +96,7 @@ drupal_add_js(base_path() . path_to_theme() . '/js/jquery.balloon.js');
 
 
 <div class="compare-school-wrapper">
-	<div class="cs-row">
+	<div class="cs-row cs-row-dsk">
 		<div class="label">&nbsp;</div>
 		<?php for($i = 0; $i <= 4; $i++) {
 			if(isset($school_comp_array[$i])) {
@@ -108,12 +108,14 @@ drupal_add_js(base_path() . path_to_theme() . '/js/jquery.balloon.js');
 		?>
 	</div>
 	
-	<div class="cs-row">
-		<div class="label">&nbsp;</div>
+	<div class="cs-row cs-row-logo">
+		<div class="label label-logo-dsk">&nbsp;</div>
+		<div class="label label-logo-mlb">Logo</div>
     	<?php for($i = 0; $i <= 4; $i++) {
     	  if(isset($school_comp_array[$i])) {
     	?>
-    	<div class="cell cell-1of<?php print $collSplit;?>">
+    	<div class="cell cs-logo-sch cell-1of<?php print $collSplit;?>"><?php print l($school_comp_array[$i]->title, 'node/' . $school_comp_array[$i]->nid); ?></div>
+    	<div class="cell cell-1of<?php print $collSplit;?> cs-logo">
       	<?php
       	  if(isset($school_comp_array[$i]->field_logo['und'][0]['uri'])) {
             $school_logo_image = array(
@@ -126,6 +128,7 @@ drupal_add_js(base_path() . path_to_theme() . '/js/jquery.balloon.js');
       	  }
         ?>
     	<?php //print $school_comp_array[$i]->nid; ?></div>
+    	<div class="cs-hr" style="" class=""></div>
     	<?php 
     	  }
     	} 
@@ -135,7 +138,7 @@ drupal_add_js(base_path() . path_to_theme() . '/js/jquery.balloon.js');
     <?php foreach($compare_parameters as $parameters => $compare_parameter) {
   	      $print_func = 'compare_school_print_' . $compare_parameter['type'];
   	  ?>
-    	<div class="cs-row">
+    	<div class="cs-row cs-row-dsk">
       	<div class="label"><b><?php print $compare_parameter['title']; ?></b></div>
       	<?php for($i = 0; $i <= 4; $i++) {
       	  if(isset($school_comp_array[$i])) {
@@ -156,6 +159,20 @@ drupal_add_js(base_path() . path_to_theme() . '/js/jquery.balloon.js');
       	} 
       	?>
       </div>
+      
+      <div class="cs-row cs-row-mbl">
+      	<div class="label"><b><?php print $compare_parameter['title']; ?></b></div>
+      	<?php for($i = 0; $i <= 4; $i++) {
+          if(isset($school_comp_array[$i])) {?>
+          	<div class="cell cell-1of<?php print $collSplit;?>"><?php print l($school_comp_array[$i]->title, 'node/' . $school_comp_array[$i]->nid); ?></div>
+          	<div class="text-full"><?php print nl2br($print_func($school_comp_array[$i]->$parameters)); ?></div>
+          	<div class="" style="clear:both; border-top: 1px dotted #E5F4FE; margin-top: 10px"></div>
+          <?php 
+          }
+        } 
+        ?>
+      </div>
+      
     <?php } ?>
 </div>
 
