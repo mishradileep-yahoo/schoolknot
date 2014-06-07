@@ -112,6 +112,7 @@ function schoolknot_user_login_step2($form, &$form_state, $school_name) {
 		'#maxlength' => 128,
 		'#required' => TRUE,
 		'#attributes' => array('placeholder' => array('Username')),
+	  '#description' => 'Please enter the student registration ID',
 	);
 	$form['password'] = array(
 		'#type' => 'password',
@@ -120,6 +121,7 @@ function schoolknot_user_login_step2($form, &$form_state, $school_name) {
 		'#maxlength' => 128,
 		'#required' => TRUE,
 		'#attributes' => array('placeholder' => array('Password')),
+		'#description' => 'Please enter the student date of birth in YYYYDDMM format for first time login.',
 	);
 	$form['school_title'] = array(
 		'#type' => 'hidden',
@@ -321,11 +323,12 @@ function schoolknot_create_user_validate($form, &$form_state) {
 	if($validate_user){
 		form_set_error('field_student_registration_id', t('Student with same registration id alreday exist.'));
 	}
-	
+	/*
 	$validate_user = user_load_by_mail($form_state['values']['field_student_email_id']);
 	if($validate_user){
 		form_set_error('field_student_email_id', t('Email ID already exist.'));
 	}
+	*/
 	
 	$form_state['values']['username'] = $username;
 	$form_state['values']['og_user_node'] = $user_school;
@@ -339,7 +342,7 @@ function schoolknot_create_user_submit($form, &$form_state) {
 
 	$user_fields = array(
 		'name' => $form_state['values']['username'],
-		'mail' => $form_state['values']['field_student_email_id'],
+		//'mail' => $form_state['values']['field_student_email_id'],
 		'pass' => $form_state['values']['field_student_date_of_birth']['year'] . $form_state['values']['field_student_date_of_birth']['month'] . $form_state['values']['field_student_date_of_birth']['day'],
 		'status' => 1,
 		'roles' => array(
@@ -512,4 +515,21 @@ function schoolknot_user_login_menu_alter(&$item) {
   $item['user/register']['type'] = MENU_CALLBACK;
   $item['user']['type'] = MENU_CALLBACK;
   $item['user/password']['type'] = MENU_CALLBACK;
+}
+
+/**
+ * Implements hook_token_info().
+ */
+function schoolknot_user_token_info() {
+  $type = array(
+    'name' => t('Cloud Personalization'),
+    'description' => t('Tokens for Cloud Personalization Banner.'),
+  );
+}
+
+/**
+ * Implements hook_tokens().
+ */
+function schoolknot_user_tokens($type, $tokens, array $data = array(), array $options = array()) {
+  
 }
