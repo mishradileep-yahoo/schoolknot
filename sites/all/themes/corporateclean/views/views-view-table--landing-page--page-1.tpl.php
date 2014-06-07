@@ -44,7 +44,11 @@ global $user;
 					<?php print _phonetic_apply_filter($row['body']);?>
 					<span class="liveTime"><em class="placeholder"><?php print $row['created'];?></em></span>
 				</div>
-				<div class="likeShare"><?php print $row['sharethis'];?><p><?php print $row['ops'];?></p></div>
+				<div class="likeShare">
+  				<div class="load-more mbl"><?php print l('Comments', 'status-post/' . $row['nid'], array('attributes' => array('rel' => array('lightframe')))); ?></div>
+  				<div class=""><?php print $row['ops'];?></div>
+  				<div class=""><?php print $row['sharethis'];?></div>
+				</div>
 				<?php print views_embed_view('post_liked_users', 'block', $row['nid']); ?>
 				<?php if($row['delete_node'] != '') { ?>
 					<p class="post-edit-delete"><?php print l('Edit', 'node/' . $row['nid'] . '/edit', array('query' => array('destination' => ''))); ?> 
@@ -55,12 +59,12 @@ global $user;
 				global $user;
 				if($user->uid != 0) {
 				$block = module_invoke('classbellsu', 'block_view', 'classbellsu_comment_form', $row['nid']);
-				print '<div class="postComment">';
+				print '<div class="postComment dsk">';
 				print render($block['content']);
 				print '</div>';
 			}
 			?>
-			<div id="comment-small">
+			<div id="comment-small" class="dsk">
 				<div id="post-comments-<?php print $row['nid']?>">
 					<?php print views_embed_view('classbell_status_updates', 'block_1', $row['nid']); ?>
 				</div>
@@ -75,7 +79,7 @@ global $user;
 			if ($count > 3 ) { ?>
 			<span class="load-more"><?php print l('Load More', 'status-post/' . $row['nid'], array('attributes' => array('rel' => array('lightframe')))); ?></span>
 			</div>
-			<div id="comment-full">
+			<div id="comment-full" class="dsk">
 			<?php print views_embed_view('classbell_status_updates', 'block_2', $row['nid']); ?>
 			<?php }?>
 			</div>

@@ -156,7 +156,7 @@ select {border: 2px solid #B3B3B3;
 .leftMenu ul li ul{margin-left:6px;}
 .leftMenu ul li ul li a{font-weight:normal;background:none}
 .rightContainer{float:right;width:712px;border-left:1px solid #eaeaea;padding-top:24px;padding-left:7px;}
-.blockWrap{overflow:hidden;clear:both;margin-bottom:30px;margin-top:10px;}
+.blockWrap{clear: both; margin: 10px 0 30px;overflow: hidden;}
 .blockWrap.commennts{overflow:hidden;clear:both;margin-bottom:0px;margin-top:0px;}
 .advSearch{margin-top:15px;}
 .blockWrap .schoolInfo{float:left;width:230px;}
@@ -893,3 +893,4 @@ html.js input.throbbing {
 .cs-row-logo  .cs-logo-sch,
 .cs-hr{display: none;}
 .cs-row-dsk{display: block;}
+.mbl{display: none}

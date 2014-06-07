@@ -46,7 +46,18 @@
             print '</div>';
           }
         ?> 
-        <?php print views_embed_view('classbell_status_updates', 'block_1', $row['nid']); ?>                   
+        <?php print views_embed_view('classbell_status_updates', 'block_1', $row['nid']); ?>
+        <?php 
+        $view = views_get_view('classbell_status_updates');
+        $view->set_display('block_2');
+        $view->set_arguments(array($row['nid']));
+        // change the amount of items to show
+        $view->pre_execute();
+        $view->execute();
+        $count = count( $view->result );
+        if ($count > 3 ) { ?>
+        <span class="load-more"><?php print l('Load More', 'status-post/' . $row['nid'], array('attributes' => array('rel' => array('lightframe')))); ?></span>
+        <?php }?>                   
 
 
 <?php } ?>

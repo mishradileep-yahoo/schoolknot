@@ -59,9 +59,10 @@
         <li><?php print l('Student Progress Sheet', 'student-tracker/progress-sheet' ); ?></li>
         <li><?php print l('Notifications', 'messages' ); ?></li>
         <li><?php print l('Reset Password', 'user/password'); ?></li>
+        
         <?php } ?>
-				
 			<?php } ?>
+			<li><?php print l('Logout', 'user/logout'); ?></li>
 			</ul>
 		</li>
 	</ul>

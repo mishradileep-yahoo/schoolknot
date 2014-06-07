@@ -68,7 +68,9 @@ body {
 }
 
 .tabLists {
-	float: left;
+	clear: both;
+  float: none;
+  width: 100%;
 }
 .tabContainer {
     margin-bottom: 30px;
@@ -91,17 +93,20 @@ body {
 }
 
 #main.rightContainer {
+  border: medium none;
+  float: none;
+  margin: 0;
+  overflow: hidden;
+  padding: 0;
   width: auto;
-	float: none;
-	overflow: hidden;
 }
 .blockWrap {
 	background: none repeat scroll 0 0 #FFFFFF;
-	border: 1px solid #C9C9C9;
-	clear: both;
-	margin: 10px;
-	overflow: hidden;
-	padding: 10px;
+  border: 1px solid #C9C9C9;
+  clear: both;
+  margin: 10px !important;
+  overflow: hidden;
+  padding: 10px;
 }
 
 .posts {
@@ -228,7 +233,7 @@ ul.navList li > ul.mobileMenu li a {
 	padding: 0 !important;
 }
 
-.mobile-body .rightContainer{
+.mobile-body .right Container{
 	background: none repeat scroll 0 0 #FFFFFF;
   margin: 10px;
   padding: 10px;
@@ -273,3 +278,13 @@ display: block !important;
 
 html.js input.form-autocomplete,
 .form-text {width: 95%}
+.dsk{display: none}
+.mbl{display: block !important}
+.compare-school-wrapper{
+	background: none repeat scroll 0 0 #FFFFFF;
+	margin: 5px;
+	padding: 5px;
+}
+.likeShare{margin: 10px 0 0; height: 20px;}
+.likeShare > div{border-left: 2px solid #2E79B2;margin-right: 10px; padding-left: 20px;}
+.likeShare > div:FIRST-CHILD {border-left: none; padding: 0;}
