@@ -11,11 +11,8 @@
 		
 			<div class="home-img">
 			<a href="<?php print base_path(); ?>">
-			<img src="<?php print base_path() . drupal_get_path('theme', 'corporateclean') ;?>/images/1397328708_home_red.png"  />
+			<img src="<?php print base_path() . drupal_get_path('theme', 'corporateclean') ;?>/images/logo-home-icon.png"  />
 			</a>
-			</div>
-			<div class="home-txt">
-			<a href="<?php print base_path(); ?>">Home</a>
 			</div>
 		
 	</div>

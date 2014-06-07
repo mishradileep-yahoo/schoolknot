@@ -24,7 +24,7 @@ body{background:url("../images/headerBack.jpg") repeat-x fixed left top rgba(0, 
 .logo-home-icon .home-txt{left: 15px;
     position: relative;
     top: -20px;}
-.logo-home-icon div{width: 64px;}
+.logo-home-icon div{width: 64px; margin: 19px 5px;}
 .logo-home-icon a{color: #FFFFFF;}
 #header{ background: url("../images/headerBack.jpg") repeat-x scroll left top rgba(0, 0, 0, 0);
     height: 91px;
