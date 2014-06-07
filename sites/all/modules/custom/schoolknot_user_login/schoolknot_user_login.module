@@ -244,6 +244,7 @@ function schoolknot_create_user($form, &$form_state) {
 		'#maxlength' => 128,
 		'#required' => TRUE,
 	);
+	/*
 	$form['field_student_email_id'] = array(
 		'#type' => 'textfield', 
 		'#title' => t('Student Email ID'), 
@@ -251,6 +252,7 @@ function schoolknot_create_user($form, &$form_state) {
 		'#maxlength' => 128,
 		'#required' => TRUE,
 	);
+	*/
 	$form['field_student_first_name'] = array(
 		'#type' => 'textfield', 
 		'#title' => t('Student First Name'), 
