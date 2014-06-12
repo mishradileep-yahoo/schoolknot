@@ -70,6 +70,13 @@
 			})
 		});
 		
+		// SA Homework filter hide-show
+		$('.homework-view-filter').hide();
+		$('#homework-filter-toggle').click(function(){
+			$('.homework-view-filter').fadeIn('slow');
+			$(this).fadeOut();
+		});
+		
 	});
 	 $('.tooltipSmall').live('click', function(e) {	
 		 	
