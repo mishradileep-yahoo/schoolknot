@@ -212,7 +212,7 @@ function schoolknot_user_login_preprocess_page(&$vars) {
     	$useObj = user_load($user->uid);
     	if(!isset($useObj->field_agreement_status['und']) || $useObj->field_agreement_status['und'][0]['value'] != 1) {
     		if(drupal_is_front_page() || ($agrs[0] != 'schoolknot_user_login' && $agrs[1] != 'user_agreement')) {
-    			//drupal_goto('schoolknot_user_login/user_agreement');
+    			drupal_goto('schoolknot_user_login/user_agreement');
     		}
     	}
     }
@@ -261,7 +261,7 @@ function schoolknot_user_agreeement_submit($form, &$form_state) {
 	global $user;
 	$logedInUser = user_load($user->uid);
 	if($form_state['values']['op'] == 'I Agree') {
-		//$logedInUser->field_agreement_status['und'][0]['value'] = 1;
+		$logedInUser->field_agreement_status['und'][0]['value'] = 1;
 		$logedInUser->field_student_email_id['und'][0]['value'] = $form_state['values']['student_email'];
 		user_save($logedInUser);
 		schoolknot_user_mail_send($user);
