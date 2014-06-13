@@ -567,9 +567,9 @@ function schoolknot_user_mail($key, &$message, $params) {
       $message['subject'] = t('Activate your @site-name account.', array('@site-name' => variable_get('site_name', 'Drupal')), $options);
       $message['body'][] = check_plain($params['body']);
       
-      $system = drupal_mail_system('schoolknot_user', 'user_authentication');
-      $message  = $system->format($message);
-      $message['result'] = $system->mail($message);
+      //$system = drupal_mail_system('schoolknot_user', 'user_authentication');
+      //$message  = $system->format($message);
+      //$message['result'] = $system->mail($message);
 		
       break;
   }
