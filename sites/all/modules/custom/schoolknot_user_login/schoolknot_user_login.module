@@ -590,6 +590,7 @@ function schoolknot_user_mail_send($user) {
   $params = array(
 		'subject' => 'Account details for ' . _user_full_name_by_user_obj($userObj) . ' at SchoolKnot.com',
 		'body' => $mail_body,
+    'theme' => 'user_authentication'
 	);
   
   $language = language_default();
@@ -602,4 +603,18 @@ function schoolknot_user_mail_send($user) {
     drupal_set_message(t('There was a problem sending your message and it was not sent.'), 'error');
   }
 
+}
+
+
+function schoolknot_user_theme() {
+  $themes = array (
+    'user_authentication' => array(
+			'variables' => array(),
+    ),
+  );
+  foreach ($themes as $hook => $theme) {
+    $themes[$hook]['path'] = drupal_get_path('module', 'schoolknot_user') . '/email_templates';
+    $themes[$hook]['template'] = str_replace('_', '-', $hook);
+  }
+  return $themes;
 }
