@@ -564,8 +564,7 @@ function schoolknot_user_mail($key, &$message, $params) {
   switch ($key) {
     case 'user_authentication':
       
-      $message['subject'] = t('E-mail sent from @site-name', array('@site-name' => variable_get('site_name', 'Drupal')), $options);
-      $message['body'][] = t('@name sent 123 you the following message:', array('@name' => _user_full_name_by_user_obj($userObj)), $options);
+      $message['subject'] = t('Activate your @site-name account.', array('@site-name' => variable_get('site_name', 'Drupal')), $options);
       $message['body'][] = check_plain($params['body']);
       
       $system = drupal_mail_system('schoolknot_user', 'user_authentication');
@@ -584,14 +583,15 @@ function schoolknot_user_mail_send($user) {
   $from = variable_get('site_mail', 'admin@example.com');
   
   $mail_body = '';
-  $mail_body .= _user_full_name_by_user_obj($user) . ',<br>
-								Thank you for registering at SchoolKnot.com. Please activate your account by clicking this link or copying and pasting it to your browser:<br>
-								<br>
-								[user:one-time-login-url]<br>
-								<br>
-                You will asked for password reset after activation. Please be ready with your password string.<br>
-                <br>
-                --  SchoolKnot.com team';
+  $mail_body .= _user_full_name_by_user_obj($user) . ',
+Thank you for registering at SchoolKnot.com. Please activate your account by clicking this link or copying and pasting it to your browser:<br>
+
+[user:one-time-login-url]
+http://www.schoolknot.com
+
+You will asked for password reset after activation. Please be ready with your password string.<br>
+
+--  SchoolKnot.com team';
   
   $params = array(
 		'subject' => 'Account details for ' . _user_full_name_by_user_obj($userObj) . ' at SchoolKnot.com',
