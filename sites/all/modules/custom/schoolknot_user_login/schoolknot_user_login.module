@@ -266,6 +266,7 @@ function schoolknot_user_agreeement_submit($form, &$form_state) {
 		user_save($logedInUser);
 		schoolknot_user_mail_send($user);
 		drupal_set_message('Further instructions has been emailed to you.', 'status');
+		module_load_include('pages.inc', 'user');
 		user_logout();
 	}
 	else {
