@@ -570,11 +570,10 @@ function schoolknot_user_mail($key, &$message, $params) {
 }
 
 function schoolknot_user_mail_send($user) {
-  $userObj - user_load($user->uid);
-  pr($userObj); die;
+  $userObj = user_load($user->uid);
   $module = 'schoolknot_user';
   $key = 'user_authentication';
-  $to = $user->field_student_email_id['und'][0]['value'];
+  $to = $userObj->field_student_email_id['und'][0]['value'];
   $from = variable_get('site_mail', 'admin@example.com');
   
   $mail_body = '';
@@ -588,7 +587,7 @@ function schoolknot_user_mail_send($user) {
                 --  SchoolKnot.com team';
   
   $params = array(
-		'subject' => 'Account details for ' . _user_full_name_by_user_obj($user) . ' at SchoolKnot.com',
+		'subject' => 'Account details for ' . _user_full_name_by_user_obj($userObj) . ' at SchoolKnot.com',
 		'body' => $mail_body,
 	);
   

@@ -33,5 +33,9 @@
  *
  * @ingroup themeable
  */
+global $user;
+//unset($user_profile['field_student_email_id']['#object']);
+//pr($user_profile['field_student_email_id']['#items'][0]['value']);
+pr($user->field_student_email_id['und'][0]['value']);
 ?>
 <?php print render($user_profile); ?>
