@@ -583,11 +583,12 @@ function schoolknot_user_mail_send($user) {
   $from = variable_get('site_mail', 'admin@example.com');
   
   $mail_body = '';
+  $timestamp = REQUEST_TIME;
+  $password_reste_url = url("schoolknot/reset/$userObj->uid/$timestamp/" . user_pass_rehash($userObj->pass, $timestamp, $userObj->login), array('absolute' => TRUE));
   $mail_body .= _user_full_name_by_user_obj($user) . ',
 Thank you for registering at SchoolKnot.com. Please activate your account by clicking this link or copying and pasting it to your browser:
 
-[user:one-time-login-url]
-http://www.schoolknot.com
+' . $password_reste_url . '
 
 You will asked for password reset after activation. Please be ready with your password string.
 
