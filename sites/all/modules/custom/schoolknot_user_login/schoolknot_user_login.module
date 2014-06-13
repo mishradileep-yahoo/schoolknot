@@ -574,7 +574,7 @@ function user_agreed_send_auth_email($user) {
   $message = drupal_mail('schoolknot_user_login', 'user_auth', $user_profile['field_student_email_id']['#items'][0]['value'], $language, $params, $from, FALSE);
 	$message['subject'] = $params['subject'];
 	$message['body'] = $params['body'];
-	$system = drupal_mail_system('community', 'community_node_insert');
+	$system = drupal_mail_system('schoolknot_user_login', 'user_auth');
 	$message  = $system->format($message);
 	$message['result'] = $system->mail($message);
 }
