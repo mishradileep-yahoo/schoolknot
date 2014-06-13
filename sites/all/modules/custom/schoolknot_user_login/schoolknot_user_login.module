@@ -665,7 +665,7 @@ global $user;
   if ($user->uid) {
     // The existing user is already logged in.
     if ($user->uid == $uid) {
-      drupal_set_message(t('You are logged in as %user. <a href="!user_edit">Change your password.</a>', array('%user' => _user_full_name_by_user_obj($user), '!user_edit' => url("user/$user->uid/edit"))));
+      drupal_set_message(t('You are logged in as %user. <a href="!user_edit">Change your password.</a>', array('%user' => _user_full_name_by_user_obj($user), '!user_edit' => url("schoolknot/reset/password"))));
     }
     // A different user is already logged in on the computer.
     else {
