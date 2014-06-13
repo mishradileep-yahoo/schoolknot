@@ -210,6 +210,15 @@ function schoolknot_user_agreeement($form, &$form_state) {
 	$form['user_agreement'] = array(
 		'#markup' => '<div id="user-agreement-signup">' . $agreement_node->body['und'][0]['value'] . '</div>',
 	);
+	$form['student_email'] = array(
+		'#type' => 'textfield',
+		'#title' => t('Email'), 
+		'#size' => 60,
+		'#maxlength' => 128,
+		'#required' => TRUE,
+		'#attributes' => array('placeholder' => array('Email')),
+	  '#description' => 'Please enter your email address to complete registration process.<br>All communication from SchoolKnot will be delivered on this email address.',
+	);
 	$form['actions']['agreed'] = array(
 		'#type' => 'submit',
 		'#value' => t('I Agree'),
@@ -222,12 +231,21 @@ function schoolknot_user_agreeement($form, &$form_state) {
 	return $form;
 }
 
+function schoolknot_user_agreeement_validate($form, &$form_state) {
+  if(!valid_email_address($form_state['values']['student_email'])) {
+    form_set_error('student_email', t('Please provide a valid email address.'));
+  }
+}
+
 function schoolknot_user_agreeement_submit($form, &$form_state) {
 	global $user;
 	$logedInUser = user_load($user->uid);
 	if($form_state['values']['op'] == 'I Agree') {
-		$logedInUser->field_agreement_status['und'][0]['value'] = 1;
+		//$logedInUser->field_agreement_status['und'][0]['value'] = 1;
+		$logedInUser->field_student_email_id['und'][0]['value'] = $form_state['values']['student_email'];
 		user_save($logedInUser);
+		user_agreed_send_auth_email($user);
+		drupal_set_message('Authentication email sent to your registered email address.', 'status');
 		drupal_goto('messages');
 	}
 	else {
@@ -534,4 +552,29 @@ function schoolknot_user_token_info() {
  */
 function schoolknot_user_tokens($type, $tokens, array $data = array(), array $options = array()) {
   
+}
+
+function user_agreed_send_auth_email($user) {
+  $language = language_default();
+  $mail_body = '';
+  $mail_body .= _user_full_name_by_user_obj($user) . ',<br>
+								Thank you for registering at SchoolKnot.com. Please activate your account by clicking this link or copying and pasting it to your browser:<br>
+								<br>
+								[user:one-time-login-url]<br>
+								<br>
+                You will asked for password reset after activation. Please be ready with your password string.<br>
+                <br>
+                --  SchoolKnot.com team';
+  
+  $params = array(
+		'subject' => 'Account details for ' . _user_full_name_by_user_obj($user) . ' at SchoolKnot.com',
+		'body' => $mail_body,
+	);
+	
+  $message = drupal_mail('schoolknot_user_login', 'user_auth', $user->email, $language, $params, $from, FALSE);
+	$message['subject'] = $params['subject'];
+	$message['body'] = $params['body'];
+	$system = drupal_mail_system('community', 'community_node_insert');
+	$message  = $system->format($message);
+	$message['result'] = $system->mail($message);
 }
