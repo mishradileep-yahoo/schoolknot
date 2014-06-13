@@ -584,12 +584,12 @@ function schoolknot_user_mail_send($user) {
   
   $mail_body = '';
   $mail_body .= _user_full_name_by_user_obj($user) . ',
-Thank you for registering at SchoolKnot.com. Please activate your account by clicking this link or copying and pasting it to your browser:<br>
+Thank you for registering at SchoolKnot.com. Please activate your account by clicking this link or copying and pasting it to your browser:
 
 [user:one-time-login-url]
 http://www.schoolknot.com
 
-You will asked for password reset after activation. Please be ready with your password string.<br>
+You will asked for password reset after activation. Please be ready with your password string.
 
 --  SchoolKnot.com team';
   
@@ -603,7 +603,6 @@ You will asked for password reset after activation. Please be ready with your pa
   $send = TRUE;
   $result = drupal_mail($module, $key, $to, $language, $params, $from, $send);
   if ($result['result'] == TRUE) {
-    drupal_set_message(t('Your message has been sent.'));
   }
   else {
     drupal_set_message(t('There was a problem sending your message and it was not sent.'), 'error');
