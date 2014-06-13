@@ -241,10 +241,10 @@ function schoolknot_user_agreeement_submit($form, &$form_state) {
 	global $user;
 	$logedInUser = user_load($user->uid);
 	if($form_state['values']['op'] == 'I Agree') {
-		$logedInUser->field_agreement_status['und'][0]['value'] = 1;
+		//$logedInUser->field_agreement_status['und'][0]['value'] = 1;
 		$logedInUser->field_student_email_id['und'][0]['value'] = $form_state['values']['student_email'];
 		user_save($logedInUser);
-		user_agreed_send_auth_email($user);
+		schoolknot_user_mail_send($user);
 		drupal_set_message('Authentication email sent to your registered email address.', 'status');
 		drupal_goto('messages');
 	}
@@ -577,4 +577,53 @@ function user_agreed_send_auth_email($user) {
 	$system = drupal_mail_system('schoolknot_user_login', 'user_auth');
 	$message  = $system->format($message);
 	$message['result'] = $system->mail($message);
+}
+
+
+function schoolknot_user_mail($key, &$message, $params) {
+  global $user;
+  $options = array(
+    'langcode' => $message['language']->language,
+  );
+
+  switch ($key) {
+    case 'user_authentication':
+      $message['subject'] = t('E-mail sent from @site-name', array('@site-name' => variable_get('site_name', 'Drupal')), $options);
+      $message['body'][] = t('@name sent you the following message:', array('@name' => $user->name), $options);
+      $message['body'][] = check_plain($params['message']);
+      break;
+  }
+}
+
+function schoolknot_user_mail_send($user) {
+  $module = 'schoolknot_user';
+  $key = 'contact_message';
+  $to = $user->field_student_email_id['und'][0]['value'];
+  $from = variable_get('site_mail', 'admin@example.com');
+  
+  $mail_body = '';
+  $mail_body .= _user_full_name_by_user_obj($user) . ',<br>
+								Thank you for registering at SchoolKnot.com. Please activate your account by clicking this link or copying and pasting it to your browser:<br>
+								<br>
+								[user:one-time-login-url]<br>
+								<br>
+                You will asked for password reset after activation. Please be ready with your password string.<br>
+                <br>
+                --  SchoolKnot.com team';
+  
+  $params = array(
+		'subject' => 'Account details for ' . _user_full_name_by_user_obj($user) . ' at SchoolKnot.com',
+		'body' => $mail_body,
+	);
+  
+  $language = language_default();
+  $send = TRUE;
+  $result = drupal_mail($module, $key, $to, $language, $params, $from, $send);
+  if ($result['result'] == TRUE) {
+    drupal_set_message(t('Your message has been sent.'));
+  }
+  else {
+    drupal_set_message(t('There was a problem sending your message and it was not sent.'), 'error');
+  }
+
 }
