@@ -554,32 +554,6 @@ function schoolknot_user_tokens($type, $tokens, array $data = array(), array $op
   
 }
 
-function user_agreed_send_auth_email($user) {
-  $language = language_default();
-  $mail_body = '';
-  $mail_body .= _user_full_name_by_user_obj($user) . ',<br>
-								Thank you for registering at SchoolKnot.com. Please activate your account by clicking this link or copying and pasting it to your browser:<br>
-								<br>
-								[user:one-time-login-url]<br>
-								<br>
-                You will asked for password reset after activation. Please be ready with your password string.<br>
-                <br>
-                --  SchoolKnot.com team';
-  
-  $params = array(
-		'subject' => 'Account details for ' . _user_full_name_by_user_obj($user) . ' at SchoolKnot.com',
-		'body' => $mail_body,
-	);
-	
-  $message = drupal_mail('schoolknot_user_login', 'user_auth', $user_profile['field_student_email_id']['#items'][0]['value'], $language, $params, $from, FALSE);
-	$message['subject'] = $params['subject'];
-	$message['body'] = $params['body'];
-	$system = drupal_mail_system('schoolknot_user_login', 'user_auth');
-	$message  = $system->format($message);
-	$message['result'] = $system->mail($message);
-}
-
-
 function schoolknot_user_mail($key, &$message, $params) {
   global $user;
   $options = array(
@@ -597,7 +571,7 @@ function schoolknot_user_mail($key, &$message, $params) {
 
 function schoolknot_user_mail_send($user) {
   $module = 'schoolknot_user';
-  $key = 'contact_message';
+  $key = 'user_authentication';
   $to = $user->field_student_email_id['und'][0]['value'];
   $from = variable_get('site_mail', 'admin@example.com');
   
