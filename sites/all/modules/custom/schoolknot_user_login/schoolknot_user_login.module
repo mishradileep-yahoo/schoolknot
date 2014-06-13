@@ -265,8 +265,8 @@ function schoolknot_user_agreeement_submit($form, &$form_state) {
 		$logedInUser->field_student_email_id['und'][0]['value'] = $form_state['values']['student_email'];
 		user_save($logedInUser);
 		schoolknot_user_mail_send($user);
-		drupal_set_message('Authentication email sent to your registered email address.', 'status');
-		drupal_goto('messages');
+		drupal_set_message('Further instructions has been emailed to you.', 'status');
+		user_logout();
 	}
 	else {
 		drupal_set_message('You can not access schoolknot.com as a parent untill you don\'t agree on Terma and conditions.', 'error');
