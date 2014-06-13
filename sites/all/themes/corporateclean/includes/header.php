@@ -44,7 +44,7 @@
 						<ul id="user-submenu">
 							<li><?php print l('Student Progress Sheet', 'student-tracker/progress-sheet' ); ?></li>
 							<li><?php print l('Notifications', 'messages' ); ?></li>
-							<li><?php print l('Reset Password', 'user/password'); ?></li>
+							<li><?php print l('Reset Password', 'schoolknot/reset/password'); ?></li>
 						</ul>
 					</li>
 				<?php } else if($loged_in_as['as'] == 'School Administrator') { 
@@ -54,7 +54,7 @@
 						<ul id="user-submenu">
 							<li><?php print l('School Profile', 'node/' . $admin_school['nid'] ); ?></li>
 							<li><?php print l('Edit School', 'node/' . $admin_school['nid'] . '/edit'); ?></li>
-							<li><?php print l('Reset Password', 'user/password'); ?></li>
+							<li><?php print l('Reset Password', 'schoolknot/reset/password'); ?></li>
 						</ul>
 					
 					

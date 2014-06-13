@@ -218,7 +218,7 @@ function schoolknot_user_login_preprocess_page(&$vars) {
     }
     
     if($_GET['logout'] == '1'){
-      drupal_set_message('You are loged out.', 'info');
+      drupal_set_message('Further instructions has been emailed to you.', 'status');
     }
     //$timestamp = REQUEST_TIME;
     //drupal_set_message(url("schoolknot/reset/$user->uid/$timestamp/" . user_pass_rehash($user->pass, $timestamp, $user->login), array('absolute' => TRUE)));
@@ -269,7 +269,7 @@ function schoolknot_user_agreeement_submit($form, &$form_state) {
 		$logedInUser->field_student_email_id['und'][0]['value'] = $form_state['values']['student_email'];
 		user_save($logedInUser);
 		schoolknot_user_mail_send($user);
-		drupal_set_message('Further instructions has been emailed to you.', 'status');
+		
 		module_load_include('pages.inc', 'user');
 		user_logout();
 	}
