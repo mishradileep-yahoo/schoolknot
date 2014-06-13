@@ -270,8 +270,15 @@ function schoolknot_user_agreeement_submit($form, &$form_state) {
 		user_save($logedInUser);
 		schoolknot_user_mail_send($user);
 		
-		module_load_include('pages.inc', 'user');
-		user_logout();
+		global $user;
+
+    watchdog('user', 'Session closed for %name.', array('%name' => $user->name));
+    module_invoke_all('user_logout', $user);
+    // Destroy the current session, and reset $user to the anonymous user.
+    session_destroy();
+    
+    drupal_goto('', array('query' => array('logout' => '1')));
+		
 	}
 	else {
 		drupal_set_message('You can not access schoolknot.com as a parent untill you don\'t agree on Terma and conditions.', 'error');
