@@ -122,7 +122,7 @@ $field_state = taxonomy_term_load($node->field_state[$node->language][0]['tid'])
 	
 	
 <?php global $user;
-$logged_in_user_school_id = _get_school_node_id_for_school_admin();
+$logged_in_user_school_id = _get_school_node_id_for_school_admin_user();
 if (in_array('School Administrator', $user->roles) && isset($user) && $logged_in_user_school_id['nid'] == arg(1)) { 
 ?>
 <div class="status-update-form">
