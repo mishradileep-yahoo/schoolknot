@@ -419,13 +419,13 @@ select.subject_wise_line{
 #privatemsg-list .form-select {color: #2E79B2; border: 2px solid #B3B3B3;font-family: Open Sans;}
 #privatemsg-list-form .container-inline{margin-bottom: 10px;}
 #privatemsg-list-form table{width:100%;}
-#privatemsg-list-form a{color: #0F81DA; font-weight: 600;}
+#privatemsg-list-form a{color: #0F81DA;}
 .privatemsg-message-participants a, .privatemsg-message a{color: #0F81DA;}
 .privatemsg-message-column { width: 94% !important;}
 #privatemsg-list tr{background: none;}
 #privatemsg-list th { border-bottom: 2px solid #6479B0; color: #6479B0; font-weight: 600; padding: 10px;}
 #privatemsg-list td{color: #6479B0; border-bottom: 1px solid #6479B0; padding: 10px; background: none;}
-#privatemsg-list a{color: #002F53; font-weight: 600;}
+#privatemsg-list a{color: #002F53;}
 .privatemsg-message-participants {display:none;}
 
 /**
@@ -897,3 +897,6 @@ html.js input.throbbing {
 
 
 #user-agreement-signup{height: 400px; overflow: auto;}
+
+.privatemsg-list .select-all {width: 10%}
+.privatemsg-list .privatemsg-header-subject {width: 70%}
