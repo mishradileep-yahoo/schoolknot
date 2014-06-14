@@ -288,3 +288,5 @@ html.js input.form-autocomplete,
 .likeShare{margin: 10px 0 0; height: 20px;}
 .likeShare > div{border-left: 2px solid #2E79B2;margin-right: 10px; padding-left: 20px;}
 .likeShare > div:FIRST-CHILD {border-left: none; padding: 0;}
+
+#user-register-form{background-color: #ffffff; margin: 5px; padding: 10px;}

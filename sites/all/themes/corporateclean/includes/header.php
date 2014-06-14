@@ -70,7 +70,7 @@
 		<div class="clearer"></div>
 		<?php print render($page['search_area']); ?>
 		<div class="clearer"></div>
-		<div class="advance-search-link"><?php print l('Advanced Search', 'advance-search');?></div>
+		<div class="advance-search-link"><?php print l('Advance Search', 'advance-search');?></div>
 		<div class="clearer"></div>
 	</div>
 </div>
