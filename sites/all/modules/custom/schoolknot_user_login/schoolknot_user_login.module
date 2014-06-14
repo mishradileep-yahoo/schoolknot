@@ -155,6 +155,7 @@ function schoolknot_user_login_step2($form, &$form_state, $school_name) {
 }
 
 function schoolknot_user_login_step2_submit($form, &$form_state) {
+  global $user;
 	// Get School from school name
 	$query = db_select('node', 'n');
 	$query->fields('n', array('nid'))
@@ -168,19 +169,24 @@ function schoolknot_user_login_step2_submit($form, &$form_state) {
 	$password = $form_state['values']['password'];
 	
 	if ($uid = user_authenticate($username, $password)) {
-		global $user;
-		$user = user_load($uid);
+		
+		$loginUser = user_load($uid);
 		$login_array = array ('name' => $username);
 		user_login_finalize($login_array);
 		
-		if(in_array('Parent', $user->roles)) {
+		if($loginUser->status == 0) {
+		  drupal_set_message('Your account has been blocked. Please contect your school administartor offline.', 'error');
+		  drupal_goto();
+		}
+		$user = $loginUser;
+		
+		if(in_array('Parent', $loginUser->roles)) {
 		  drupal_goto('messages');
 		}
-		elseif(in_array('Teacher', $user->roles)) {
-		  $school_id = $user->og_user_node['und'][0]['target_id'];
+		elseif(in_array('Teacher', $loginUser->roles)) {
+		  $school_id = $loginUser->og_user_node['und'][0]['target_id'];
 		  drupal_goto('node/' . $school_id);
 		}
-		
 	}
 	else {
 		drupal_set_message('Sorry, unrecognized username or password.' . l('Have you forgotten your password?', 'user/password'), 'error');

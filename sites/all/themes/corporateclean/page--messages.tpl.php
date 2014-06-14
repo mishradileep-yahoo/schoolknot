@@ -1,7 +1,7 @@
 <div id="mainWrapper">
 
 <?php include('includes/header.php'); 
-$schoolId = _get_school_node_id_for_school_admin();
+$schoolId = _get_school_node_id_for_school_admin_user();
 ?>
 
 
