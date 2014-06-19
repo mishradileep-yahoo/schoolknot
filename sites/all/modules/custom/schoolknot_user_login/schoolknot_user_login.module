@@ -747,7 +747,7 @@ global $user;
         $user_name = ' administrator for ' . $user->name;
       }
       
-      drupal_set_message(t('You are logged in as %user. <a href="!user_edit">Change your password.</a>', array('%user' => _user_full_name_by_user_obj($user), '!user_edit' => url("schoolknot/reset/password"))));
+      drupal_set_message(t('You are logged in as %user. <a href="!user_edit">Change your password.</a>', array('%user' => $user_name, '!user_edit' => url("schoolknot/reset/password"))));
     }
     // A different user is already logged in on the computer.
     else {
