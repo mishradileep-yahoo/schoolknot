@@ -15,6 +15,10 @@ function schoolknot_user_login_permission () {
       'schoolknot create user' => array(
           'title' => t('schoolknot create user'),
           'description' => t('Allow school admin to create edit student record.')
+      ),
+      'schoolknot reset password' => array(
+          'title' => t('schoolknot reset password'),
+          'description' => t('Allow users to reset password.')
       )
       
   );
@@ -79,6 +83,13 @@ function schoolknot_user_login_menu() {
     'type' => MENU_CALLBACK,
   );
   $items['schoolknot/reset/password'] = array(
+  	'title' => 'Reset password',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('schoolknot_user_reset_password'),
+    'access callback' => TRUE,
+    'type' => MENU_CALLBACK,
+  );
+  $items['user/login'] = array(
   	'title' => 'Reset password',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('schoolknot_user_reset_password'),
@@ -573,7 +584,60 @@ function schoolknot_user_login_menu_alter(&$item) {
   $item['user/register']['type'] = MENU_CALLBACK;
   $item['user']['type'] = MENU_CALLBACK;
   $item['user/password']['type'] = MENU_CALLBACK;
+  // Drupal's default behavior is to show the user a log-in form, then their user profile.  We change this item to skip the unnecessary step.
+  $item['user/password'] = array(
+    'title' => 'Request new password',
+    'access arguments' 	=> array('schoolknot reset password'),
+    'page callback' => 'drupal_get_form',
+		'page arguments' => array('schoolknot_user_login_pass_reset_page'),
+    'type' => MENU_CALLBACK,
+  );
 }
+function schoolknot_user_login_pass_reset_page($form, &$form_state){
+  $form['username'] = array(
+		'#type' => 'textfield',
+		'#title' => t('Username or e-mail address'), 
+		'#size' => 60,
+		'#maxlength' => 128,
+		'#required' => TRUE,
+		'#attributes' => array('placeholder' => array('Username or e-mail address')),
+	);
+	$form['actions']['submit'] = array(
+		'#type' => 'submit',
+		'#value' => t('E-mail New Password'),
+	);
+	return $form;
+}
+
+function schoolknot_user_login_pass_reset_page_validate($form, &$form_state){
+  $name = trim($form_state['values']['username']);
+  // Try to load by email.
+  $users = user_load_multiple(array(), array('mail' => $name, 'status' => '1'));
+  $account = reset($users);
+  if (!$account) {
+    // No success, try to load by name.
+    $users = user_load_multiple(array(), array('name' => $name, 'status' => '1'));
+    $account = reset($users);
+  }
+  if (isset($account->uid)) {
+    form_set_value(array('#parents' => array('account')), $account, $form_state);
+  }
+  else {
+    form_set_error('name', t('Sorry, %name is not recognized as a user name or an e-mail address.', array('%name' => $name)));
+  }
+}
+
+function schoolknot_user_login_pass_reset_page_submit($form, &$form_state){
+  global $language;
+
+  $account = $form_state['values']['account'];
+  watchdog('user', 'Password reset instructions mailed to %name at %email.', array('%name' => $account->name, '%email' => $account->mail));
+  drupal_set_message(t('Further instructions have been sent to your e-mail address.'));
+
+  $form_state['redirect'] = 'user';
+  return;
+}
+
 
 /**
  * Implements hook_token_info().
@@ -601,14 +665,8 @@ function schoolknot_user_mail($key, &$message, $params) {
 
   switch ($key) {
     case 'user_authentication':
-      
       $message['subject'] = t('Activate your @site-name account.', array('@site-name' => variable_get('site_name', 'Drupal')), $options);
       $message['body'][] = check_plain($params['body']);
-      
-      //$system = drupal_mail_system('schoolknot_user', 'user_authentication');
-      //$message  = $system->format($message);
-      //$message['result'] = $system->mail($message);
-		
       break;
   }
 }
