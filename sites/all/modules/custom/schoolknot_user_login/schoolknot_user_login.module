@@ -675,7 +675,15 @@ function schoolknot_user_mail_send($user) {
   $userObj = user_load($user->uid);
   $module = 'schoolknot_user';
   $key = 'user_authentication';
-  $to = $userObj->field_student_email_id['und'][0]['value'];
+  
+  
+  if(in_array('Parent', $userObj->roles)) {
+    $to = $userObj->field_student_email_id['und'][0]['value'];
+  }
+  else if(in_array('School Administrator', $userObj->roles)) {
+    $to = $userObj->mail;
+  }
+  
   $from = variable_get('site_mail', 'admin@example.com');
   
   $mail_body = '';
@@ -698,14 +706,7 @@ You will asked for password reset after activation. Please be ready with your pa
   
   $language = language_default();
   $send = TRUE;
-  pr($module);
-  pr($key);
-  pr($to);
-  pr($language);
-  pr($params);
-  pr($from);
-  pr($send);
-  die('sadasd');
+  
   $result = drupal_mail($module, $key, $to, $language, $params, $from, $send);
   if ($result['result'] == TRUE) {
   }
