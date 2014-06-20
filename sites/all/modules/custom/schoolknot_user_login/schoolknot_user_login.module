@@ -588,12 +588,24 @@ function schoolknot_user_login_menu_alter(&$item) {
   $item['user/password'] = array(
     'title' => 'Request new password',
     'access arguments' 	=> array('schoolknot reset password'),
-    'page callback' => 'drupal_get_form',
-		'page arguments' => array('schoolknot_user_login_pass_reset_page'),
-    'type' => MENU_CALLBACK,
+    //'page callback' => 'drupal_get_form',
+    'page callback' => 'schoolknot_user_login_pass_reset',
+		//'page arguments' => array('schoolknot_user_login_pass_reset_page'),
+    'type' => MENU_NORMAL_ITEM,
   );
 }
+
+function schoolknot_user_login_pass_reset(){
+  $content = array();
+  $content['school_admin'] = drupal_get_form('schoolknot_user_login_pass_reset_page');
+  $content['parents'] = drupal_get_form('schoolknot_user_login_pass_reset_parents');
+  return $content;
+}
+
 function schoolknot_user_login_pass_reset_page($form, &$form_state){
+  $form['form_helper'] = array(
+		'#markup' => 'This thsi form if you are a school administrator and want to reset your password.',
+	);
   $form['username'] = array(
 		'#type' => 'textfield',
 		'#title' => t('Username or e-mail address'), 
@@ -638,6 +650,61 @@ function schoolknot_user_login_pass_reset_page_submit($form, &$form_state){
   return;
 }
 
+function schoolknot_user_login_pass_reset_parents($form, &$form_state){
+  $form['form_helper'] = array(
+  	'#markup' => '<hr class="pass-rest-separator" style="margin: 50px 0;">This thsi form if you are a parent and want to reset your password.',
+  );
+  
+  $form['title'] = array(
+		'#type' => 'textfield',
+		'#title' => t('School Name'), 
+		'#description' => t('Type school name and select desired school from options below.'),
+		'#autocomplete_path' => 'schoolknot_user_login/school_autocomplete',
+		'#size' => 60,
+		'#maxlength' => 128,
+		'#required' => TRUE,
+		'#attributes' => array('placeholder' => array('Type school name')),
+	);
+	$form['username'] = array(
+		'#type' => 'textfield',
+		'#title' => t('Username'), 
+		'#size' => 60,
+		'#maxlength' => 128,
+		'#required' => TRUE,
+		'#attributes' => array('placeholder' => array('Username')),
+	  '#description' => 'Please enter the student registration ID',
+	);
+	$form['actions']['submit'] = array(
+		'#type' => 'submit',
+		'#value' => t('E-mail New Password'),
+	);
+		
+	return $form;
+}
+
+function schoolknot_user_login_pass_reset_parents_validate($form, &$form_state){
+  // Get School from school name
+	$query = db_select('node', 'n');
+	$query->fields('n', array('nid'))
+		->condition('n.title', $form_state['values']['title'], '=')
+		->condition('n.type', 'school', '=')
+		->condition('n.status', '1', '=')
+		->range(0, 1);
+	$result = $query->execute()->fetchAll();
+	$username = $result[0]->nid . '_' . $form_state['values']['username'];
+	$users = user_load_multiple(array(), array('name' => $username, 'status' => '1'));
+  $account = reset($users);
+  if (isset($account->uid)) {
+    form_set_value(array('#parents' => array('account')), $account, $form_state);
+  }
+  else {
+    form_set_error('name', t('Sorry, %name for %school is not recognized as a student registration ID.', array('%name' => $form_state['values']['username'], '%school' => $form_state['values']['title'])));
+  }
+}
+
+function schoolknot_user_login_pass_reset_parents_submit($form, &$form_state){
+  schoolknot_user_login_pass_reset_page_submit($form, $form_state);
+}
 
 /**
  * Implements hook_token_info().
