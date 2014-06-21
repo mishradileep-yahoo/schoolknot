@@ -277,7 +277,7 @@ display: block !important;
 }
 
 html.js input.form-autocomplete,
-.form-text {width: 95%}
+.form-text {width: 90%}
 .dsk{display: none}
 .mbl{display: block !important}
 .compare-school-wrapper{
@@ -290,3 +290,14 @@ html.js input.form-autocomplete,
 .likeShare > div:FIRST-CHILD {border-left: none; padding: 0;}
 
 #user-register-form{background-color: #ffffff; margin: 5px; padding: 10px;}
+
+.view-advance-search .view-filters{
+	margin: 10px;
+}
+.views-exposed-form .views-exposed-widget{width:95% !important}
+.rightContainer h1{margin: 10px 10px 20px !important}
+#rwd-search .rwd-search-form{display: block; overflow: hidden; display: none; margin: 10px 0;}
+#header div.container-inline{float: left!important; width: 80%!important; margin: 0 20px;}
+#header .container-inline div.form-item{width:90% !important}
+.rwd-search-form input[type="text"]{border-bottom-left-radius: 0 !important; border-top-left-radius: 0 !important;}
+.rwd-search-form .form-submit{padding: 0px; height: 42px;}

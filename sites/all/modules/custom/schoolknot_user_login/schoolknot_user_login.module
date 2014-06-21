@@ -186,7 +186,7 @@ function schoolknot_user_login_step2_submit($form, &$form_state) {
 		user_login_finalize($login_array);
 		
 		if($loginUser->status == 0) {
-		  drupal_set_message('Your account has been blocked. Please contect your school administartor offline.', 'error');
+		  drupal_set_message('Your account was not activated. Please check your email for activation link.', 'error');
 		  drupal_goto();
 		}
 		$user = $loginUser;
@@ -443,11 +443,13 @@ function schoolknot_edit_user($form, &$form_state, $uid) {
 	//pr($edit_user);
 	
 	$label_student_registration_id = t('Student Registration ID');
+	$label_student_username = t('Student Username');
 	$label_student_first_name = t('Student First Name');
 	$label_student_middle_name = t('Student Middle Name');
 	$label_student_last_name = t('Student Last Name');
 	$label_student_date_of_birth = t('Student Date of Birth');
 	if(in_array('Teacher', $edit_user->roles)) {
+	  $label_student_username = t('Teacher Username');
 	  $label_student_registration_id = t('Teacher Registration ID');
   	$label_student_first_name = t('Teacher First Name');
   	$label_student_middle_name = t('Teacher Middle Name');
@@ -458,6 +460,16 @@ function schoolknot_edit_user($form, &$form_state, $uid) {
 	$form['field_uid'] = array(
 		'#type' => 'hidden', 
 		'#value' => $uid,
+	);
+	
+	$schoolId = $edit_user->og_user_node['und'][0]['target_id'];
+	$user_name_without_school_id = str_replace($schoolId . '_', '', $edit_user->name);
+	
+	$form['field_student_username'] = array(
+		'#type' => 'textfield', 
+		'#title' => $label_student_username, 
+		'#default_value' => $user_name_without_school_id,
+	  '#disabled' => TRUE
 	);
 	
 	$form['field_student_registration_id'] = array(
@@ -849,6 +861,9 @@ global $user;
           $user = $account;
           // user_login_finalize() also updates the login timestamp of the
           // user, which invalidates further use of the one-time login link.
+          $user_fields['status'] = 1;
+	        $account = user_save($user, $user_fields);
+	        
           user_login_finalize();
           watchdog('user', 'User %name used one-time login link at time %timestamp.', array('%name' => $account->name, '%timestamp' => $timestamp));
           drupal_set_message(t('You have just used your one-time login link. It is no longer necessary to use this link to log in. Please change your password.'));

@@ -77,6 +77,12 @@
 			$(this).fadeOut();
 		});
 		
+		// RWD Search
+		$('#rwd-search .rwd-search-txt a').click(function(){
+			$('#rwd-search  .rwd-search-form').show();
+			$(this).hide();
+		});
+		
 	});
 	 $('.tooltipSmall').live('click', function(e) {	
 		 	

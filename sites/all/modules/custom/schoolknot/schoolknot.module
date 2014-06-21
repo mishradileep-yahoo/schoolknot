@@ -312,6 +312,8 @@ function schoolknot_feeds_presave(FeedsSource $source, $entity, $item) {
 		//format the date as you want.
 		$formatedDate = $date->format('Y-m-d H:i:s');
 		
+		
+		
 		// Date of Birth
 		$entity->field_student_date_of_birth['und'][0]['value'] = $formatedDate;
 		
@@ -332,6 +334,7 @@ function schoolknot_feeds_presave(FeedsSource $source, $entity, $item) {
 		$user_groups = og_get_groups_by_user();
 		$user_school = reset($user_groups['node']);
 		$entity->og_user_node['und'][0]['target_id'] = $user_school;
+		$entity->status = 0;
 		$entity->timezone = 'UTC';
 		//pr($entity); die('asdasd');
 	}

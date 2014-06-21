@@ -58,10 +58,22 @@
         	?>
         <li><?php print l('Student Progress Sheet', 'student-tracker/progress-sheet' ); ?></li>
         <li><?php print l('Notifications', 'messages' ); ?></li>
-        <li><?php print l('Reset Password', 'user/password'); ?></li>
+        <li><?php print l('Reset Password', 'schoolknot/reset/password'); ?></li>
+        <li id="rwd-search">
+        	<div class="rwd-search-txt">
+        		<a href="javascript: void(0);">Search</a>
+        	</div>
+        	<div class="rwd-search-form">
+        		<?php
+              $block = module_invoke('search', 'block_view', 'search');
+              print render($block);
+            ?>
+        	</div>
+        </li>
         
         <?php } ?>
 			<?php } ?>
+			<li><?php print l('Advance Search', 'advance-search'); ?></li>
 			<li><?php print l('Logout', 'user/logout'); ?></li>
 			</ul>
 		</li>
