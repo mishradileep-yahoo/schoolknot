@@ -98,9 +98,9 @@ select {border: 2px solid #B3B3B3;
 	margin-left: 5px;
 }
 #header #user-menu li span.user{
-	background:url(../images/user-menu-down-arrow.png) right top no-repeat;
-	width:10px; 
-	height:8px;
+	background:url(../images/settings-gear.png) right top no-repeat;
+	width:16px; 
+	height:16px;
 }
 #header #user-menu li a span.logout{
 	background:url(../images/user-menu-logout.png) right top no-repeat;
@@ -175,7 +175,7 @@ select {border: 2px solid #B3B3B3;
 .commennts a.thumb{float:left;}
 .commennts .comment{margin-left: 0px;}
 .commennts .comment a{margin-right:5px;}
-.liveTime{color:#a2a2a2;display:inline-block; font-size: 10px;}
+.liveTime{color:#a2a2a2;display:block; font-size: 10px;}
 .loader{background:#e6f4ff;overflow:hidden;clear:both;}
 .loader p{color:#489fe2;text-align:center;padding:8px;}
 .loader p a{color:#489fe2;}

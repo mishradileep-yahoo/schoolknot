@@ -26,14 +26,10 @@
  *
  * @ingroup views_templates
  */
-//drupal_add_js(base_path() . path_to_theme() . '/js/jquery.infinitescroll.min.js');
-//drupal_add_js(base_path() . path_to_theme() . '/js/infinitescroll.js');
-//drupal_add_js(base_path() . path_to_theme() . '/js/imagesloaded.js');
 $schoolId = _get_school_node_id_for_school_admin_user();
 ?>
 <?php $loged_in_as = _logged_in_as_block();
 if($loged_in_as['as'] == 'Parent') {
-//pr($loged_in_as);
 ?>
    	<div class="tabLists student-progress-tabs">
      	<ul>
@@ -45,7 +41,11 @@ if($loged_in_as['as'] == 'Parent') {
    	</ul>
  	</div>
 <?php } ?>
-
+  <?php
+      $block = block_load('classbellsu', 'classbellsu_complete_status_form');
+      $render_array = _block_get_renderable_array( _block_render_blocks( array($block) ));
+      print render($render_array);
+    ?>
 <div class="<?php print $classes; ?>">
   <?php print render($title_prefix); ?>
   <?php if ($title): ?>
@@ -71,11 +71,9 @@ if($loged_in_as['as'] == 'Parent') {
   <?php endif; ?>
 
   <?php if ($rows): ?>
-  <div class="autopager">
     <div class="view-content">
       <?php print $rows; ?>
     </div>
-  </div>
   <?php elseif ($empty): ?>
     <div class="view-empty">
       <?php print $empty; ?>

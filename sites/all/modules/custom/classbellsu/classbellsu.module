@@ -90,6 +90,10 @@ function classbellsu_block_view ($delta = '', $post_id = '') {
       	$block['subject'] = t('Status Comment Form');
       	$block['content'] = drupal_get_form('classbellsu_status_comment_form', $post_id);
       	break;
+    case 'classbellsu_complete_status_form':
+      	//$block['subject'] = t('Status Comment Form');
+      	$block['content'] = classbellsu_complete_status_form();
+      	break;
 
   }
   return $block;
@@ -395,6 +399,22 @@ function classbellsu_youtube_update_form_submit ($form, &$form_state) {
   }
 }
 
+function classbellsu_complete_status_form () {
+  return theme('classbell_status_update_form_all', array('data' => ''));
+}
+
+function classbellsu_theme() {
+  $module_path = drupal_get_path('module', 'classbellsu');
+  $base = array(
+    'path' => $module_path . '/templates',   
+  );
+  return array(
+    'classbell_status_update_form_all' => $base + array(
+      'template' => 'classbell-status-update-form-all',  //leave off .tpl.php
+      'variables' => array('data' => NULL,),
+    ),    
+  ); 
+}
 /* Comment form */
 
 function classbellsu_status_comment_form ($form, &$form_state, $post_id) {

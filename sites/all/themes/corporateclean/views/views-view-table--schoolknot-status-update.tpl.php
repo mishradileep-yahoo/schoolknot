@@ -26,35 +26,35 @@ global $user;
 		if(0 == $row['status'] && $row['uid'] != $user->uid) continue;
 	?>
 	<div class="blockWrap">
-		<?php print views_embed_view('landing_page', 'block_1', $row['field_school_id']); // School Info Block ?>
+		<?php print views_embed_view('landing_page', 'block_1', $row['gid']); // School Info Block ?>
 		<div class="posts">
 			<?php if($row['field_post_type'] == 'youtube_video') { ?>
 				<iframe width="470" height="315" 
 						src="//www.youtube.com/embed/<?php print $row['field_youtube_video_url']; ?>" 
 						frameborder="0" 
 						allowfullscreen></iframe>
-				<div class="likeShare"><?php print $row['sharethis'];?><p><?php print $row['ops'];?></p></div>
-				<?php if($row['delete_node'] != '') { ?>
-					<p class="post-edit-delete"><?php print l('Edit', 'node/' . $row['nid'] . '/edit', array('query' => array('destination' => ''))); ?> 
-					<?php print l('Delete', 'node/' . $row['nid'] . '/delete', array('query' => array('destination' => ''))); ?></p>
-				<?php } ?>
 			<?php } else {?>
 				<div><?php print $row['field_status_image'];?></div>
 				<div class="postBody">
 					<?php print _phonetic_apply_filter($row['body']);?>
-					<span class="liveTime"><em class="placeholder"><?php print $row['created'];?></em></span>
 				</div>
-				<div class="likeShare">
-  				<div class="load-more mbl"><?php print l('Comments', 'status-post/' . $row['nid'], array('attributes' => array('rel' => array('lightframe')))); ?></div>
-  				<div class=""><?php print $row['ops'];?></div>
-  				<div class=""><?php print $row['sharethis'];?></div>
-				</div>
-				<?php print views_embed_view('post_liked_users', 'block', $row['nid']); ?>
-				<?php if($row['delete_node'] != '') { ?>
+			<?php } ?>
+			<span class="liveTime"><em class="placeholder"><?php print $row['created'];?></em></span>
+      <div class="likeShare">
+        <div class="load-more mbl">
+          <?php print l('Comments', 'status-post/' . $row['nid'], array('attributes' => array('rel' => array('lightframe')))); ?>
+        </div>
+        <div class=""><?php print $row['ops'];?></div>
+        <div class=""><?php print $row['sharethis'];?></div>
+      </div>
+			<?php print views_embed_view('post_liked_users', 'block', $row['nid']); ?>
+			<?php if($row['uid'] == $user->uid && $row['delete_node'] != '') { ?>
 					<p class="post-edit-delete"><?php print l('Edit', 'node/' . $row['nid'] . '/edit', array('query' => array('destination' => ''))); ?> 
 					<?php print l('Delete', 'node/' . $row['nid'] . '/delete', array('query' => array('destination' => ''))); ?></p>
 				<?php } ?>
-			<?php } ?>
+				
+				
+			
 			<?php
 				global $user;
 				if($user->uid != 0) {
