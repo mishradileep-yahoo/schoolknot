@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Return a themed breadcrumb trail.
  *
@@ -7,6 +8,7 @@
  * @return
  *   A string containing the breadcrumb output.
  */
+
 function corporateclean_breadcrumb($variables){
   $breadcrumb = $variables['breadcrumb'];
   $breadcrumb_separator=theme_get_setting('breadcrumb_separator','corporateclean');
@@ -71,6 +73,7 @@ function corporateclean_preprocess_html(&$variables) {
 /**
  * Override or insert variables into the html template.
  */
+
 function corporateclean_process_html(&$vars) {
 	// Hook into color.module
 	if (module_exists('color')) {
@@ -82,6 +85,7 @@ function corporateclean_process_html(&$vars) {
 /**
  * Override or insert variables into the page template.
  */
+
 function corporateclean_process_page(&$variables) {
   // Hook into color.module.
   if (module_exists('color')) {
@@ -104,7 +108,6 @@ function corporateclean_form_alter(&$form, &$form_state, $form_id) {
   }
 }
 
-
 /**
  * Override or insert variables into the page templates.
  *
@@ -120,8 +123,11 @@ function corporateclean_preprocess_page(&$variables, $hook) {
 	  //$variables['theme_hook_suggestions'][] = 'page__site-landing-page';
   }
   $page_args = arg();
-  
-  
+  	
+  if($page_args[0] == 'compare' || $page_args[0] == 'school-research' || $page_args[0] == 'browse_by_city') {
+  	$variables['theme_hook_suggestions'][] = 'page__compare';
+  }
+    
   if($page_args[0] == 'node' && $page_args[1] != '') {
     $current_node = $variables['page']['content']['system_main']['nodes'][$page_args[1]]['body']['#object'];
     if($current_node->type == 'school') {
@@ -168,7 +174,6 @@ function corporateclean_preprocess_page(&$variables, $hook) {
   
 }
 
-
 function corporateclean_menu_tree($variables){
  
   $content = '<div class="round-box leftMenu">
@@ -179,7 +184,6 @@ function corporateclean_menu_tree($variables){
         </div>';
   return $content;
 }
-
 
 function compare_school_print_list($filed) {
   $output = '';
@@ -287,7 +291,6 @@ function print_star_spans($rating = 1) {
 	$spans .= '<div class="declaration" style="float: left;"> (Parents Rating)</div>';
 	return $spans;
 }
-
 
 /*
  * Formatting start date and end date

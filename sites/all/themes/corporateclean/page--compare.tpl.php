@@ -1,8 +1,8 @@
+<?php drupal_add_js(base_path() . path_to_theme() . '/js/jquery.minimalect.min.js'); ?>
 <div id="mainWrapper">
 
 <?php include('includes/header.php'); 
-$schoolId = _get_school_node_id_for_school_admin_user();
-?>
+$schoolId = _get_school_node_id_for_school_admin_user(); ?>
 <!-- #content -->
 <div id="contentWrap">
 	<!-- #content-inside -->
@@ -27,7 +27,7 @@ $schoolId = _get_school_node_id_for_school_admin_user();
             <?php print render($page['help']); ?>
             </div>
             <?php endif; ?>
-						<?php $loged_in_as = _logged_in_as_block();
+            <?php $loged_in_as = _logged_in_as_block();
 
 						if($loged_in_as['as'] == 'Parent') {
 						//pr($loged_in_as);
@@ -41,7 +41,7 @@ $schoolId = _get_school_node_id_for_school_admin_user();
                 	<li><?php print l(t('<span>School Showcase</span>'), 'school-showcase/'.$schoolId['nid'], array('attributes' => array('class' => array('showcase', $variables['addAnotherTabClass'])), 'html' => TRUE));?></li>
               	</ul>
             	</div>
-						<?php } ?>	
+						<?php } ?>
             <?php if ($action_links): ?>
             <ul class="action-links">
             <?php print render($action_links); ?>
@@ -98,3 +98,15 @@ $schoolId = _get_school_node_id_for_school_admin_user();
 
 </div><!-- EOF: #footer -->
 </div>
+<?php drupal_add_js(base_path() . path_to_theme() . '/js/custom.js'); ?>
+<script type="text/javascript">
+<!--
+	function toggle_visibility(id) {
+	var e = document.getElementById(id);
+	if(e.style.display == 'block')
+		e.style.display = 'none';
+	else
+		e.style.display = 'block';
+	}
+//-->
+</script>
