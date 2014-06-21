@@ -507,6 +507,9 @@ function schoolknot_node_submit($node, $form, &$form_state) {
   if($node->type == 'homework' || $node->type == 'holiday') {
     $node->field_school_id[$node->language][0]['target_id'] = $user_school;
   }
+  if($node->type == 'school_events'){
+    $node->og_group_ref[$node->language][0]['target_id'] = $user_school;
+  }
   
   /*
   // Redirect to Listing page for School Admin 
@@ -754,7 +757,7 @@ function _user_full_name_by_user_obj($user) {
 
 /* Sent Notification on Event Creation */
 function schoolknot_node_presave($node) {
-  
+  //pr($node); die;
 }
 
 /*

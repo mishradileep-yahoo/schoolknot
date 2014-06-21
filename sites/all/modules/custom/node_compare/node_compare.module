@@ -159,8 +159,8 @@ function progress_sheet_template_generator($form, &$form_state) {
 }
 
 function progress_sheet_template_generator_submit($form, &$form_state) {
-  //pr('progress-sheet-bulk-upload-template-generator/' . $form_state['values']['exam']  . '/' . $form_state['values']['class']); die;
-  drupal_goto('progress-sheet-bulk-upload-template-generator/' . $form_state['values']['exam']  . '/' . $form_state['values']['class']);
+  $download_url = 'progress-sheet-bulk-upload-template-generator/' . $form_state['values']['exam']  . '/' . $form_state['values']['class'];
+  drupal_goto($download_url);
 }
 
 //compare_auto_complete();
