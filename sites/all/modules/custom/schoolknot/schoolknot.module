@@ -589,6 +589,27 @@ function schoolknot_node_insert($node){
     $users = user_load_multiple($parent_ids);
     privatemsg_new_thread($users, $suject, $message);
   }
+  if($node->type == 'holiday') {
+    $school_id = _get_school_node_id_for_school_admin();
+    $node->og_group_ref[$node->language][0]['target_id'] = $school_id['nid'];
+    
+    $parents_list = _get_all_parents_for_school($school_id['nid']);
+    $parent_ids = array();
+    foreach($parents_list as $parent) {
+      $parent_ids[] = $parent->uid;
+    }
+    $suject = 'School Declared a Holiday';
+    $message = 'Dear Parent,' . "\n";
+    $message .= 'A Holiday was Declared by school of your child.' . "\n";
+    $message .= $node->title . "\n";
+    $message .= $node->body[$node->language][0]['value'] . "\n";
+    ;
+    $message .= "From " . date('F j, Y', strtotime($node->field_holiday_day['und'][0]['value'])) . " to " . date('F j, Y', strtotime($node->field_holiday_day['und'][0]['value2'])) . "\n\n";
+    $message .= 'Please click below link for list of holidays' . "\n";
+    $message .= l('School Holiday', 'node/'.$node->nid) . "\n";
+    $users = user_load_multiple($parent_ids);
+    privatemsg_new_thread($users, $suject, $message);
+  }
 }
 
 function _get_school_node_id_for_school_admin() {

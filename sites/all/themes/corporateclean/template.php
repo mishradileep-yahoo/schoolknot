@@ -124,7 +124,7 @@ function corporateclean_preprocess_page(&$variables, $hook) {
   }
   $page_args = arg();
   	
-  if($page_args[0] == 'compare' || $page_args[0] == 'school-research' || $page_args[0] == 'browse_by_city') {
+  if($page_args[0] == 'compare' || $page_args[0] == 'school-research' || $page_args[0] == 'browse_by_city' || $page_args[0] == 'compare-schools' ||$page_args[0] == 'browse-schools-by-city' || $page_args[0] == 'account_merge') {
   	$variables['theme_hook_suggestions'][] = 'page__compare';
   }
     

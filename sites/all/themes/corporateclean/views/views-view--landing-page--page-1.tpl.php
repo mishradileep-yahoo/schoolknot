@@ -29,7 +29,22 @@
 //drupal_add_js(base_path() . path_to_theme() . '/js/jquery.infinitescroll.min.js');
 //drupal_add_js(base_path() . path_to_theme() . '/js/infinitescroll.js');
 //drupal_add_js(base_path() . path_to_theme() . '/js/imagesloaded.js');
+$schoolId = _get_school_node_id_for_school_admin_user();
 ?>
+<?php $loged_in_as = _logged_in_as_block();
+if($loged_in_as['as'] == 'Parent') {
+//pr($loged_in_as);
+?>
+   	<div class="tabLists student-progress-tabs">
+     	<ul>
+     		<li><?php print l(t('<span>Notifications</span>'), 'messages', array('attributes' => array('class' => array('notification', $variables['notificationTabClass'])), 'html' => TRUE));?></li>
+       	<li><?php print l(t('<span>Progress Sheet</span>'), 'student-tracker/progress-sheet', array('attributes' => array('class' => array('progress', $variables['progressTabClass'])), 'html' => TRUE));?></li>
+       	<!-- <li><?php // print l(t('<span>Attendance</span>'), '/', array('attributes' => array('class' => array('attendance', $variables['attendenceTabClass'])), 'html' => TRUE));?></li> -->
+       	<li><?php print l(t('<span>Add Another Student</span>'), 'account_merge/merge', array('attributes' => array('class' => array('add-another', $variables['addAnotherTabClass'])), 'html' => TRUE));?></li>
+     	<li><?php print l(t('<span>School Showcase</span>'), 'school-showcase/'.$schoolId['nid'], array('attributes' => array('class' => array('showcase', $variables['addAnotherTabClass'])), 'html' => TRUE));?></li>
+   	</ul>
+ 	</div>
+<?php } ?>
 
 <div class="<?php print $classes; ?>">
   <?php print render($title_prefix); ?>

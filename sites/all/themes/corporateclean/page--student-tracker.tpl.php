@@ -3,11 +3,6 @@
 <?php include('includes/header.php'); 
 $user_school = _get_school_node_id_for_school_admin();
 ?>
-
-
-
-
-
 <!-- #content -->
 <div id="contentWrap">
 	<!-- #content-inside -->

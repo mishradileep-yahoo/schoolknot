@@ -1,6 +1,5 @@
 <div id="mainWrapper">
 <?php include('includes/header.php'); ?>
-
 <!-- #content -->
 <div id="contentWrap">
 	<!-- #content-inside -->
