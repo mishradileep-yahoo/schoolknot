@@ -547,6 +547,7 @@ function schoolknot_node_insert($node){
   	 _send_private_message($recipients, $subject, $message, $recipient_type);
   }
 	if($node->type == 'homework') {
+		$school_id = _get_school_node_id_for_school_admin();
 		$subject = 'HomeWork Notification';
 		$homework_des = $node->body['und'][0]['value'];
 		$homework_date = date('F j, Y', strtotime($node->field_homework_date['und'][0]['value']));
@@ -557,6 +558,8 @@ function schoolknot_node_insert($node){
 		$message .= '' . "\n";
 		$message .= $homework_des;
 		$message .= '' . "\n";
+		$message .= 'Please click below for Home work history' . "\n";
+    $message .= l('HomeWork History', 'school-homework/'.$school_id['nid']) . "\n";
 	  $message .= 'Thanks,' . "\n";
 	  $message .= 'Team SchoolKnot  ' . "\n";
 		$class_id = $node->field_class['und'][0]['target_id'];
@@ -609,7 +612,7 @@ function schoolknot_node_insert($node){
     ;
     $message .= "From " . date('F j, Y', strtotime($node->field_holiday_day['und'][0]['value'])) . " to " . date('F j, Y', strtotime($node->field_holiday_day['und'][0]['value2'])) . "\n\n";
     $message .= 'Please click below link for list of holidays' . "\n";
-    $message .= l('School Holiday', 'node/'.$node->nid) . "\n";
+    $message .= l('School Holiday', 'school-holidays/'.$school_id['nid']) . "\n";
     $users = user_load_multiple($parent_ids);
     privatemsg_new_thread($users, $suject, $message);
   }
