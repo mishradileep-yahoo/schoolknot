@@ -15,6 +15,7 @@
 		if($loged_in_as['as'] == 'Parent') {
 		?>
 			<li><?php print l('School Holidays', 'school-holidays/'.$loged_in_as['school']['nid'], array('html' => TRUE,)); ?></li>
+			<li><?php print l('View Homework', 'school-homework/'.$loged_in_as['school']['nid'], array('html' => TRUE,)); ?></li>
 			<li><?php print _get_download_timetable();?></li>
 		<?php } // End Schol?>
 		
@@ -42,6 +43,7 @@
 				if($loged_in_as['as'] == 'Parent') {
 				?>
 					<li><?php print l('School Holidays', 'school-holidays/'.$loged_in_as['school']['nid'], array('html' => TRUE,)); ?></li>
+					<li><?php print l('View Homework', 'school-homework/'.$loged_in_as['school']['nid'], array('html' => TRUE,)); ?></li>
 					<li><?php print _get_download_timetable();?></li>
 				<?php } // End Schol?>
 				
