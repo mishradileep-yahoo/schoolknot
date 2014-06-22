@@ -60,27 +60,7 @@
 </div><!-- EOF: #content -->
 
 <!-- #footer -->    
-<div id="footer" class="footer">
-	<!-- #footer-inside -->
-    <div id="footer-inside" class="container_12 clearfix">
-    
-        <div class="footer-area grid_4">
-        <?php //print render($page['footer_first']); ?>
-        <a href="#">About Us</a>
-        <a href="#">Contact Us</a>
-        </div><!-- EOF: .footer-area -->
-        
-        <div class="footer-area grid_4">
-        <?php print render($page['footer_second']); ?>
-        </div><!-- EOF: .footer-area -->
-        
-        <div class="footer-area grid_4">
-        <?php print render($page['footer_third']); ?>
-        </div><!-- EOF: .footer-area -->
-       
-    </div><!-- EOF: #footer-inside -->
-
-</div><!-- EOF: #footer -->
+<!-- EOF: #footer -->
 </div>
 <?php drupal_add_js(base_path() . path_to_theme() . '/js/custom.js'); ?>
 <script type="text/javascript">
