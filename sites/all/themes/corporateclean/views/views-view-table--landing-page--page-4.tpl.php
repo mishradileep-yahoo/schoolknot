@@ -34,7 +34,7 @@
 
     	<div><?php print $row['field_status_image'];?></div>
     	<div><?php print _phonetic_apply_filter($row['body']);?></div>
-        <p><?php print $row['ops'];?></p>
+        <div class="likeShare"><?php print $row['sharethis'];?><p><?php print $row['ops'];?></p></div>
         <!-- <p class="totalLike">Parents of <a href="#">Ankur Yagnik</a>, <a href="#">Ritesh Agarwal</a>, <a href="#">Krishn Sharma</a> and 12 other like this</p> -->
         <?php
           global $user;
