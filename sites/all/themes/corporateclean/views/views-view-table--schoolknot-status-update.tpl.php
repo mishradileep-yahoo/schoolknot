@@ -19,6 +19,8 @@
 * @ingroup views_templates
 */
 global $user;
+$logedInUser = user_load($user->uid);
+$userBlocked = $logedInUser->field_schooladmin_blocked['und'][0]['value'];
 ?>
 <div class="infinite-scroll-view-wrapper">
 	<?php foreach ($rows as $row_count => $row): //pr($row); 
@@ -44,8 +46,10 @@ global $user;
         <div class="load-more mbl">
           <?php print l('Comments', 'status-post/' . $row['nid'], array('attributes' => array('rel' => array('lightframe')))); ?>
         </div>
+        <?php if($userBlocked) { ?>
         <div class=""><?php print $row['ops'];?></div>
         <div class=""><?php print $row['sharethis'];?></div>
+        <?php } ?>
       </div>
 			<?php print views_embed_view('post_liked_users', 'block', $row['nid']); ?>
 			<?php if($row['uid'] == $user->uid && $row['delete_node'] != '') { ?>
@@ -57,7 +61,7 @@ global $user;
 			
 			<?php
 				global $user;
-				if($user->uid != 0) {
+				if($user->uid != 0 && $userBlocked) {
 				$block = module_invoke('classbellsu', 'block_view', 'classbellsu_comment_form', $row['nid']);
 				print '<div class="postComment dsk">';
 				print render($block['content']);
