@@ -440,7 +440,6 @@ function schoolknot_create_user_submit($form, &$form_state) {
 function schoolknot_edit_user($form, &$form_state, $uid) {
 	
 	$edit_user = user_load($uid);
-	//pr($edit_user);
 	
 	$label_student_registration_id = t('Student Registration ID');
 	$label_student_username = t('Student Username');
@@ -545,7 +544,7 @@ function schoolknot_edit_user($form, &$form_state, $uid) {
 		'#type' => 'radios',
 		'#title' => t('Status'),
 		'#options' => array(0 => 'Block', 1 => 'Active'),
-		'#default_value' => $edit_user->status,
+		'#default_value' => $edit_user->field_schooladmin_blocked['und'][0]['value'],
 	);
 
 	$form['actions']['submit'] = array(
@@ -575,8 +574,8 @@ function schoolknot_edit_user_submit($form, &$form_state) {
 	if(isset($form_state['values']['field_class'])) {
 	  $user_fields['field_class']['und'][0]['target_id'] = $form_state['values']['field_class'];
 	}
-	$user_fields['status'] = $form_state['values']['status'];
-	
+	//$user_fields['status'] = $form_state['values']['status'];
+	$user_fields['field_schooladmin_blocked']['und'][0]['value'] = $form_state['values']['status'];
 	$account = user_save($edit_user, $user_fields);
 
 	drupal_set_message('User '.$form_state['values']['field_student_registration_id'].' edited successfully.', 'status');
