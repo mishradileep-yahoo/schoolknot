@@ -59,7 +59,11 @@
         <li><?php print l('Student Progress Sheet', 'student-tracker/progress-sheet' ); ?></li>
         <li><?php print l('Notifications', 'messages' ); ?></li>
         <li><?php print l('Reset Password', 'schoolknot/reset/password'); ?></li>
-        <li id="rwd-search">
+        
+        
+        <?php } ?>
+			<?php } ?>
+			<li id="rwd-search">
         	<div class="rwd-search-txt">
         		<a href="javascript: void(0);">Search</a>
         	</div>
@@ -70,9 +74,6 @@
             ?>
         	</div>
         </li>
-        
-        <?php } ?>
-			<?php } ?>
 			<li><?php print l('Advance Search', 'advance-search'); ?></li>
 			<li><?php print l('Logout', 'user/logout'); ?></li>
 			</ul>

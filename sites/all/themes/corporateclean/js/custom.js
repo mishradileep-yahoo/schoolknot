@@ -83,6 +83,23 @@
 			$(this).hide();
 		});
 		
+		// RWD-Menu Hide-Show
+		$('.rwd-menu-hide-show.show').click(function(){
+			 $('#header').fadeIn('slow');
+		});
+		$('.rwd-menu-hide-show.hide').click(function(){
+			 $('#header').fadeOut('slow');
+		});
+		$(window).scroll(function() {
+			//alert($(this).scrollTop());
+			if($(this).scrollTop() > 100) {
+				$('#header').fadeOut('slow');
+			}
+			else{
+				$('#header').fadeIn('fast');
+			}
+		});
+		
 	});
 	 $('.tooltipSmall').live('click', function(e) {	
 		 	

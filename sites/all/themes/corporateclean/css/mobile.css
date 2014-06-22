@@ -301,3 +301,22 @@ html.js input.form-autocomplete,
 #header .container-inline div.form-item{width:90% !important}
 .rwd-search-form input[type="text"]{border-bottom-left-radius: 0 !important; border-top-left-radius: 0 !important;}
 .rwd-search-form .form-submit{padding: 0px; height: 42px;}
+
+.rwd-menu-hide-show{
+	background: url("../images/rwd-header-hide-show.png") no-repeat scroll 0 -18px rgba(0, 0, 0, 0);
+    height: 18px;
+    margin: 10px 0 0;
+    padding: 0;
+    width: 28px;
+}
+#header{disp lay:none;}
+.rwd-menu-show-wrapper{
+	background-color: #2e79b2;
+  display: block;
+  padding: 0 10px 10px;
+  position: fixed;
+}
+.rwd-menu-show-wrapper .show{
+		display: block;
+		background: url("../images/rwd-header-hide-show.png") no-repeat scroll 0 0 rgba(0, 0, 0, 0);
+}

@@ -19,6 +19,7 @@
 	<ul class="navList">
 		<li>
 			<a href="#" class="list-icon"><img src="<?php print base_path() . drupal_get_path('theme', 'corporateclean') ;?>/images/rwd_drpdwn.png"></a>
+			<!--  <a href="javascript: void(0);" class="rwd-menu-hide-show hide"></a>  -->
 			<?php print render($page['sidebar_first']); ?>
 		</li>
 	</ul>
@@ -74,4 +75,9 @@
 		<div class="clearer"></div>
 	</div>
 </div>
+
+<div class="rwd-menu-show-wrapper">
+<a href="javascript: void(0);" class="rwd-menu-hide-show show"></a>
+</div>
+
 <!-- EOF: #header -->
