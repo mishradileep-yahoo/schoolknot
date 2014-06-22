@@ -334,7 +334,7 @@ function schoolknot_feeds_presave(FeedsSource $source, $entity, $item) {
 		$user_groups = og_get_groups_by_user();
 		$user_school = reset($user_groups['node']);
 		$entity->og_user_node['und'][0]['target_id'] = $user_school;
-		$entity->status = 0;
+		$entity->status = 1;
 		$entity->timezone = 'UTC';
 		//pr($entity); die('asdasd');
 	}
