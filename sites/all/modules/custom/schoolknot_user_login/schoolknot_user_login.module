@@ -150,7 +150,7 @@ function schoolknot_user_login_step2($form, &$form_state, $school_name) {
 		'#maxlength' => 128,
 		'#required' => TRUE,
 		'#attributes' => array('placeholder' => array('Password')),
-		'#description' => 'Please enter the student date of birth in YYYYDDMM format for first time login.',
+		'#description' => 'Please enter the student date of birth in YYYYMMDD format for first time login.',
 	);
 	$form['school_title'] = array(
 		'#type' => 'hidden',
@@ -176,7 +176,19 @@ function schoolknot_user_login_step2_submit($form, &$form_state) {
 		->range(0, 1);
 	$result = $query->execute()->fetchAll();
 	
-	$username = $result[0]->nid . '_' . $form_state['values']['username'];
+	// Get User from SR Number
+	$query = db_select('users', 'u');
+	$query->join('field_data_field_student_registration_id', 'srnum', 'u.uid = srnum.entity_id');
+	$query->join('og_membership', 'og', 'u.uid = og.etid');
+	$query->fields('u', array('name'))
+		->condition('srnum.field_student_registration_id_value', check_plain($form_state['values']['username']), '=')
+		->condition('og.gid', check_plain($result[0]->nid), '=');
+	$result = $query->execute()->fetchAll();
+  
+  $user_details = reset($result);
+	
+	$username = $user_details->name;
+
 	$password = $form_state['values']['password'];
 	
 	if ($uid = user_authenticate($username, $password)) {
@@ -348,10 +360,13 @@ function schoolknot_create_user($form, &$form_state) {
 	);
 	
 	$form['field_student_date_of_birth'] = array(
-		'#type' => 'date', 
-		'#title' => 'Student Date of Birth', 
-		'#required' => TRUE,
-	);
+    '#title' => 'Student Date of Birth',
+    '#type' => 'date_popup', // Provided by the date_popup module
+    '#date_format' => 'j F Y', // Uses the PHP date() format - http://php.net/manual/en/function.date.php
+    '#date_year_range' => '-30:0', // Limits the year range to the next two upcoming years
+    '#required' => TRUE,
+    //'#default_value' => $user_dob, // Default value must be in 'Y-m-d' format.
+  );
 	
 	// Get School Classes
 	global $user;
@@ -425,7 +440,7 @@ function schoolknot_create_user_submit($form, &$form_state) {
 	$user_fields['field_student_middle_name']['und'][0]['value'] = $form_state['values']['field_student_middle_name'];
 	$user_fields['field_student_last_name']['und'][0]['value'] = $form_state['values']['field_student_last_name'];
 	
-	$user_fields['field_student_date_of_birth']['und'][0]['value'] = $form_state['values']['field_student_date_of_birth']['year'] . '-' . $form_state['values']['field_student_date_of_birth']['month'] . '-' . $form_state['values']['field_student_date_of_birth']['day'] . ' 00:00:00';
+	$user_fields['field_student_date_of_birth']['und'][0]['value'] = $form_state['values']['field_student_date_of_birth'] . ' 00:00:00';
 	
 	$user_fields['field_class']['und'][0]['target_id'] = $form_state['values']['field_class'];
 	$user_fields['og_user_node']['und'][0]['target_id'] = $form_state['values']['og_user_node'];
@@ -463,13 +478,14 @@ function schoolknot_edit_user($form, &$form_state, $uid) {
 	
 	$schoolId = $edit_user->og_user_node['und'][0]['target_id'];
 	$user_name_without_school_id = str_replace($schoolId . '_', '', $edit_user->name);
-	
+	/*
 	$form['field_student_username'] = array(
 		'#type' => 'textfield', 
 		'#title' => $label_student_username, 
 		'#default_value' => $user_name_without_school_id,
 	  '#disabled' => TRUE
 	);
+	*/
 	
 	$form['field_student_registration_id'] = array(
 		'#type' => 'textfield', 
@@ -511,13 +527,16 @@ function schoolknot_edit_user($form, &$form_state, $uid) {
 		'#maxlength' => 128,
 		'#default_value' => $edit_user->field_student_last_name['und'][0]['value'],
 	);
+	$user_dob = _get_datefield_value_from_dob($edit_user->field_student_date_of_birth['und'][0]['value']);
+  $form['field_student_date_of_birth'] = array(
+    '#title' => $label_student_date_of_birth,
+    '#type' => 'date_popup', // Provided by the date_popup module
+    '#date_format' => 'j F Y', // Uses the PHP date() format - http://php.net/manual/en/function.date.php
+    '#date_year_range' => '-30:0', // Limits the year range to the next two upcoming years
+    '#required' => TRUE,
+    '#default_value' => $user_dob, // Default value must be in 'Y-m-d' format.
+  );
 	
-	$form['field_student_date_of_birth'] = array(
-		'#type' => 'date', 
-		'#title' => $label_student_date_of_birth, 
-		'#required' => TRUE,
-		'#default_value' => _get_datefield_value_from_dob($edit_user->field_student_date_of_birth['und'][0]['value']),
-	);
 	if(!in_array('Teacher', $edit_user->roles)) {
 	// Get School Classes
 	global $user;
@@ -568,8 +587,7 @@ function schoolknot_edit_user_submit($form, &$form_state) {
 	$user_fields['field_student_first_name']['und'][0]['value'] = $form_state['values']['field_student_first_name'];
 	$user_fields['field_student_middle_name']['und'][0]['value'] = $form_state['values']['field_student_middle_name'];
 	$user_fields['field_student_last_name']['und'][0]['value'] = $form_state['values']['field_student_last_name'];
-	
-	$user_fields['field_student_date_of_birth']['und'][0]['value'] = $form_state['values']['field_student_date_of_birth']['year'] . '-' . $form_state['values']['field_student_date_of_birth']['month'] . '-' . $form_state['values']['field_student_date_of_birth']['day'] . ' 00:00:00';
+	$user_fields['field_student_date_of_birth']['und'][0]['value'] = $form_state['values']['field_student_date_of_birth'] . ' 00:00:00';
 	
 	if(isset($form_state['values']['field_class'])) {
 	  $user_fields['field_class']['und'][0]['target_id'] = $form_state['values']['field_class'];
@@ -585,8 +603,7 @@ function schoolknot_edit_user_submit($form, &$form_state) {
 
 function _get_datefield_value_from_dob($value) {
 	$valueArr = explode(' ', $value);
-	$date = explode('-', $valueArr[0]);
-	return array('year' => $date[0], 'month' => $date[1], 'day' => $date[2]);
+	return $valueArr[0];
 }
 
 // Hide Register & Password tab from Login

@@ -900,3 +900,6 @@ html.js input.throbbing {
 
 .privatemsg-list .select-all {width: 10%}
 .privatemsg-list .privatemsg-header-subject {width: 70%}
+
+.date-padding{padding: 0!important;}
+.date-padding label{display:none;}
