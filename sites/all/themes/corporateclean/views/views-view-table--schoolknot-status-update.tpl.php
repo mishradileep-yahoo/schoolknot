@@ -61,7 +61,7 @@ $userBlocked = $logedInUser->field_schooladmin_blocked['und'][0]['value'];
 			
 			<?php
 				global $user;
-				if($user->uid != 0 && $userBlocked) {
+				if($user->uid != 0 && ($userBlocked || in_array('School Administrator', $user->roles))) {
 				$block = module_invoke('classbellsu', 'block_view', 'classbellsu_comment_form', $row['nid']);
 				print '<div class="postComment dsk">';
 				print render($block['content']);

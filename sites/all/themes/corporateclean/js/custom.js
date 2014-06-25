@@ -85,18 +85,18 @@
 		
 		// RWD-Menu Hide-Show
 		$('.rwd-menu-hide-show.show').click(function(){
-			 $('#header').fadeIn('slow');
+			 $('#header').removeClass('rwd-header-hide');
 		});
 		$('.rwd-menu-hide-show.hide').click(function(){
-			 $('#header').fadeOut('slow');
+			 $('#header').addeClass('rwd-header-hide');
 		});
 		$(window).scroll(function() {
 			//alert($(this).scrollTop());
 			if($(this).scrollTop() > 100) {
-				$('#header').fadeOut('slow');
+				$('#header').addClass('rwd-header-hide');
 			}
 			else{
-				$('#header').fadeIn('fast');
+				$('#header').removeClass('rwd-header-hide');
 			}
 		});
 		

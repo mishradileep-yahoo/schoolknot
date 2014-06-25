@@ -320,3 +320,5 @@ html.js input.form-autocomplete,
 		display: block;
 		background: url("../images/rwd-header-hide-show.png") no-repeat scroll 0 0 rgba(0, 0, 0, 0);
 }
+
+.rwd-header-hide{display:none}

@@ -336,6 +336,10 @@ function schoolknot_feeds_presave(FeedsSource $source, $entity, $item) {
 		$entity->og_user_node['und'][0]['target_id'] = $user_school;
 		$entity->status = 1;
 		$entity->timezone = 'UTC';
+		
+		// Mark as Active
+		$entity->field_schooladmin_blocked['und'][0]['value'] = 0;
+		
 		//pr($entity); die('asdasd');
 	}
 if($source->importer()->id == 'teachers_bulk_upload_feeds_xls') {
