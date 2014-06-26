@@ -123,8 +123,13 @@ function schoolmessages_form_submit($form, &$form_state) {
     
     $recipent_user = user_load_by_name($recipent_user_id);
     $recipients = user_load_multiple(array($recipent_user->uid));
-    _send_private_message($recipients, $form_state['values']['subject'], $form_state['values']['message'], $form_state['values']['recipent_type']);
-    drupal_set_message(t('Your message delivered successfully.'), 'status');
+    if($recipients){
+   	  _send_private_message($recipients, $form_state['values']['subject'], $form_state['values']['message'], $form_state['values']['recipent_type']);
+      drupal_set_message(t('Your message delivered successfully.'), 'status');
+    }
+    else {
+    	drupal_set_message(t('Your message not delivered successfully. Selected parent is invalid'), 'error');
+    }
   }
   
   // To a selected Class
@@ -136,8 +141,13 @@ function schoolmessages_form_submit($form, &$form_state) {
       array_push($parent_ids, $parent_id);
     }
     $recipients = user_load_multiple($parent_ids);
-    _send_private_message($recipients, $form_state['values']['subject'], $form_state['values']['message'], $form_state['values']['recipent_type']);
-    drupal_set_message(t('Your message delivered successfully.'), 'status');
+    if($recipients){
+    	_send_private_message($recipients, $form_state['values']['subject'], $form_state['values']['message'], $form_state['values']['recipent_type']);
+    	drupal_set_message(t('Your message delivered successfully.'), 'status');
+    }
+    else {
+    	drupal_set_message(t('Your message not delivered.'), 'error');
+    }
   }
   
   // To All Parents
@@ -150,8 +160,13 @@ function schoolmessages_form_submit($form, &$form_state) {
       array_push($parent_ids, $parent_id);
     }
     $recipients = user_load_multiple($parent_ids);
-    _send_private_message($recipients, $form_state['values']['subject'], $form_state['values']['message'], $form_state['values']['recipent_type']);
-    drupal_set_message(t('Your message delivered successfully.'), 'status');
+    if($recipients) {
+    	_send_private_message($recipients, $form_state['values']['subject'], $form_state['values']['message'], $form_state['values']['recipent_type']);
+    	drupal_set_message(t('Your message delivered successfully.'), 'status');
+    }
+    else {
+    	drupal_set_message(t('Your message not delivered.'), 'error');
+    }
   }
 }
 
