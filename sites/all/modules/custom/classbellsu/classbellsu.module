@@ -120,7 +120,7 @@ function classbellsu_status_update_form ($form, &$form_state, $nid = '') {
   	'#resizable' => FALSE, 
   	'#description' => 'Allowed to accept only 1000 characters per post.'
   );
-  $school_id = _get_school_node_id_for_school_admin();
+  $school_id = _get_school_node_id_for_school_admin_user();
   $form['school_id'] = array(
   		'#value' => $school_id['nid'],
       '#type' => 'hidden',
@@ -225,7 +225,7 @@ function classbellsu_image_update_form ($form, &$form_state, $nid = '') {
     '#attributes' => array('placeholder' => array('Title for image/album')),
     '#suffix' => '</div>',
   );
-  $school_id = _get_school_node_id_for_school_admin();
+  $school_id = _get_school_node_id_for_school_admin_user();
   $form['school_id'] = array(
     '#value' => $school_id['nid'],
     '#type' => 'hidden',
@@ -335,7 +335,7 @@ function classbellsu_youtube_update_form ($form, &$form_state) {
     '#suffix' => '</div>',
     '#attributes' => array('placeholder' => array('Youtube video ID')),
   );
-  $school_id = _get_school_node_id_for_school_admin();
+  $school_id = _get_school_node_id_for_school_admin_user();
   
   $form['school_id'] = array(
     '#value' => $school_id['nid'],

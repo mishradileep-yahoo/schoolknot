@@ -26,7 +26,7 @@
  *
  * @ingroup views_templates
  */
- $schoolId = _get_school_node_id_for_school_admin();
+ $schoolId = _get_school_node_id_for_school_admin_user();
 ?>
 <div class="tabLists student-progress-tabs">
 	<ul>

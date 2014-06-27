@@ -20,7 +20,7 @@
  */
 ?>
 <?php $loged_in_as = _logged_in_as_block();
-$schoolId = _get_school_node_id_for_school_admin();
+$schoolId = _get_school_node_id_for_school_admin_user();
 
 						if($loged_in_as['as'] == 'Parent') {
 						//pr($loged_in_as);

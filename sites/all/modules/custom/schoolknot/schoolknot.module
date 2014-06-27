@@ -209,7 +209,7 @@ function schoolknot_feeds_after_parse(FeedsSource $source, FeedsParserResult $re
     	}
     	
     	
-    	$adminSchoolId = _get_school_node_id_for_school_admin();
+    	$adminSchoolId = _get_school_node_id_for_school_admin_user();
     	$result->items[$key]['Author'] = $user->uid;
     	$result->items[$key]['Title'] = 'Progress data for ' . 
     									$adminSchoolId['nid'] . '_' . 
@@ -540,7 +540,7 @@ function schoolknot_node_insert($node){
 		$message .= '' . "\n";
 	  $message .= 'Thanks,' . "\n";
 	  $message .= 'Team SchoolKnot  ' . "\n";
-  	$school_id = _get_school_node_id_for_school_admin();
+  	$school_id = _get_school_node_id_for_school_admin_user();
     $parents_for_school = _get_all_parents_for_school($school_id['nid']);
     $parent_ids = array();
     foreach($parents_for_school as $parent_id => $parent) {
@@ -551,7 +551,7 @@ function schoolknot_node_insert($node){
   	 _send_private_message($recipients, $subject, $message, $recipient_type);
   }
 	if($node->type == 'homework') {
-		$school_id = _get_school_node_id_for_school_admin();
+		$school_id = _get_school_node_id_for_school_admin_user();
 		$subject = 'HomeWork Notification';
 		$homework_des = $node->body['und'][0]['value'];
 		$homework_date = date('F j, Y', strtotime($node->field_homework_date['und'][0]['value']));
@@ -568,7 +568,7 @@ function schoolknot_node_insert($node){
 	  $message .= 'Team SchoolKnot  ' . "\n";
 		$class_id = $node->field_class['und'][0]['target_id'];
 		
-  	//print $school_id = _get_school_node_id_for_school_admin();
+  	//print $school_id = _get_school_node_id_for_school_admin_user();
     $parents_for_class = _get_all_parents_for_class($class_id);
 		
     $parent_ids = array();
@@ -580,7 +580,7 @@ function schoolknot_node_insert($node){
   	 _send_private_message($recipients, $subject, $message, $recipient_type);
 	}
 	if($node->type == 'school_events') {
-    $school_id = _get_school_node_id_for_school_admin();
+    $school_id = _get_school_node_id_for_school_admin_user();
     $node->og_group_ref[$node->language][0]['target_id'] = $school_id['nid'];
     
     $parents_list = _get_all_parents_for_school($school_id['nid']);
@@ -600,7 +600,7 @@ function schoolknot_node_insert($node){
     privatemsg_new_thread($users, $suject, $message);
   }
   if($node->type == 'holiday') {
-    $school_id = _get_school_node_id_for_school_admin();
+    $school_id = _get_school_node_id_for_school_admin_user();
     $node->og_group_ref[$node->language][0]['target_id'] = $school_id['nid'];
     
     $parents_list = _get_all_parents_for_school($school_id['nid']);
