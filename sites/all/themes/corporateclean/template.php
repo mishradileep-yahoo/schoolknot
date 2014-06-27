@@ -50,7 +50,7 @@ function corporateclean_page_alter($page) {
 		'#tag' => 'meta',
 		'#attributes' => array(
 		'name' =>  'viewport',
-		'content' =>  'initial-scale=1.0,width=device-width,user-scalable=yes'
+		'content' =>  'initial-scale=1.0,width=device-width,user-scalable=no,maximum-scale=1.0,'
 		)
 	);
 	
