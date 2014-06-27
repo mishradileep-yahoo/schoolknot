@@ -37,10 +37,10 @@ $schoolId = _get_school_node_id_for_school_admin_user(); ?>
     <?php
   	  if(isset($node->field_event_image['und'][0])) {
         $event_image = array(
-          'style_name' => '776x287_resize',
           'path' => $node->field_event_image['und'][0]['uri'],
+        	'alt' => 'school event image',
           );
-        print theme('image_style',$event_image);
+        print theme('image',$event_image);
   	  }
     ?>
    	<div class="profileDetail">
