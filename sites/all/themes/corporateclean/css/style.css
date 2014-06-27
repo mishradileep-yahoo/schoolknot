@@ -679,7 +679,7 @@ fieldset .fieldset-wrapper .help a{
 .round-box{
 	border:0px solid #E5E5E5;
 	margin-bottom: 5px;
-	padding: 10px;
+	padding: 0 10px 10px;
 }
 .round-box h2,
 .right-event-calendar-block > h3{
@@ -903,3 +903,7 @@ html.js input.throbbing {
 
 .date-padding{padding: 0!important;}
 .date-padding label{display:none;}
+
+#show-schooladmin-forgetpassword,
+#show-parents-forgetpassword {display: inline-block;}
+.schooladmin-forgetpassword, .parents-forgetpassword{display: none;}

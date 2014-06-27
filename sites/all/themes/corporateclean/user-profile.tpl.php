@@ -34,5 +34,7 @@
  * @ingroup themeable
  */
 global $user;
+$loaded_user = user_load(349);
+pr($loaded_user); die;
 ?>
 <?php print render($user_profile); ?>

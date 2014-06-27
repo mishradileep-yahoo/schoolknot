@@ -100,6 +100,15 @@
 			}
 		});
 		
+		// Forget Password Form events haandler
+		$('#show-parents-forgetpassword').click(function(){
+			$('.parents-forgetpassword').show();
+			$('.form-submit.forgetpassword').hide();
+		});
+		$('#show-schooladmin-forgetpassword').click(function(){
+			$('.schooladmin-forgetpassword').show();
+			$('.form-submit.forgetpassword').hide();
+		});
 	});
 	 $('.tooltipSmall').live('click', function(e) {	
 		 	
