@@ -17,19 +17,20 @@
 	<?php
 		if(isset($node->field_status_image['und'][0]['uri'])) {
 			$url = file_create_url($node->field_status_image['und'][0]['uri']);
-$url = parse_url($url);
-$path = $url['path'];
+			$url = parse_url($url);
+			$path = $url['path'];
 			?>
 			<a class="colorbox init-colorbox-processed cboxElement" href="<?php print $path;?>">
 			<?php
 			$field_status_image = array(
-			'style_name' => '100x100_resize',
-			'path' => $node->field_status_image['und'][0]['uri'],
+				'style_name' => '100x100_resize',
+				'path' => $node->field_status_image['und'][0]['uri'],
 			);
 			print theme('image_style',$field_status_image);
 		}
-		
-	//print $row['field_status_image'];?></a></div>
+		?>
+		</a>
+	</div>
 	<div>
 		<?php print _phonetic_apply_filter($node->body['und'][0]['value']);?>
 		<span class="liveTime"><em class="placeholder"><?php print format_interval(time() - $node->created, 1) . ' ' . t('ago');?></em></span>
