@@ -25,7 +25,7 @@ function schoolknot_feeds_after_parse(FeedsSource $source, FeedsParserResult $re
     		drupal_set_message('Student First Name at row ' . ($key + 2) . ' is blank. Student can\'t be imported.', 'warning');
     		unset($result->items[$key]);
     	}
-    	elseif(!($result->items[$key]['Student Date of Birth'] != '')) {
+    	elseif(!($result->items[$key]['Student Date of Birth (in MM/DD/YYYY)'] != '')) {
     		drupal_set_message('Student Date of Birth at row ' . ($key + 2) . ' is blank. Student can\'t be imported.', 'warning');
     		unset($result->items[$key]);
     	}
@@ -58,7 +58,7 @@ function schoolknot_feeds_after_parse(FeedsSource $source, FeedsParserResult $re
 			// Create new PHPExcel object
 			$objPHPExcel = new PHPExcel();
 	
-			$date = PHPExcel_Shared_Date::ExcelToPHPObject($result->items[$key]['Student Date of Birth']);
+			$date = PHPExcel_Shared_Date::ExcelToPHPObject($result->items[$key]['Student Date of Birth (in MM/DD/YYYY)']);
 			$curDate = new DateTime();
 			
 			if($date > $curDate) {
@@ -308,7 +308,7 @@ function schoolknot_feeds_presave(FeedsSource $source, $entity, $item) {
 		// Create new PHPExcel object
 		$objPHPExcel = new PHPExcel();
 
-		$date = PHPExcel_Shared_Date::ExcelToPHPObject($item['Student Date of Birth']);
+		$date = PHPExcel_Shared_Date::ExcelToPHPObject($item['Student Date of Birth (in MM/DD/YYYY)']);
 		//format the date as you want.
 		$formatedDate = $date->format('Y-m-d H:i:s');
 		
@@ -550,7 +550,7 @@ function schoolknot_node_insert($node){
     $recipient_type = 3;
   	 _send_private_message($recipients, $subject, $message, $recipient_type);
   }
-	if($node->type == 'homework') {
+	if($node->type == 'homework_not in use') {
 		$school_id = _get_school_node_id_for_school_admin_user();
 		$subject = 'HomeWork Notification';
 		$homework_des = $node->body['und'][0]['value'];
@@ -619,6 +619,26 @@ function schoolknot_node_insert($node){
     $message .= l('School Holiday', 'school-holidays/'.$school_id['nid']) . "\n";
     $users = user_load_multiple($parent_ids);
     privatemsg_new_thread($users, $suject, $message);
+  }
+  if($node->type == 'homework') {
+    $school_id = _get_school_node_id_for_school_admin_user();
+    $node->og_group_ref[$node->language][0]['target_id'] = $school_id['nid'];
+    
+    $class_id = $node->field_class[$node->language][0]['target_id'];
+    $parents_list = _get_all_parents_for_class($class_id);
+    
+    $parent_ids = array();
+    foreach($parents_list as $parent) {
+      $parent_ids[] = $parent->uid;
+    }
+    $suject = 'Homework assigned for ' . _get_datefield_value_from_dob($node->field_homework_date[$node->language][0]['value']);
+    $message = 'Dear Parent,' . "\n";
+    $message .= 'Please find homework for ' . _get_datefield_value_from_dob($node->field_homework_date[$node->language][0]['value']) . ' below to your child' . "\n";
+    $message .= $node->body[$node->language][0]['value'] . "\n";
+    
+    $users = user_load_multiple($parent_ids);
+
+    _send_private_message($users, $suject, $message);
   }
 }
 
