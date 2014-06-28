@@ -188,7 +188,7 @@ function schoolknot_user_login_step2_submit($form, &$form_state) {
   $user_details = reset($result);
 	
 	$username = $user_details->name;
-
+  
 	$password = $form_state['values']['password'];
 	
 	if ($uid = user_authenticate($username, $password)) {
@@ -440,11 +440,10 @@ function schoolknot_create_user_validate($form, &$form_state) {
 }
 
 function schoolknot_create_user_submit($form, &$form_state) {
-
 	$user_fields = array(
 		'name' => $form_state['values']['username'],
 		//'mail' => $form_state['values']['field_student_email_id'],
-		'pass' => $form_state['values']['field_student_date_of_birth']['year'] . $form_state['values']['field_student_date_of_birth']['month'] . $form_state['values']['field_student_date_of_birth']['day'],
+		'pass' => str_replace('-', '', $form_state['values']['field_student_date_of_birth']),
 		'status' => 1,
 		'roles' => array(
 			DRUPAL_AUTHENTICATED_RID => 'authenticated user',
@@ -461,7 +460,6 @@ function schoolknot_create_user_submit($form, &$form_state) {
 	
 	$user_fields['field_class']['und'][0]['target_id'] = $form_state['values']['field_class'];
 	$user_fields['og_user_node']['und'][0]['target_id'] = $form_state['values']['og_user_node'];
-	
 	$account = user_save('', $user_fields);
 
 	drupal_set_message('User created successfully.', 'status');

@@ -65,17 +65,7 @@
         
         <?php } ?>
 			<?php } ?>
-			<li id="rwd-search">
-        	<div class="rwd-search-txt">
-        		<a href="javascript: void(0);">Search</a>
-        	</div>
-        	<div class="rwd-search-form">
-        		<?php
-              $block = module_invoke('search', 'block_view', 'search');
-              print render($block);
-            ?>
-        	</div>
-        </li>
+			<li><?php print l('Search', 'search/node'); ?></li>
 			<li><?php print l('Advance Search', 'advance-search'); ?></li>
 			<li><?php print l('Logout', 'user/logout'); ?></li>
 			</ul>
