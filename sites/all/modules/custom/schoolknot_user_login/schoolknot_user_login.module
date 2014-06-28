@@ -460,6 +460,7 @@ function schoolknot_create_user_submit($form, &$form_state) {
 	
 	$user_fields['field_class']['und'][0]['target_id'] = $form_state['values']['field_class'];
 	$user_fields['og_user_node']['und'][0]['target_id'] = $form_state['values']['og_user_node'];
+	$user_fields['field_schooladmin_blocked']['und'][0]['value'] = 1;
 	$account = user_save('', $user_fields);
 
 	drupal_set_message('User created successfully.', 'status');

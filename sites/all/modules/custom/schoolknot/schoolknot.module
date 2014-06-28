@@ -338,7 +338,7 @@ function schoolknot_feeds_presave(FeedsSource $source, $entity, $item) {
 		$entity->timezone = 'UTC';
 		
 		// Mark as Active
-		$entity->field_schooladmin_blocked['und'][0]['value'] = 0;
+		$entity->field_schooladmin_blocked['und'][0]['value'] = 1;
 		
 		//pr($entity); die('asdasd');
 	}
