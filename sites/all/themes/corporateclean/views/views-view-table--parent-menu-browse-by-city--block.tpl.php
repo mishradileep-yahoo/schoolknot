@@ -65,7 +65,7 @@
         
         <?php } ?>
 			<?php } ?>
-			<li><?php print l('Search', 'search/node/type:school'); ?></li>
+			<li><?php print l('Search', 'search/node'); ?></li>
 			<li><?php print l('Advance Search', 'advance-search'); ?></li>
 			<li><?php print l('Logout', 'user/logout'); ?></li>
 			</ul>
