@@ -180,15 +180,18 @@ function schoolknot_user_login_step2_submit($form, &$form_state) {
 	$query = db_select('users', 'u');
 	$query->join('field_data_field_student_registration_id', 'srnum', 'u.uid = srnum.entity_id');
 	$query->join('field_data_field_password_status', 'pass_status', 'u.uid = pass_status.entity_id');
+	$query->join('field_data_field_agreement_status', 'agree_status', 'u.uid = agree_status.entity_id');
 	$query->join('og_membership', 'og', 'u.uid = og.etid');
 	$query->fields('u', array('name'))
 	  ->fields('pass_status', array('field_password_status_value'))
+	  ->fields('agree_status', array('field_agreement_status_value'))
 		->condition('srnum.field_student_registration_id_value', check_plain($form_state['values']['username']), '=')
 		->condition('og.gid', check_plain($result[0]->nid), '=');
 	$result = $query->execute()->fetchAll();
   
   $user_details = reset($result);
-	if($user_details->field_password_status_value == 'email_not_verified'){
+  $userObj = user_load_by_name($user_details->name);
+	if($user_details->field_password_status_value == 'email_not_verified' && $user_details->field_agreement_status_value == 1){
 	  drupal_set_message('You have not verified your email. Please check your email from support@schoolknot.com and click on the link within. Please do check spams if you don\'t find in inbox.', 'warning');
 	  drupal_goto(); exit;
 	}
