@@ -179,14 +179,19 @@ function schoolknot_user_login_step2_submit($form, &$form_state) {
 	// Get User from SR Number
 	$query = db_select('users', 'u');
 	$query->join('field_data_field_student_registration_id', 'srnum', 'u.uid = srnum.entity_id');
+	$query->join('field_data_field_password_status', 'pass_status', 'u.uid = pass_status.entity_id');
 	$query->join('og_membership', 'og', 'u.uid = og.etid');
 	$query->fields('u', array('name'))
+	  ->fields('pass_status', array('field_password_status_value'))
 		->condition('srnum.field_student_registration_id_value', check_plain($form_state['values']['username']), '=')
 		->condition('og.gid', check_plain($result[0]->nid), '=');
 	$result = $query->execute()->fetchAll();
   
   $user_details = reset($result);
-	
+	if($user_details->field_password_status_value == 'email_not_verified'){
+	  drupal_set_message('You have not verified your email. Please check your email from support@schoolknot.com and click on the link within. Please do check spams if you don\'t find in inbox.', 'warning');
+	  drupal_goto(); exit;
+	}
 	$username = $user_details->name;
   
 	$password = $form_state['values']['password'];
@@ -258,7 +263,7 @@ function schoolknot_user_login_preprocess_page(&$vars) {
     	$useObj = user_load($user->uid);
     	if(!isset($useObj->field_agreement_status['und']) || $useObj->field_agreement_status['und'][0]['value'] != 1) {
     		if(drupal_is_front_page() || ($agrs[0] != 'schoolknot_user_login' && $agrs[1] != 'user_agreement')) {
-    			drupal_goto('schoolknot_user_login/user_agreement');
+    		  drupal_goto('schoolknot_user_login/user_agreement');
     		}
     	}
     }
@@ -461,6 +466,7 @@ function schoolknot_create_user_submit($form, &$form_state) {
 	$user_fields['field_class']['und'][0]['target_id'] = $form_state['values']['field_class'];
 	$user_fields['og_user_node']['und'][0]['target_id'] = $form_state['values']['og_user_node'];
 	$user_fields['field_schooladmin_blocked']['und'][0]['value'] = 1;
+	$user_fields['field_password_status']['und'][0]['value'] = 'email_not_verified';
 	$account = user_save('', $user_fields);
 
 	drupal_set_message('User created successfully.', 'status');
@@ -927,6 +933,10 @@ global $user;
           drupal_goto('schoolknot/reset/password');
         }
         else {
+          $user = $account;
+	        $user_fields['field_password_status']['und'][0]['value'] = 'normal';
+          $account = user_save($user, $user_fields);
+          
           $form['message'] = array('#markup' => t('<p>This is a one-time login for %user_name and will expire on %expiration_date.</p><p>Click on this button to log in to the site and change your password.</p>', array('%user_name' => _user_full_name_by_user_obj($user), '%expiration_date' => format_date($timestamp + $timeout))));
           $form['help'] = array('#markup' => '<p>' . t('This login can be used only once.') . '</p>');
           $form['actions'] = array('#type' => 'actions');
