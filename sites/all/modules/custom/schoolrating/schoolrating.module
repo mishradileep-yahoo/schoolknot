@@ -215,7 +215,7 @@ function schoolrating_rate_settings_form($form, &$form_state) {
 	$form['enable_rating'] = array(
 		'#type' => 'checkbox',
 		'#default_value' => $enable_rating_default, 
-		'#title' => t('Check this check box to enable school rating and allow student parents to submit rattings.'),
+		'#title' => t("Click this 'check box' to enable school to be rated by the parents. Parents will be notified for the rating release."),
 	);
 	$form['contact_information'] = array(
 		'#markup' => $rating_criteria_markup,
@@ -281,7 +281,7 @@ function schoolrating_rate_settings_form_submit($form, &$form_state) {
 	    $message = 'Dear Parent,' . "\n";
 
 
-	    $message .= $school_id['title'] . ' enabled school rating form and requesting you to submit rating.' . "\n";
+	    $message .= $school_id['title'] . ' has enabled the school rating form. You can rate the school now!!.' . "\n";
 	    $message .= 'You may access school rating from from below link.' . "\n";
 	    $message .= l('School Rating Form', 'rating') . "\n";
 		$message .= '' . "\n";
@@ -289,7 +289,7 @@ function schoolrating_rate_settings_form_submit($form, &$form_state) {
 	    $message .= 'Team SchoolKnot  ' . "\n";
 	    
 	    _send_private_message($recipients, $subject, $message, 3);
-	    drupal_set_message(t('All school student parent notified for submit rating.'), 'status');
+	    drupal_set_message(t('Rating is released to the parents successfully!'), 'status');
 	
 	}
 	

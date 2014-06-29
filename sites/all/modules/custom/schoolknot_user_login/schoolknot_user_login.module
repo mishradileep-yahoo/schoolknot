@@ -971,6 +971,6 @@ function schoolknot_user_reset_password_submit($form, &$form_state){
   global $user;
   $edit['pass'] = $form_state['values']['pass'];
   user_save($user, $edit);
-  drupal_set_message('Password reseted successfully.');
+  drupal_set_message('Password Successfully Reset.');
   drupal_goto();
 }

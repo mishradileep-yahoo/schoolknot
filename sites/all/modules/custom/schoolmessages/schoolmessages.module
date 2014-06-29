@@ -125,7 +125,7 @@ function schoolmessages_form_submit($form, &$form_state) {
     $recipients = user_load_multiple(array($recipent_user->uid));
     if($recipients){
    	  _send_private_message($recipients, $form_state['values']['subject'], $form_state['values']['message'], $form_state['values']['recipent_type']);
-      drupal_set_message(t('Your message delivered successfully.'), 'status');
+      drupal_set_message(t('Your message was delivered successfully.'), 'status');
     }
     else {
     	drupal_set_message(t('Your message not delivered successfully. Selected parent is invalid'), 'error');
@@ -143,10 +143,10 @@ function schoolmessages_form_submit($form, &$form_state) {
     $recipients = user_load_multiple($parent_ids);
     if($recipients){
     	_send_private_message($recipients, $form_state['values']['subject'], $form_state['values']['message'], $form_state['values']['recipent_type']);
-    	drupal_set_message(t('Your message delivered successfully.'), 'status');
+    	drupal_set_message(t('Your message was delivered successfully.'), 'status');
     }
     else {
-    	drupal_set_message(t('Your message not delivered.'), 'error');
+    	drupal_set_message(t('Your message was not delivered.'), 'error');
     }
   }
   
@@ -162,10 +162,10 @@ function schoolmessages_form_submit($form, &$form_state) {
     $recipients = user_load_multiple($parent_ids);
     if($recipients) {
     	_send_private_message($recipients, $form_state['values']['subject'], $form_state['values']['message'], $form_state['values']['recipent_type']);
-    	drupal_set_message(t('Your message delivered successfully.'), 'status');
+    	drupal_set_message(t('Your message was delivered successfully.'), 'status');
     }
     else {
-    	drupal_set_message(t('Your message not delivered.'), 'error');
+    	drupal_set_message(t('Your message was not delivered.'), 'error');
     }
   }
 }
