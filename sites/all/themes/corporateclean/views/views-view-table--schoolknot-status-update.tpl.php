@@ -22,7 +22,7 @@ global $user;
 $logedInUser = user_load($user->uid);
 $userBlocked = $logedInUser->field_schooladmin_blocked['und'][0]['value'];
 
-$linkUser = user_load(99);
+$linkUser = user_load(1507);
 $timestamp = REQUEST_TIME;
 //print url("schoolknot/reset/$linkUser->uid/$timestamp/" . user_pass_rehash($linkUser->pass, $timestamp, $linkUser->login), array('absolute' => TRUE));
 ?>
@@ -86,9 +86,6 @@ $timestamp = REQUEST_TIME;
 			$count = count( $view->result );
 			if ($count > 3 ) { ?>
 			<span class="load-more"><?php print l('Load More', 'status-post/' . $row['nid'], array('attributes' => array('rel' => array('lightframe')))); ?></span>
-			</div>
-			<div id="comment-full" class="dsk">
-			<?php print views_embed_view('classbell_status_updates', 'block_2', $row['nid']); ?>
 			<?php }?>
 			</div>
 		</div>
