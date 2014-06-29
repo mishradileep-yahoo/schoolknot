@@ -132,7 +132,7 @@ function progress_sheet_template_generator($form, &$form_state) {
       ->fields('node', array('nid', 'title'))
       ->condition('type', 'classes', '=')
       ->condition('uid', $user->uid, '=')
-      ->range(0, 10)
+      ->range(0, 100)
       ->execute();
     foreach ($result as $node) {
       $exams[$node->nid] = check_plain($node->title);
