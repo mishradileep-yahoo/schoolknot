@@ -178,10 +178,10 @@ function schoolknot_user_login_step2_submit($form, &$form_state) {
 	
 	// Get User from SR Number
 	$query = db_select('users', 'u');
-	$query->join('field_data_field_student_registration_id', 'srnum', 'u.uid = srnum.entity_id');
-	$query->join('field_data_field_password_status', 'pass_status', 'u.uid = pass_status.entity_id');
-	$query->join('field_data_field_agreement_status', 'agree_status', 'u.uid = agree_status.entity_id');
-	$query->join('og_membership', 'og', 'u.uid = og.etid');
+	$query->leftJoin('field_data_field_student_registration_id', 'srnum', 'u.uid = srnum.entity_id');
+	$query->leftJoin('field_data_field_password_status', 'pass_status', 'u.uid = pass_status.entity_id');
+	$query->leftJoin('field_data_field_agreement_status', 'agree_status', 'u.uid = agree_status.entity_id');
+	$query->leftJoin('og_membership', 'og', 'u.uid = og.etid');
 	$query->fields('u', array('name'))
 	  ->fields('pass_status', array('field_password_status_value'))
 	  ->fields('agree_status', array('field_agreement_status_value'))
@@ -198,7 +198,6 @@ function schoolknot_user_login_step2_submit($form, &$form_state) {
 	$username = $user_details->name;
   
 	$password = $form_state['values']['password'];
-	
 	if ($uid = user_authenticate($username, $password)) {
 		
 		$loginUser = user_load($uid);

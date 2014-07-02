@@ -112,7 +112,7 @@ function schoolknot_feeds_after_parse(FeedsSource $source, FeedsParserResult $re
     	}
     	if($result->items[$key]['Student SR No'] != '') {
     		$studentQuery = db_select('users');
-				$studentQuery->join('field_data_field_student_registration_id', 'srid', 'users.uid = srid.entity_id');
+				$studentQuery->leftJoin('field_data_field_student_registration_id', 'srid', 'users.uid = srid.entity_id');
 				$studentQuery->fields('users', array('uid', 'name'))
 					->condition('srid.field_student_registration_id_value', $result->items[$key]['Student SR No'], '=');
 				
@@ -237,7 +237,7 @@ function schoolknot_feeds_after_parse(FeedsSource $source, FeedsParserResult $re
     		}
     		if($result->items[$key]['Student ID'] != '') {
     			$studentQuery = db_select('users');
-    			$studentQuery->join('field_data_field_student_registration_id', 'srid', 'users.uid = srid.entity_id');
+    			$studentQuery->leftJoin('field_data_field_student_registration_id', 'srid', 'users.uid = srid.entity_id');
     			$studentQuery->fields('users', array('uid', 'name'))
     			->condition('srid.field_student_registration_id_value', $result->items[$key]['Student ID'], '=');
     			$studentRowCounts = $studentQuery->execute()->rowCount();
@@ -677,7 +677,7 @@ function _get_school_node_id_for_school_admin_user($author_id = 0) {
 function _get_all_group_member_ids($group_id) {
   global $user;
   $query = db_select('users', 'u');
-    $query->join('og_membership', 'ogm', 'u.uid = ogm.etid');
+    $query->leftJoin('og_membership', 'ogm', 'u.uid = ogm.etid');
     $query
       ->fields('u', array('uid', 'name'))
       ->condition('ogm.gid', $group_id, '=')
@@ -691,8 +691,8 @@ function _get_all_group_member_ids($group_id) {
 function _get_all_parents_for_school($school_id) {
   global $user;
   $query = db_select('users', 'u');
-    $query->join('og_membership', 'ogm', 'u.uid = ogm.etid');
-    $query->join('users_roles', 'ur', 'u.uid = ur.uid');
+    $query->leftJoin('og_membership', 'ogm', 'u.uid = ogm.etid');
+    $query->leftJoin('users_roles', 'ur', 'u.uid = ur.uid');
     $query
       ->fields('u', array('uid', 'name'))
       ->condition('ogm.gid', $school_id, '=')
@@ -710,8 +710,8 @@ function _get_all_parents_for_school($school_id) {
 function _get_all_active_parents_for_school($school_id) {
   global $user;
   $query = db_select('users', 'u');
-    $query->join('og_membership', 'ogm', 'u.uid = ogm.etid');
-    $query->join('users_roles', 'ur', 'u.uid = ur.uid');
+    $query->leftJoin('og_membership', 'ogm', 'u.uid = ogm.etid');
+    $query->leftJoin('users_roles', 'ur', 'u.uid = ur.uid');
     $query
       ->fields('u', array('uid', 'name'))
       ->condition('ogm.gid', $school_id, '=')
@@ -730,8 +730,8 @@ function _get_all_active_parents_for_school($school_id) {
 function _get_all_parents_for_class($class_id) {
   global $user;
   $query = db_select('users', 'u');
-    $query->join('users_roles', 'ur', 'u.uid = ur.uid');
-    $query->join('field_data_field_class', 'class', 'u.uid = class.entity_id');
+    $query->leftJoin('users_roles', 'ur', 'u.uid = ur.uid');
+    $query->leftJoin('field_data_field_class', 'class', 'u.uid = class.entity_id');
     $query
       ->fields('u', array('uid', 'name'))
       ->condition('ur.rid', '5', '=')
@@ -882,8 +882,8 @@ function school_admin_add_content_redirect_holiday_node_form($form, &$form_state
 function _get_school_rating($school_id) {
   global $user;
   $query = db_select('node', 'n');
-    $query->join('field_data_field_school_id', 'sid', 'n.nid = sid.entity_id');
-    $query->join('field_data_field_average_of_rating', 'avg_rating', 'n.nid = avg_rating.entity_id');
+    $query->leftJoin('field_data_field_school_id', 'sid', 'n.nid = sid.entity_id');
+    $query->leftJoin('field_data_field_average_of_rating', 'avg_rating', 'n.nid = avg_rating.entity_id');
     $query
       ->fields('avg_rating', array('field_average_of_rating_value'))
       ->condition('n.type', 'rate_answers', '=')
@@ -970,9 +970,9 @@ function _get_most_rated_school() {
 	
 	$query = db_select('node', 'n');
 	
-	$query->join('field_data_field_average_of_rating', 'rating', 'rating.entity_id = n.nid');
-	$query->join('field_data_field_school_id', 'school', 'school.entity_id = n.nid');
-	$query->join('node', 'school_details', 'school_details.nid = school.field_school_id_target_id');
+	$query->leftJoin('field_data_field_average_of_rating', 'rating', 'rating.entity_id = n.nid');
+	$query->leftJoin('field_data_field_school_id', 'school', 'school.entity_id = n.nid');
+	$query->leftJoin('node', 'school_details', 'school_details.nid = school.field_school_id_target_id');
 	
 	$query
 		->fields('n', array('nid'))
@@ -993,8 +993,8 @@ function _get_most_active_school() {
 	
 	$query = db_select('node', 'n');
 	
-	$query->join('users', 'u', 'n.uid = u.uid');
-	$query->join('node', 'schools', 'schools.uid = u.uid');
+	$query->leftJoin('users', 'u', 'n.uid = u.uid');
+	$query->leftJoin('node', 'schools', 'schools.uid = u.uid');
 	
 	$query
 		->fields('n', array('nid'))
@@ -1014,7 +1014,7 @@ function _get_most_memeber_school() {
 	
 	$query = db_select('og_membership', 'ogmem');
 	
-	$query->join('node', 'school', 'school.nid = ogmem.gid');
+	$query->leftJoin('node', 'school', 'school.nid = ogmem.gid');
 	
 	$query
 		->fields('ogmem', array('gid'))
@@ -1033,7 +1033,7 @@ function _get_teacher_parent_ratio_school() {
 	
 	$query = db_select('field_data_field_student_teacher_ratio', 'stration');
 	
-	$query->join('node', 'school', 'school.nid = stration.entity_id');
+	$query->leftJoin('node', 'school', 'school.nid = stration.entity_id');
 	
 	$query
 		->fields('stration', array('field_student_teacher_ratio_value'))
@@ -1074,7 +1074,7 @@ function schoolknot_cron() {
 	
 	
 	$query = db_select('node', 'n');
-	$query->join('field_data_field_event_date', 'eventdate', 'eventdate.entity_id = n.nid');
+	$query->leftJoin('field_data_field_event_date', 'eventdate', 'eventdate.entity_id = n.nid');
     $query->fields('n', array('nid', 'title'))
     	->fields('eventdate', array('field_event_date_value', 'field_event_date_value2'))
     	->condition('type', 'school_events', '=')
