@@ -1,6 +1,6 @@
+<?php drupal_add_js(base_path() . path_to_theme() . '/js/jquery.minimalect.min.js'); ?>
 <div id="mainWrapper">
-
-<?php include('includes/header.php');
+<?php include('includes/header.php'); 
 $schoolId = _get_school_node_id_for_school_admin_user(); ?>
 <!-- #content -->
 <div id="contentWrap">
@@ -47,11 +47,22 @@ $schoolId = _get_school_node_id_for_school_admin_user(); ?>
             </ul>
             <?php endif; ?>
             
-
-            <div class="rwd-content-wrapper">
-            	<?php print render($page['content']); ?>
-            </div>
+			<?php print render($title_prefix); ?>
+            <?php if ($title): ?>
+            <h1><?php print _phonetic_apply_filter($title); ?></h1>
+            <?php endif; ?>
+            <?php print render($title_suffix); ?>
             
+            <?php if ($tabs): ?><?php print render($tabs); ?><?php endif; ?>
+            
+            
+            
+            <?php 
+            if($loged_in_as['as'] == 'Parent') { ?>
+              <p> Please contact you school administrator. Go to <?php print l(t('<span>School Profile</span>'), 'node/'.$schoolId['nid'], array('attributes' => array('class' => array('showcase', $variables['addAnotherTabClass'])), 'html' => TRUE));?></p>
+              <?php } else  print render($page['content']); ?>
+            
+            <?php ?>
             
             <?php print $feed_icons; ?>
             
@@ -68,7 +79,7 @@ $schoolId = _get_school_node_id_for_school_admin_user(); ?>
 
 </div><!-- EOF: #content -->
 
-<!-- #footer -->    
+<!-- #footer -->  
 <div id="footer" class="footer">
 	<!-- #footer-inside -->
     <div id="footer-inside" class="container_12 clearfix">
@@ -88,5 +99,18 @@ $schoolId = _get_school_node_id_for_school_admin_user(); ?>
        
     </div><!-- EOF: #footer-inside -->
 
-</div><!-- EOF: #footer -->
+</div>  
+<!-- EOF: #footer -->
 </div>
+<?php drupal_add_js(base_path() . path_to_theme() . '/js/custom.js'); ?>
+<script type="text/javascript">
+<!--
+	function toggle_visibility(id) {
+	var e = document.getElementById(id);
+	if(e.style.display == 'block')
+		e.style.display = 'none';
+	else
+		e.style.display = 'block';
+	}
+//-->
+</script>
