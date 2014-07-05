@@ -25,5 +25,19 @@ $('body').click(function(){
 $('ul.mobileMenu').removeClass('show');
 });
 $('.contactAdd .pBottom17px, .blackTxt').nextAll('p').addClass('blackTxt');
+
+$('#admin-menu-show').click(function(){
+	$('.leftMenuWrap').show();
+	$('.rightContainer').hide();
+	$('#admin-menu-hide').show();
+	$(this).hide()
+});
+$('#admin-menu-hide').click(function(){
+	$('.leftMenuWrap').hide();
+	$('.rightContainer').show();
+	$('#admin-menu-show').show();
+	$(this).hide()
+});
+
 });
 })(jQuery);; 

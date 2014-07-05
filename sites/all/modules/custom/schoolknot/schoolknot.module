@@ -9,16 +9,15 @@ function schoolknot_feeds_after_parse(FeedsSource $source, FeedsParserResult $re
   $user_school = reset($user_groups['node']);
     
   if($source->importer()->id == 'students_bulk_upload_feeds_xls') {
-    //pr($result->items); die;
-    
+   
+    $feed_source = node_load($source->feed_nid);
+    $user_groups = og_get_groups_by_user();
+		$user_school = reset($user_groups['node']);
+
     // Validate First
     foreach($result->items as $key => $row) {
     	if(!($result->items[$key]['Student Registration ID'] != '')) {
     		drupal_set_message('Student Registration ID at row ' . ($key + 2) . ' is blank. Student can\'t be imported.', 'warning');
-    		unset($result->items[$key]);
-    	}
-    	elseif(!($result->items[$key]['Class'] != '')) {
-    		drupal_set_message('Class at row ' . ($key + 2) . ' is blank. Student can\'t be imported.', 'warning');
     		unset($result->items[$key]);
     	}
     	elseif(!($result->items[$key]['Student First Name'] != '')) {
@@ -29,21 +28,7 @@ function schoolknot_feeds_after_parse(FeedsSource $source, FeedsParserResult $re
     		drupal_set_message('Student Date of Birth at row ' . ($key + 2) . ' is blank. Student can\'t be imported.', 'warning');
     		unset($result->items[$key]);
     	}
-    	
-    	
-    	if($result->items[$key]['Class'] != '') {
-			$classResult = db_select('node')
-				->fields('node', array('nid', 'title'))
-				->condition('uid', $user->uid, '=')
-				->condition('type', 'classes', '=')
-				->condition('title', $result->items[$key]['Class'], '=')
-				->execute()->rowCount();
-				//pr('##############');pr($result); die('Here');
-    		if(!($classResult > 0)) {
-    			drupal_set_message('Class at row ' . ($key + 2) . ' doesn\'t exist. Student can\'t be imported.', 'warning');
-    			unset($result->items[$key]);
-    		}
-    	}
+
     	if($result->items[$key]['Student Date of Birth'] != '') {
 
     		// Load the library.
@@ -67,16 +52,37 @@ function schoolknot_feeds_after_parse(FeedsSource $source, FeedsParserResult $re
 			}
     	}
     }
+    
+    // Load the library.
+    if(function_exists('libraries_get_path')){
+      $path = libraries_get_path('PHPExcel');
+      $path = "$path/PHPExcel/IOFactory.php";
+    }else{
+      $path = drupal_get_path('module', 'feeds_xls') . '/PHPExcel/PHPExcel/IOFactory.php';
+    }
+    require_once $path;
+    date_default_timezone_set(drupal_get_user_timezone());
+    // Create new PHPExcel object
+    $objPHPExcel = new PHPExcel();
+    
    
     foreach($result->items as $key => $row) {
+      
+      $date = PHPExcel_Shared_Date::ExcelToPHPObject($item['Student Date of Birth (in MM/DD/YYYY)']);
+      $formatedDate = $date->format('Y-m-d H:i:s');
+      $formatedDateForPassword = $date->format('Ymd');
+      
       $username = $user_school . '_' . $result->items[$key]['Student Registration ID'];
       $username = strtolower($username);
       $username = preg_replace('@[^a-z0-9_]+@','_',$username);
       
       $result->items[$key]['User Name'] = $username;
+      $result->items[$key]['Password'] = $formatedDateForPassword;
+      $result->items[$key]['DoB'] = $formatedDate;
       $result->items[$key]['Email'] = $username . '@test.schoolknot.com';
+      $result->items[$key]['Class'] = $feed_source->field_class['und'][0]['target_id'];
+      $result->items[$key]['School'] = $user_school;
     }
-    //pr($result); die('Die Any way in First stap');
   }
   if($source->importer()->id == 'teachers_bulk_upload_feeds_xls') {
     
@@ -296,52 +302,19 @@ function schoolknot_feeds_presave(FeedsSource $source, $entity, $item) {
 	}
   
 	if($source->importer()->id == 'students_bulk_upload_feeds_xls') {
-		// Load the library.
-		if(function_exists('libraries_get_path')){
-		$path = libraries_get_path('PHPExcel');
-		$path = "$path/PHPExcel/IOFactory.php";
-		}else{
-		$path = drupal_get_path('module', 'feeds_xls') . '/PHPExcel/PHPExcel/IOFactory.php';
-		}
-		require_once $path;
-		date_default_timezone_set(drupal_get_user_timezone());
-		// Create new PHPExcel object
-		$objPHPExcel = new PHPExcel();
-
-		$date = PHPExcel_Shared_Date::ExcelToPHPObject($item['Student Date of Birth (in MM/DD/YYYY)']);
-		//format the date as you want.
-		$formatedDate = $date->format('Y-m-d H:i:s');
-		
-		
-		
+	  
 		// Date of Birth
-		$entity->field_student_date_of_birth['und'][0]['value'] = $formatedDate;
-		
-		//Password
-		$formatedDateForPassword = $date->format('Ymd');
-		//pr($formatedDateForPassword); die;
-		$entity->pass = $formatedDateForPassword;
-		
-		// Class
-		$class_query = db_select('node', 'n');
-		$class_query
-		->condition('n.uid', $user->uid, '=')
-		->condition('n.title', $item['Class'], '=')
-		->fields('n', array('nid', 'title'));
-		$result = $class_query->execute()->fetchAssoc();
-		$entity->field_class['und'][0]['target_id'] = $result['nid'];
-		
-		// Register in School
-		$user_groups = og_get_groups_by_user();
-		$user_school = reset($user_groups['node']);
-		$entity->og_user_node['und'][0]['target_id'] = $user_school;
+		$entity->field_student_date_of_birth['und'][0]['value'] = $item['DoB'];
+		$entity->field_class['und'][0]['target_id'] = $item['Class'];
+    $entity->og_user_node['und'][0]['target_id'] = $item['School'];
+    $entity->field_password_status['und'][0]['value'] = 'email_not_verified';
+
+    $entity->pass = $item['Password'];
 		$entity->status = 1;
 		$entity->timezone = 'UTC';
 		
 		// Mark as Active
 		$entity->field_schooladmin_blocked['und'][0]['value'] = 1;
-		
-		//pr($entity); die('asdasd');
 	}
 if($source->importer()->id == 'teachers_bulk_upload_feeds_xls') {
 		// Load the library.

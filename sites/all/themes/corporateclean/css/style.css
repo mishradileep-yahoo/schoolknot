@@ -907,3 +907,4 @@ html.js input.throbbing {
 #show-schooladmin-forgetpassword,
 #show-parents-forgetpassword {display: inline-block;}
 .schooladmin-forgetpassword, .parents-forgetpassword{display: none;}
+.rwd-admin-menu-toggle{display: none;}

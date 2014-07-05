@@ -4,7 +4,8 @@
 <div id="contentWrap">
 	<!-- #content-inside -->
     <div id="content-inside" class="clearfix">
-    
+    	<div id="admin-menu-show" class="rwd-admin-menu-toggle">Show Admin Menu</div>
+			<div id="admin-menu-hide" class="rwd-admin-menu-toggle">Hide Admin Menu</div>
         
         		<?php include('includes/left-panel.php'); ?>
 

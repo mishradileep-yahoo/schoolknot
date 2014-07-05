@@ -96,6 +96,13 @@ function schoolknot_user_login_menu() {
     'access callback' => TRUE,
     'type' => MENU_CALLBACK,
   );
+  $items['parent/resend-auth-email/%'] = array(
+  	'title' => 'Reset password',
+    'page callback' => 'schoolknot_parent_resend_auth_email',
+    'page arguments' => array(2),
+    'access callback' => TRUE,
+    'type' => MENU_CALLBACK,
+  );
   
   
   return $items;
@@ -192,7 +199,12 @@ function schoolknot_user_login_step2_submit($form, &$form_state) {
   $user_details = reset($result);
   $userObj = user_load_by_name($user_details->name);
 	if($user_details->field_password_status_value == 'email_not_verified' && $user_details->field_agreement_status_value == 1){
-	  drupal_set_message('You have not verified your email. Please check your email from support@schoolknot.com and click on the link within. Please do check spams if you don\'t find in inbox.', 'warning');
+	  
+	  
+	  $message = 'You have not verified your email. Please check your email from support@schoolknot.com and click on the link within.';
+	  $message .= ' Please do check spams if you don\'t find in inbox.';
+	  $message .= '<br> Please '. l('click here', 'parent/resend-auth-email/' . $userObj->uid ) . ' to resend your activation link.';
+	  drupal_set_message($message, 'warning');
 	  drupal_goto(); exit;
 	}
 	$username = $user_details->name;
@@ -984,5 +996,12 @@ function schoolknot_user_reset_password_submit($form, &$form_state){
   $edit['pass'] = $form_state['values']['pass'];
   user_save($user, $edit);
   drupal_set_message('Password Successfully Reset.');
+  drupal_goto();
+}
+
+function schoolknot_parent_resend_auth_email($user_id = '') {
+  $account = user_load($user_id);
+  schoolknot_user_mail_send($account);
+  drupal_set_message("Account activation link has been emailed to you. Please check your spam mails also if you don't found it in inbox.");
   drupal_goto();
 }

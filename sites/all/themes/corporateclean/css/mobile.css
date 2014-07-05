@@ -89,7 +89,7 @@ body {
 }
 .messages.error{ display:none; }
 #sidebar-first.leftMenuWrap {
-	display:none;
+	 display:none;
 }
 
 #main.rightContainer {
@@ -322,3 +322,38 @@ html.js input.form-autocomplete,
 }
 
 .rwd-header-hide{display:none}
+
+.status-update-form{margin: 10px !important}
+.status-update-form .tabs li{
+  padding: 0 10px !important;
+  margin: 0 !important;
+}
+.status-update-form .tabs li.active{
+	background: none repeat scroll 0 0 #FFFFFF !important;
+}
+.status-update-form .form-bg {
+	background: none repeat scroll 0 0 #FFFFFF !important;
+}
+.status-update-form textarea{
+	border: 5px solid #e5f4fe !important
+}
+.view-parent-menu-browse-by-city,
+.view-holidays-list,
+.right-event-calendar-block{
+	display: none;
+}
+.rwd-admin-menu-toggle{
+	background: none repeat scroll 0 0 #e5f4fe;
+	color: #2e79b2;
+	cursor: pointer;
+	font-size: 14px;
+	margin: 10px;
+	padding: 5px 0;
+	text-align: center;
+	text-transform: uppercase;
+}
+#admin-menu-hide{display: none;}
+.leftMenuWrap{
+	width: 100% !important;
+}
+.rwd-admin-menu-toggle#admin-menu-show{display: block!important;}
