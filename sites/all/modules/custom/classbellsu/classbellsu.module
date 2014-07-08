@@ -113,7 +113,7 @@ function classbellsu_status_update_form ($form, &$form_state, $nid = '') {
   }
   $form['status_text'] = array(
 	'#type' => 'textarea',
-	'#attributes' => array('placeholder' => array('what\'s on your mind?')),
+	'#attributes' => array('placeholder' => array('Share with the world')),
 	'#prefix' => '<div id="status_update_message" class="form-bg">',
 	'#suffix' => '</div>',
   	'#default_value' => $text,
