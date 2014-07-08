@@ -20,7 +20,7 @@
 			$url = parse_url($url);
 			$path = $url['path'];
 			?>
-			<a class="colorbox init-colorbox-processed cboxElement" href="<?php print $path;?>">
+			<a class="colorbox init-colorbox-processed cboxElement" href="<?php print image_style_url('large',$node->field_status_image['und'][0]['uri']);?>">
 			<?php
 			$field_status_image = array(
 				'style_name' => '100x100_resize',
