@@ -87,7 +87,7 @@ $schoolId = _get_school_node_id_for_school_admin_user(); ?>
     
         <div class="footer-area grid_4">
         <?php //print render($page['footer_first']); ?>
-        <a href="contact-us">Contact Us</a>
+        <a href="/contact-us">Contact Us</a>
         </div><!-- EOF: .footer-area -->
         
         <div class="footer-area grid_4">
