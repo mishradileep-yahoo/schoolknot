@@ -15,18 +15,20 @@
 
 	<div>
 	<?php
-		if(isset($node->field_status_image['und'][0]['uri'])) {
-			$url = file_create_url($node->field_status_image['und'][0]['uri']);
+		if(isset($node->field_status_image['und'])) {
+      foreach($node->field_status_image['und'] as $image) {
+			$url = file_create_url($image['uri']);
 			$url = parse_url($url);
 			$path = $url['path'];
 			?>
-			<a class="colorbox init-colorbox-processed cboxElement" href="<?php print image_style_url('large',$node->field_status_image['und'][0]['uri']);?>">
+			<a class="colorbox init-colorbox-processed cboxElement" href="<?php print image_style_url('large',$image['uri']);?>">
 			<?php
 			$field_status_image = array(
 				'style_name' => '100x100_resize',
-				'path' => $node->field_status_image['und'][0]['uri'],
+				'path' => $image['uri'],
 			);
 			print theme('image_style',$field_status_image);
+      }
 		}
 		?>
 		</a>
