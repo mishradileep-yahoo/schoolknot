@@ -254,19 +254,18 @@ function _user_complete_marks($student_user = '') {
 	$result = $query->execute();
 	//pr($result);
   $marks_subject_wise = array();
+  $exams = array();
   $total = array();
 	while($record = $result->fetchAssoc()) {
-    
     $marks_subject_wise[$record['field_subject_target_id']]['subject_title'] = $record['subject_node_title'];
     $marks_subject_wise[$record['field_subject_target_id']]['marks'][$record['field_exam_target_id']]['exam_title'] = $record['exam_node_title'];
     $marks_subject_wise[$record['field_subject_target_id']]['marks'][$record['field_exam_target_id']]['max_marks'] = $record['field_max_marks_value'];
     $marks_subject_wise[$record['field_subject_target_id']]['marks'][$record['field_exam_target_id']]['passing_marks'] = $record['field_passing_marks_value'];
     $marks_subject_wise[$record['field_subject_target_id']]['marks'][$record['field_exam_target_id']]['scored_marks'] = $record['field_scored_marks_value'];
-    
-
+    $exams[$record['field_exam_target_id']] = $record['field_exam_target_id'];
+    $exams_details[$record['field_exam_target_id']] = array('exam_title' => $record['exam_node_title']);
   }
-  
-  
+  $marks_keys = array();
   foreach($marks_subject_wise as $subject_id => $marks_subject) {
     $subject_total_marks = array();
     $subject_total_marks['scored_marks'] = $subject_total_marks['max_marks'] = 0;
@@ -274,15 +273,29 @@ function _user_complete_marks($student_user = '') {
       if($exam_id == 'subject_title') continue;
       $subject_total_marks['scored_marks'] += $marks['scored_marks'];
       $subject_total_marks['max_marks'] += $marks['max_marks'];
+      
     }
-    
+    $marks_keys[$subject_id] = array_keys($marks_subject['marks']);
     $marks_subject_wise[$subject_id]['total'] = $subject_total_marks;
     $marks_subject_wise[$subject_id]['total']['percentage'] = ($marks_subject_wise[$subject_id]['total']['scored_marks'] / $marks_subject_wise[$subject_id]['total']['max_marks']) * 100;
     $marks_subject_wise[$subject_id]['total']['percentage'] = number_format($marks_subject_wise[$subject_id]['total']['percentage'], 2, '.', '');
   }
+  //Add missing exam as Null marks to avoid massed UI
   
   
+  
+  foreach ($marks_subject_wise as $subject_id => $marks_subject) {
+    $missing_marks = array_diff($exams, $marks_keys[$subject_id]);
+    foreach ($missing_marks as $missing_mark) {
+      $marks_subject_wise[$subject_id]['marks'][$missing_mark]['exam_title'] = $exams_details[$missing_mark]['exam_title'];
+      $marks_subject_wise[$subject_id]['marks'][$missing_mark]['max_marks'] = 0;
+      $marks_subject_wise[$subject_id]['marks'][$missing_mark]['passing_marks'] = 0;
+      $marks_subject_wise[$subject_id]['marks'][$missing_mark]['scored_marks'] = 0;
+      $marks_subject_wise[$subject_id]['marks'][$missing_mark]['data_status'] = 'NA';
+    }
+  }
   $return['subject_wise'] = $marks_subject_wise;
+  //pr($return); die;
   return $return;
 }
 

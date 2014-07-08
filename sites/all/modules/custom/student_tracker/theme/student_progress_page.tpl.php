@@ -55,12 +55,14 @@ foreach($marks['subject_wise'] as $subject_id => $subject_marks) {
 
 $student_tracker_js_path = drupal_get_path('module', 'student_tracker') . '/js/student_tracker.js';
 drupal_add_js($student_tracker_js_path, array('scope' => 'footer'));
+//pr($exam_header);
 ?>
 
 <?php 
 global $user;
 
 print _get_merged_account_dd($user); 
+//pr($marks['subject_wise']);
 ?>
 <?php if(!empty($marks['subject_wise'])) {?>
 <div class="profile"<?php print $attributes; ?>>
@@ -79,18 +81,21 @@ print _get_merged_account_dd($user);
       	</tr>
     	</thead>
     	<tbody>
-    		<?php foreach($marks['subject_wise'] as $subject_marks) { ?>
+    		<?php foreach($marks['subject_wise'] as $subject_marks) { //pr($subject_marks['marks']); ?>
   				<tr class="odd views-row-first">
   					<td class="views-field views-field-title"><?php print $subject_marks['subject_title']; ?></td>
-  					<?php foreach($subject_marks['marks'] as $mark) { ?>
-  						<td class="views-field views-field-title">
-  							<?php if($mark['scored_marks'] > $mark['passing_marks']) { ?>
-  							<?php print $mark['scored_marks'] . ' / ' . $mark['max_marks']?>
+  					<?php foreach($subject_marks['marks'] as $exam => $mark) { ?>
+  							<?php if($mark['data_status'] == 'NA') {?>
+  								<td class="views-field views-field-title">NA</td>
   							<?php } else { ?>
-  							<span class="subject-fail"><?php print $mark['scored_marks'] . ' / ' . $mark['max_marks']?></span>
+      						<td class="views-field views-field-title">
+      							<?php if($mark['scored_marks'] > $mark['passing_marks']) { ?>
+      							<?php print $mark['scored_marks'] . ' / ' . $mark['max_marks']?>
+      							<?php } else { ?>
+      							<span class="subject-fail"><?php print $mark['scored_marks'] . ' / ' . $mark['max_marks']?></span>
+      							<?php } ?>
+      						</td>
   							<?php } ?>
-  							
-  						</td>
   					<?php } ?>
   					<td class="views-field views-field-title"><?php print $subject_marks['total']['scored_marks'] . ' / ' . $subject_marks['total']['max_marks']; ?></td>
   					<td class="views-field views-field-title"><?php print $subject_marks['total']['percentage'] . '%'; ?></td>

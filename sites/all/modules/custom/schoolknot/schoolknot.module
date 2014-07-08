@@ -112,6 +112,7 @@ function schoolknot_feeds_after_parse(FeedsSource $source, FeedsParserResult $re
   
   if($source->importer()->id == 'student_progress_data_feeds_xls_importer') {
     foreach($result->items as $key => $row) {
+      $student_SR_number = $result->items[$key]['Student SR No'];
     	if($result->items[$key]['Student SR No'] == '') {
     		drupal_set_message('Student Registration ID at row ' . ($key + 2) . ' is blank. Progress data can\'t be imported.', 'warning');
     		unset($result->items[$key]); continue;
@@ -217,12 +218,12 @@ function schoolknot_feeds_after_parse(FeedsSource $source, FeedsParserResult $re
     	
     	$adminSchoolId = _get_school_node_id_for_school_admin_user();
     	$result->items[$key]['Author'] = $user->uid;
-    	$result->items[$key]['Title'] = 'Progress data for ' . 
-    									$adminSchoolId['nid'] . '_' . 
-    									$studentresults[0]->uid . '_' . 
-    									$classResult[0]->nid . '_' . 
-    									$examResult[0]->nid . '_' . 
-    									$subjectResult[0]->nid;
+    	$result->items[$key]['Title'] = $adminSchoolId['nid'] . '-' .
+    									'Progress data for ' . 
+    									$student_SR_number . '-' .  
+    									$classResult[0]->title . '-' . 
+    									$examResult[0]->title . '_' . 
+    									$subjectResult[0]->title;
     	//pr($result->items[$key]['Title']); die('asdasdadsa');
     }
   }
@@ -349,7 +350,7 @@ if($source->importer()->id == 'teachers_bulk_upload_feeds_xls') {
 	
 	if($source->importer()->id == 'student_progress_data_feeds_xls_importer') {
 		$student_user_object = user_load($item['Student SR No']);
-		$entity->title = $student_user_object->uid;
+		$entity->title = $item['Title'];
 		$entity->field_student[$entity->language]['0']['target_id'] = $student_user_object->uid;
 		$entity->field_class[$entity->language]['0']['target_id'] = $item['Class'];
 		$entity->field_subject[$entity->language]['0']['target_id'] = $item['Subject'];
