@@ -159,8 +159,110 @@ function progress_sheet_template_generator($form, &$form_state) {
 }
 
 function progress_sheet_template_generator_submit($form, &$form_state) {
-  $download_url = 'progress-sheet-bulk-upload-template-generator/' . $form_state['values']['exam']  . '/' . $form_state['values']['class'];
+  
+  $exam = node_load($form_state['values']['exam']);
+  $class = node_load($form_state['values']['class']);
+  $class_arg = array('nid' => $class->nid, 'title' => $class->title);
+  $subject_nids = array();
+  foreach($class->field_subjects['und'] as $subject) {
+    array_push($subject_nids, $subject['target_id']);
+  }
+  
+  $sujects = node_load_multiple($subject_nids, $conditions);
+  foreach ($sujects as $suject) {
+    $subject_arg[] = array('nid' => $suject->nid, 'title' => $suject->title);
+  }
+  $exam_arg = array('exam_title' => $exam->title, 'exam_nid' => $exam->nid);
+
+  
+  node_compare_export_nodes($class_arg, $exam_arg, $subject_arg);
+  
+  
+  //$download_url = 'progress-sheet-bulk-upload-template-generator/' . $form_state['values']['exam']  . '/' . $form_state['values']['class'];
   drupal_goto($download_url);
+}
+
+function node_compare_export_nodes($class, $exam, $subject) {
+  // Load the library.
+  if(function_exists('libraries_get_path')){
+  $path = libraries_get_path('PHPExcel');
+  $path = "$path/PHPExcel.php";
+  }else{
+  $path = drupal_get_path('module', 'feeds_xls') . '/PHPExcel/PHPExcel.php';
+  }
+  require_once $path;
+  
+  $objPHPExcel = new PHPExcel();
+  $objPHPExcel
+    ->getProperties()
+    ->setCreator("Maarten Balliauw")
+    ->setLastModifiedBy("Maarten Balliauw")
+    ->setTitle("Office 2007 XLSX Test Document")
+    ->setSubject("Office 2007 XLSX Test Document")
+    ->setDescription("Test document for Office 2007 XLSX, generated using PHP classes.")
+    ->setKeywords("office 2007 openxml php")
+    ->setCategory("Test result file");
+  
+  $objPHPExcel->setActiveSheetIndex(0)
+    ->setCellValue('A1', 'Student SR No')
+    ->setCellValue('B1', 'First Name')
+    ->setCellValue('C1', 'Last Name')
+    ->setCellValue('D1', 'Class')
+    ->setCellValue('E1', 'Exam')
+    ->setCellValue('F1', 'Subject')
+    ->setCellValue('G1', 'Max Marks')
+    ->setCellValue('H1', 'Passing Marks')
+    ->setCellValue('I1', 'Scored Marks');
+  
+  $query = new EntityFieldQuery();
+  $query->entityCondition('entity_type', 'user')
+    ->fieldCondition('field_class', 'target_id', $class['nid'], '=');
+  $result = $query->execute();
+  
+  $user_ids = array();
+  foreach ($result['user'] as $users) {
+    $user_ids[] = $users->uid;
+  }
+  
+  $students = user_load_multiple($user_ids);
+  
+  $index = 1;
+  foreach($students as $student) {
+    foreach ($subject as $subj) {
+      $index++;
+      $objPHPExcel->setActiveSheetIndex(0)
+        ->setCellValue('A' . $index, $student->field_student_registration_id['und'][0]['value'])
+        ->setCellValue('B' . $index, $student->field_student_first_name['und'][0]['value'])
+        ->setCellValue('C' . $index, $student->field_student_last_name['und'][0]['value'])
+        ->setCellValue('D' . $index, $class['title'])
+        ->setCellValue('E' . $index, $exam['exam_title'])
+        ->setCellValue('F' . $index, $subj['title'])
+        ->setCellValue('G' . $index, '')
+        ->setCellValue('H' . $index, '')
+        ->setCellValue('I' . $index, '');
+    }
+  }
+  
+  
+  
+  
+  $objPHPExcel->getActiveSheet()->setTitle('Simple');
+  
+  $objPHPExcel->setActiveSheetIndex(0);
+  // Set active sheet index to the first sheet, so Excel opens this as the first sheet
+  $file_name = $exam['exam_title'] . '_' . $class['title'];
+  $file_name = ucwords($file_name);
+  $file_name = preg_replace('@[ ]+@','-',$file_name);
+  $file_name = preg_replace('@[^A-Za-z0-9_-]+@','_',$file_name);
+  
+  
+  header('Content-Type: application/vnd.ms-excel');
+  header('Content-Disposition: attachment;filename="' . $file_name . '.xls"');
+  header('Cache-Control: max-age=0');
+  
+  $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');
+  $objWriter->save('php://output');
+  exit;
 }
 
 //compare_auto_complete();
