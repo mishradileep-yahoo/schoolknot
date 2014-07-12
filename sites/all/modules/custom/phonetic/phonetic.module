@@ -196,20 +196,6 @@ function _phonetic_apply_filter($text) {
           }
         }
       }
-
-			if(strpos($text,$original) !== false) {
-				if (!in_array($text, $whitelist)) {
-          // Similarity comparison.
-          $compare = similar_text(strtolower($text), $original);
-          if (strlen($original) == $compare) {
-            // Replacement.
-            $replace = str_pad('', strlen($text), $char);
-            $text = str_replace($text, $replace, $text);
-            // text replaced, no need to go further in the blacklist.
-            break;
-          }
-        }
-			}
     }
   }
   return $text;

@@ -49,19 +49,46 @@ $schoolId = _get_school_node_id_for_school_admin_user(); ?>
             
 			<?php print render($title_prefix); ?>
             <?php if ($title): ?>
-            <h1><?php print _phonetic_apply_filter($title); ?></h1>
+            <h1><?php print $title; ?></h1>
             <?php endif; ?>
             <?php print render($title_suffix); ?>
             
             <?php if ($tabs): ?><?php print render($tabs); ?><?php endif; ?>
             
             
-            
+            <div class="tabContainer">
             <?php 
-            if($loged_in_as['as'] == 'Parent') { ?>
-              <p> Please contact you school administrator. Go to <?php print l(t('<span>School Profile</span>'), 'node/'.$schoolId['nid'], array('attributes' => array('class' => array('showcase', $variables['addAnotherTabClass'])), 'html' => TRUE));?></p>
-              <?php } else  print render($page['content']); ?>
-            
+            if($loged_in_as['as'] == 'Parent') { 
+              $stuent_school = node_load($loged_in_as['school']['nid']);
+              //pr($stuent_school);
+              ?>
+              
+                <div class="profileDetail contact-us">
+                <p> Please contact you school administrator on below details or go to <?php print l(t($stuent_school->title), 'node/'.$schoolId['nid'], array('attributes' => array('class' => array('showcase', $variables['addAnotherTabClass'])), 'html' => TRUE));?> detail page.</p>
+                  <div class="section">
+                    <p>
+                    	<span class="lbl">Contact Person</span> 
+                    	<span class="dtl"><?php print $stuent_school->field_contact_person['und'][0]['value']; ?></span>
+                    </p>
+                    <p>
+                    	<span class="lbl">Contact No</span> 
+                    	<span class="dtl"><?php print $stuent_school->field_contact_no['und'][0]['value']; ?></span>
+                    </p>
+                    <p>
+                      <span class="lbl">Email ID</span> <span class="dtl"><a
+                      href="mailto:<?php print $stuent_school->field_email_id['und'][0]['value']; ?>"><?php print $stuent_school->field_email_id['und'][0]['value']; ?></a>
+                      </span>
+                    </p>
+                    <p>
+                    	<span class="lbl">Address</span> 
+                    	<span class="dtl"><?php print $stuent_school->field_address['und'][0]['value']; ?></span>
+                    </p>
+                  </div>
+                </div>
+              
+              
+              <?php } else {  print render($page['content']); } ?>
+              </div>
             <?php ?>
             
             <?php print $feed_icons; ?>
