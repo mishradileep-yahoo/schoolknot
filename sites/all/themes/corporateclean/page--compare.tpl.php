@@ -7,7 +7,7 @@ $schoolId = _get_school_node_id_for_school_admin_user(); ?>
 <div id="contentWrap">
 	<!-- #content-inside -->
     <div id="content-inside" class="clearfix">
-    
+    		<?php include('includes/rwd-admin-menu-button.php'); ?>
         <?php include('includes/left-panel.php'); ?>
         
 
