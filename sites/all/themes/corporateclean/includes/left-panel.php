@@ -15,6 +15,19 @@ if($loged_in_as['as'] == 'Parent') {
 		<?php print views_embed_view('school_events', 'block_1', $loged_in_as['school']['nid']); ?>
 	</div>
 <?php } ?>
+
+<div id="footer" class="footer">
+  <div class="footer-links">
+    <?php print l('Contact Us', 'contact-us');?>
+    <span>&middot;</span>
+    <?php print l('About Us', 'about-us');?>
+  </div>
+  <div class="footer-copyright">
+  	&copy; Copyright 2014 SchoolKnot.com. All rights reserved.<br>
+  	Various trademarks held by their respective owners.
+  </div>
+</div>
+
 </div>
 <!-- EOF: #sidebar-first -->
 <?php endif; ?>

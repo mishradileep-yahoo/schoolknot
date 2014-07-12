@@ -179,12 +179,25 @@ select {border: 2px solid #B3B3B3;
 .loader{background:#e6f4ff;overflow:hidden;clear:both;}
 .loader p{color:#489fe2;text-align:center;padding:8px;}
 .loader p a{color:#489fe2;}
-.footer{border-top: 1px solid #0c82da;
-width: 761px;
-margin-left: 199px;
-padding: 10px;
-overflow: hidden;margin-top:4px;}
-.footer a{margin-right:10px;display:inline-block;}
+.footer{
+	border-top: 1px solid #0c82da;
+	padding: 5px 0;
+	overflow: hidden;
+	margin-top:20px;
+}
+.footer .footer-links a{
+	color: #2e79b2;
+	display: inline-block;
+	font-size: 11px;
+	text-transform: uppercase;
+}
+.footer .footer-links span{
+	margin: 0 5px;
+}
+.footer-copyright {
+	color: #b3b3b3;
+	font-size: 10px;
+}
 
 /* Status Update Form */
 .status-update-form {

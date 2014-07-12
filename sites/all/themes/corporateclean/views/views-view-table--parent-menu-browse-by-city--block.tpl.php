@@ -48,10 +48,14 @@
 				<?php } // End Schol?>
 				
 				<?php print _get_school_rating_link_for_parent(); ?>
+				<li><?php print l('Search', 'search/node'); ?></li>
+				<li><?php print l('Advance Search', 'advance-search'); ?></li>
 				
 				<?php if($user->uid == 0){ ?>
 				<li><?php print l('Register your school', 'user/register')?></li>
+				<li><?php print l('School Admin Login', 'user/login')?></li>
 				<li><?php print l('Parent or Teacher Login', 'schoolknot_user_login/step1'); ?></li>
+				
 			<?php } else { ?>
 			
         <?php 
@@ -64,10 +68,10 @@
         
         
         <?php } ?>
+        <li><?php print l('Logout', 'user/logout'); ?></li>
 			<?php } ?>
-			<li><?php print l('Search', 'search/node'); ?></li>
-			<li><?php print l('Advance Search', 'advance-search'); ?></li>
-			<li><?php print l('Logout', 'user/logout'); ?></li>
+			
+			
 			</ul>
 		</li>
 	</ul>
