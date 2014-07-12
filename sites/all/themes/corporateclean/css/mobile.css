@@ -337,7 +337,7 @@ html.js input.form-autocomplete,
 .status-update-form textarea{
 	border: 5px solid #e5f4fe !important
 }
-.view-parent-menu-browse-by-city,
+
 .view-holidays-list,
 .right-event-calendar-block{
 	display: none;
@@ -356,4 +356,4 @@ html.js input.form-autocomplete,
 .leftMenuWrap{
 	width: 100% !important;
 }
-.rwd-admin-menu-toggle#admin-menu-show{display: block!important;}
+.rwd-admin-menu-toggle#admin-menu-show{display: block;}

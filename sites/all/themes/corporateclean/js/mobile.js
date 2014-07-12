@@ -30,13 +30,13 @@ $('#admin-menu-show').click(function(){
 	$('.leftMenuWrap').show();
 	$('.rightContainer').hide();
 	$('#admin-menu-hide').show();
-	$(this).hide()
+	$('#admin-menu-show').hide();
 });
 $('#admin-menu-hide').click(function(){
 	$('.leftMenuWrap').hide();
 	$('.rightContainer').show();
 	$('#admin-menu-show').show();
-	$(this).hide()
+	$('#admin-menu-hide').hide();
 });
 
 });
