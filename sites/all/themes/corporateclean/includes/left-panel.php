@@ -19,8 +19,6 @@ if($loged_in_as['as'] == 'Parent') {
 <div id="footer" class="footer">
   <div class="footer-links">
     <?php print l('Contact Us', 'contact-us');?>
-    <span>&middot;</span>
-    <?php print l('About Us', 'about-us');?>
   </div>
   <div class="footer-copyright">
   	&copy; Copyright 2014 SchoolKnot.com. All rights reserved.<br>
