@@ -1084,8 +1084,6 @@ function schoolknot_auth_account_school_validate($form, &$form_state) {
     
     if($form_state['values']['primary-email'] != $school_admin_user->mail) {
       form_set_error('primary-email', t('Primary email provided here is not matching with one you provided while registring your school.'));
-      pr($school_admin_user->mail);
-    pr($form_state['values']['primary-email']); die;
     }
     else {
       
