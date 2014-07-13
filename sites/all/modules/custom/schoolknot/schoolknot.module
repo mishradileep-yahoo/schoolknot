@@ -13,6 +13,24 @@ function schoolknot_feeds_after_parse(FeedsSource $source, FeedsParserResult $re
     $feed_source = node_load($source->feed_nid);
     $user_groups = og_get_groups_by_user();
 		$user_school = reset($user_groups['node']);
+		
+  	  // Load the library.
+			if(function_exists('libraries_get_path')){
+  			$path = libraries_get_path('PHPExcel');
+  			$pathLib = "$path/PHPExcel/IOFactory.php";
+  			$pathDate = "$path/PHPExcel/Shared/Date.php";
+			}
+			else {
+  			$pathLib = drupal_get_path('module', 'feeds_xls') . '/PHPExcel/PHPExcel/IOFactory.php';
+  			$pathDate = drupal_get_path('module', 'feeds_xls') . '/PHPExcel/PHPExcel/Shared/Date.php';
+			}
+			
+			//die($pathDate);
+			
+			require_once $pathLib;
+			require_once $pathDate;
+			
+      $objPHPExcel = new PHPExcel();		
 
     // Validate First
     foreach($result->items as $key => $row) {
@@ -28,47 +46,25 @@ function schoolknot_feeds_after_parse(FeedsSource $source, FeedsParserResult $re
     		drupal_set_message('Student Date of Birth at row ' . ($key + 2) . ' is blank. Student can\'t be imported.', 'warning');
     		unset($result->items[$key]);
     	}
+    	
 
-    	if($result->items[$key]['Student Date of Birth'] != '') {
-
-    		// Load the library.
-			if(function_exists('libraries_get_path')){
-			$path = libraries_get_path('PHPExcel');
-			$path = "$path/PHPExcel/IOFactory.php";
-			}else{
-			$path = drupal_get_path('module', 'feeds_xls') . '/PHPExcel/PHPExcel/IOFactory.php';
-			}
-			require_once $path;
-			date_default_timezone_set(drupal_get_user_timezone());
-			// Create new PHPExcel object
-			$objPHPExcel = new PHPExcel();
-	
-			$date = PHPExcel_Shared_Date::ExcelToPHPObject($result->items[$key]['Student Date of Birth (in MM/DD/YYYY)']);
-			$curDate = new DateTime();
-			
-			if($date > $curDate) {
-				drupal_set_message('Student Date of Birth at row ' . ($key + 2) . ' is future date. Student can\'t be imported.', 'warning');
-    			unset($result->items[$key]);
-			}
+			  
+    	if($result->items[$key]['Student Date of Birth (in MM/DD/YYYY)'] != '') {
+  			date_default_timezone_set(drupal_get_user_timezone());
+  			
+  			$date = PHPExcel_Shared_Date::ExcelToPHPObject($result->items[$key]['Student Date of Birth (in MM/DD/YYYY)']);
+  			$curDate = new DateTime();
+  			
+  			if($date > $curDate) {
+  				drupal_set_message('Student Date of Birth at row ' . ($key + 2) . ' is future date. Student can\'t be imported.', 'warning');
+      			unset($result->items[$key]);
+  			}
     	}
     }
-    
-    // Load the library.
-    if(function_exists('libraries_get_path')){
-      $path = libraries_get_path('PHPExcel');
-      $path = "$path/PHPExcel/IOFactory.php";
-    }else{
-      $path = drupal_get_path('module', 'feeds_xls') . '/PHPExcel/PHPExcel/IOFactory.php';
-    }
-    require_once $path;
-    date_default_timezone_set(drupal_get_user_timezone());
-    // Create new PHPExcel object
-    $objPHPExcel = new PHPExcel();
-    
    
     foreach($result->items as $key => $row) {
-      
-      $date = PHPExcel_Shared_Date::ExcelToPHPObject($item['Student Date of Birth (in MM/DD/YYYY)']);
+
+      $date = PHPExcel_Shared_Date::ExcelToPHPObject($row['Student Date of Birth (in MM/DD/YYYY)']);
       $formatedDate = $date->format('Y-m-d H:i:s');
       $formatedDateForPassword = $date->format('Ymd');
       
@@ -82,6 +78,7 @@ function schoolknot_feeds_after_parse(FeedsSource $source, FeedsParserResult $re
       $result->items[$key]['Email'] = $username . '@test.schoolknot.com';
       $result->items[$key]['Class'] = $feed_source->field_class['und'][0]['target_id'];
       $result->items[$key]['School'] = $user_school;
+      $result->items[$key]['Student Date of Birth (in MM/DD/YYYY)'] = $formatedDate;
     }
   }
   if($source->importer()->id == 'teachers_bulk_upload_feeds_xls') {

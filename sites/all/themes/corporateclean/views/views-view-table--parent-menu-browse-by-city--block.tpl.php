@@ -55,7 +55,7 @@
 				<li><?php print l('Register your school', 'user/register')?></li>
 				<li><?php print l('School Admin Login', 'user/login')?></li>
 				<li><?php print l('Parent or Teacher Login', 'schoolknot_user_login/step1'); ?></li>
-				
+				<li><?php print l('Re-Authenticate Account', 'schoolknot/auth-account'); ?></li>
 			<?php } else { ?>
 			
         <?php 
