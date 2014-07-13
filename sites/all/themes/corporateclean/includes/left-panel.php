@@ -22,7 +22,7 @@ if($loged_in_as['as'] == 'Parent') {
   </div>
   <div class="footer-copyright">
   	&copy; Copyright 2014 SchoolKnot.com. All rights reserved.<br>
-  	Various trademarks held by their respective owners.
+  	Various trademarks and logos held by their respective owners.
   </div>
 </div>
 

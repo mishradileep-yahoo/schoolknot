@@ -103,7 +103,12 @@ function schoolknot_user_login_menu() {
     'access callback' => TRUE,
     'type' => MENU_CALLBACK,
   );
-  
+  $items['schoolknot/auth-account'] = array(
+  	'title' => 'Authenticate account',
+    'page callback' => 'schoolknot_auth_account',
+    'access callback' => TRUE,
+    'type' => MENU_CALLBACK,
+  );
   
   return $items;
 }
@@ -1004,4 +1009,132 @@ function schoolknot_parent_resend_auth_email($user_id = '') {
   schoolknot_user_mail_send($account);
   drupal_set_message("Account activation link has been emailed to you. Please check your spam mails also if you don't found it in inbox.");
   drupal_goto();
+}
+
+function schoolknot_auth_account() {
+  $content = array();
+  $content['school_admin'] = drupal_get_form('schoolknot_auth_account_parents');
+  $content['parents'] = drupal_get_form('schoolknot_auth_account_school');
+  return $content;
+}
+
+function schoolknot_auth_account_school($form, &$form_state) {
+  $form['show_form'] = array(
+		'#markup' => '<div class="clearer"></div>'.l('School Admin', 'javascript:void(0);', 
+	    array('external' => TRUE, 
+	    			'attributes' => array('class' => 'form-submit forgetpassword', 'id' => 'show-schooladmin-auth-acccount')
+	    )
+	  ),
+	);
+	
+	$form['form_helper'] = array(
+		'#markup' => 'Resend you account authontication email again.',
+		//'#prefix' => '<div class="schooladmin-forgetpassword">',
+	);
+  $form['username'] = array(
+		'#type' => 'textfield',
+		'#title' => t('Username'), 
+		'#size' => 60,
+		'#maxlength' => 128,
+		'#required' => TRUE,
+		'#attributes' => array('placeholder' => array('Username')),
+	);
+	$form['primary-email'] = array(
+		'#type' => 'textfield',
+		'#title' => t('Primary email'), 
+		'#size' => 60,
+		'#maxlength' => 128,
+		'#required' => TRUE,
+		'#attributes' => array('placeholder' => array('Primary email')),
+	  '#description' => 'You primary email provided at time of registring school.',
+	);
+	$form['alternative-email'] = array(
+		'#type' => 'textfield',
+		'#title' => t('Alternative email'), 
+		'#size' => 60,
+		'#maxlength' => 128,
+		'#required' => TRUE,
+		'#attributes' => array('placeholder' => array('Alternative email')),
+	  '#description' => 'Alternative email id to get account authentication link. This email will be used for sending authentication link only and will not be used further.',
+	);
+	$form['submit'] = array(
+		'#type' => 'submit', 
+		'#value' => t('Send email')
+  );
+	return $form;
+}
+
+function schoolknot_auth_account_school_validate($form, &$form_state) {
+  
+  $school_admin_user = user_load_by_name($form_state['values']['username']);
+  if(!isset($school_admin_user->uid)) {
+    form_set_error('username', t('No school exist with given username.'));
+    return;
+  }
+  if(in_array('School Administrator', $school_admin_user->roles)) {
+    if($form_state['values']['username'] != $school_admin_user->mail) {
+      form_set_error('primary-email', t('Primary email provided here is not matching with one you provided while registring your school.'));
+    }
+    else {
+      //send email now
+      
+      $module = 'schoolknot_user';
+      $key = 'user_authentication';
+      
+      $mail_body = '';
+      $timestamp = REQUEST_TIME;
+      $password_reste_url = url("schoolknot/reset/$school_admin_user->uid/$timestamp/" . user_pass_rehash($school_admin_user->pass, $timestamp, $school_admin_user->login), array('absolute' => TRUE));
+      $mail_body .= _user_full_name_by_user_obj($school_admin_user) . ',
+      Thank you for registering at SchoolKnot.com. Please activate your account by clicking this link or copying and pasting it to your browser:
+      
+      ' . $password_reste_url . '
+      
+      You will asked for password reset after activation. Please be ready with your password string.
+      
+      --  SchoolKnot.com team';
+      
+      $params = array(
+        'subject' => 'Account details for ' . _user_full_name_by_user_obj($userObj) . ' at SchoolKnot.com',
+        'body' => $mail_body,
+        'theme' => 'user_authentication'
+      );
+      $language = language_default();
+      $send = TRUE;
+      $result = drupal_mail($module, $key, $school_admin_user->email, $language, $params, $from, $send);
+      if ($result['result'] == TRUE) {
+        drupal_set_message(t('Authentication email sent to ' . $school_admin_user->email . '.'), 'error');
+      }
+      else {
+        drupal_set_message(t('There was a problem sending your message and it was not sent.'), 'error');
+      }
+      $result = drupal_mail($module, $key, $form_state['values']['alternative-email'], $language, $params, $from, $send);
+      if ($result['result'] == TRUE) {
+        drupal_set_message(t('Authentication email sent to ' . $form_state['values']['alternative-email'] . '.'), 'error');
+      }
+      else {
+        drupal_set_message(t('There was a problem sending your message and it was not sent.'), 'error');
+      }
+      
+    }
+  }
+  else {
+    form_set_error('primary-email', t('It seems username provided here is not a school admin account.'));
+  }
+  pr($school_admin_user);  die();
+}
+
+function schoolknot_auth_account_school_submit($form, &$form_state) {
+  
+}
+
+function schoolknot_auth_account_parents($form, &$form_state) {
+  $form['show_form'] = array(
+		'#markup' => '<div class="clearer"></div>'.l('Parents', 'javascript:void(0);', 
+	    array('external' => TRUE, 
+	    			'attributes' => array('class' => 'form-submit forgetpassword', 'id' => 'show-parents-auth-acccount')
+	    )
+	  ),
+	);
+	
+	return $form;
 }
