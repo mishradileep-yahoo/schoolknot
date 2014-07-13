@@ -1076,55 +1076,55 @@ function schoolknot_auth_account_school_validate($form, &$form_state) {
       form_set_error('primary-email', t('Primary email provided here is not matching with one you provided while registring your school.'));
     }
     else {
-      //send email now
       
-      $module = 'schoolknot_user';
-      $key = 'user_authentication';
-      
-      $mail_body = '';
-      $timestamp = REQUEST_TIME;
-      $password_reste_url = url("schoolknot/reset/$school_admin_user->uid/$timestamp/" . user_pass_rehash($school_admin_user->pass, $timestamp, $school_admin_user->login), array('absolute' => TRUE));
-      $mail_body .= _user_full_name_by_user_obj($school_admin_user) . ',
-      Thank you for registering at SchoolKnot.com. Please activate your account by clicking this link or copying and pasting it to your browser:
-      
-      ' . $password_reste_url . '
-      
-      You will asked for password reset after activation. Please be ready with your password string.
-      
-      --  SchoolKnot.com team';
-      
-      $params = array(
-        'subject' => 'Account details for ' . _user_full_name_by_user_obj($userObj) . ' at SchoolKnot.com',
-        'body' => $mail_body,
-        'theme' => 'user_authentication'
-      );
-      $language = language_default();
-      $send = TRUE;
-      $result = drupal_mail($module, $key, $school_admin_user->email, $language, $params, $from, $send);
-      if ($result['result'] == TRUE) {
-        drupal_set_message(t('Authentication email sent to ' . $school_admin_user->email . '.'), 'error');
-      }
-      else {
-        drupal_set_message(t('There was a problem sending your message and it was not sent.'), 'error');
-      }
-      $result = drupal_mail($module, $key, $form_state['values']['alternative-email'], $language, $params, $from, $send);
-      if ($result['result'] == TRUE) {
-        drupal_set_message(t('Authentication email sent to ' . $form_state['values']['alternative-email'] . '.'), 'error');
-      }
-      else {
-        drupal_set_message(t('There was a problem sending your message and it was not sent.'), 'error');
-      }
       
     }
   }
   else {
     form_set_error('primary-email', t('It seems username provided here is not a school admin account.'));
   }
-  pr($school_admin_user);  die();
 }
 
 function schoolknot_auth_account_school_submit($form, &$form_state) {
+  $school_admin_user = user_load_by_name($form_state['values']['username']);
   
+  //send email now
+  $module = 'schoolknot_user';
+  $key = 'user_authentication';
+  
+  $mail_body = '';
+  $timestamp = REQUEST_TIME;
+  $password_reste_url = url("schoolknot/reset/$school_admin_user->uid/$timestamp/" . user_pass_rehash($school_admin_user->pass, $timestamp, $school_admin_user->login), array('absolute' => TRUE));
+  $mail_body .= _user_full_name_by_user_obj($school_admin_user) . ',
+  Thank you for registering at SchoolKnot.com. Please activate your account by clicking this link or copying and pasting it to your browser:
+  
+  ' . $password_reste_url . '
+  
+  You will asked for password reset after activation. Please be ready with your password string.
+  
+  --  SchoolKnot.com team';
+  
+  $params = array(
+    'subject' => 'Account details for ' . _user_full_name_by_user_obj($userObj) . ' at SchoolKnot.com',
+    'body' => $mail_body,
+    'theme' => 'user_authentication'
+  );
+  $language = language_default();
+  $send = TRUE;
+  $result = drupal_mail($module, $key, $school_admin_user->email, $language, $params, $from, $send);
+  if ($result['result'] == TRUE) {
+    drupal_set_message(t('Authentication email sent to ' . $school_admin_user->email . '.'), 'error');
+  }
+  else {
+    drupal_set_message(t('There was a problem sending your message and it was not sent.'), 'error');
+  }
+  $result = drupal_mail($module, $key, $form_state['values']['alternative-email'], $language, $params, $from, $send);
+  if ($result['result'] == TRUE) {
+    drupal_set_message(t('Authentication email sent to ' . $form_state['values']['alternative-email'] . '.'), 'error');
+  }
+  else {
+    drupal_set_message(t('There was a problem sending your message and it was not sent.'), 'error');
+  }
 }
 
 function schoolknot_auth_account_parents($form, &$form_state) {
