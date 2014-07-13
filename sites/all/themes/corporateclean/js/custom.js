@@ -109,6 +109,16 @@
 			$('.schooladmin-forgetpassword').show();
 			$('.form-submit.forgetpassword').hide();
 		});
+		
+		// Auth account Form events haandler
+		$('#show-schooladmin-auth-acccount').click(function(){
+			$('.schooladmin-auth-account').show();
+			$('.form-submit.forgetpassword').hide();
+		});
+		$('#show-parents-auth-acccount').click(function(){
+			$('.parents-auth-account').show();
+			$('.form-submit.forgetpassword').hide();
+		});
 	});
 	 $('.tooltipSmall').live('click', function(e) {	
 		 	

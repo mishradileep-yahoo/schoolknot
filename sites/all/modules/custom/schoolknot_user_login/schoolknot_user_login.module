@@ -1029,7 +1029,7 @@ function schoolknot_auth_account_school($form, &$form_state) {
 	
 	$form['form_helper'] = array(
 		'#markup' => 'Resend you account authontication email again.',
-		//'#prefix' => '<div class="schooladmin-forgetpassword">',
+		'#prefix' => '<div class="schooladmin-auth-account">',
 	);
   $form['username'] = array(
 		'#type' => 'textfield',
@@ -1059,7 +1059,8 @@ function schoolknot_auth_account_school($form, &$form_state) {
 	);
 	$form['submit'] = array(
 		'#type' => 'submit', 
-		'#value' => t('Send email')
+		'#value' => t('Send email'),
+	  '#suffix' => '</div>',
   );
 	return $form;
 }
@@ -1146,5 +1147,148 @@ function schoolknot_auth_account_parents($form, &$form_state) {
 	  ),
 	);
 	
+	$form['form_helper'] = array(
+		'#markup' => 'Resend you account authontication email again.',
+		'#prefix' => '<div class="parents-auth-account">',
+	);
+	$form['school'] = array(
+		'#type' => 'textfield',
+		'#title' => t('School Name'), 
+		'#description' => t('Type school name and select desired school from options below.'),
+		'#autocomplete_path' => 'schoolknot_user_login/school_autocomplete',
+		'#size' => 60,
+		'#maxlength' => 128,
+		'#required' => TRUE,
+		'#attributes' => array('placeholder' => array('Type school name')),
+	);
+  $form['username'] = array(
+		'#type' => 'textfield',
+		'#title' => t('Username'), 
+		'#size' => 60,
+		'#maxlength' => 128,
+		'#required' => TRUE,
+		'#attributes' => array('placeholder' => array('Student SR number')),
+	);
+	$form['primary-email'] = array(
+		'#type' => 'textfield',
+		'#title' => t('Primary email'), 
+		'#size' => 60,
+		'#maxlength' => 128,
+		'#required' => TRUE,
+		'#attributes' => array('placeholder' => array('Primary email')),
+	  '#description' => 'You primary email provided at time of agreement signup.',
+	);
+	$form['alternative-email'] = array(
+		'#type' => 'textfield',
+		'#title' => t('Alternative email'), 
+		'#size' => 60,
+		'#maxlength' => 128,
+		'#required' => TRUE,
+		'#attributes' => array('placeholder' => array('Alternative email')),
+	  '#description' => 'Alternative email id to get account authentication link. This email will be used for sending authentication link only and will not be used further.',
+	);
+	$form['submit'] = array(
+		'#type' => 'submit', 
+		'#value' => t('Send email'),
+	  '#suffix' => '</div>',
+  );
 	return $form;
+}
+
+function schoolknot_auth_account_parents_validate($form, &$form_state) {
+  if(!valid_email_address($form_state['values']['primary-email'])) {
+    form_set_error('primary-email', t('Primary email provided here is not a valid email ID.'));
+    return;
+  }
+  if(!valid_email_address($form_state['values']['alternative-email'])) {
+    form_set_error('alternative-email', t('Alternative email provided here is not a valid email ID.'));
+    return;
+  }
+  
+  // Get School from school name
+	$query = db_select('node', 'n');
+	$query->fields('n', array('nid'))
+		->condition('n.title', $form_state['values']['school'], '=')
+		->condition('n.type', 'school', '=')
+		->condition('n.status', '1', '=')
+		->range(0, 1);
+	$result = $query->execute()->fetchAll();
+	if(!isset($result[0]->nid)) {
+	  form_set_error('school', t('School provided here does\'t exist.'));
+    return;
+	}
+	
+	
+	// Get User from SR Number
+	$query = db_select('users', 'u');
+	$query->leftJoin('field_data_field_student_registration_id', 'srnum', 'u.uid = srnum.entity_id');
+	$query->leftJoin('field_data_field_password_status', 'pass_status', 'u.uid = pass_status.entity_id');
+	$query->leftJoin('field_data_field_agreement_status', 'agree_status', 'u.uid = agree_status.entity_id');
+	$query->leftJoin('og_membership', 'og', 'u.uid = og.etid');
+	$query->fields('u', array('name'))
+	  ->fields('pass_status', array('field_password_status_value'))
+	  ->fields('agree_status', array('field_agreement_status_value'))
+		->condition('srnum.field_student_registration_id_value', check_plain($form_state['values']['username']), '=')
+		->condition('og.gid', check_plain($result[0]->nid), '=');
+	$result = $query->execute()->fetchAll();
+  
+  $user_details = reset($result);
+  if(!isset($user_details->name)) {
+    form_set_error('username', t('No strudent exist with provided registration number.'));
+    return;
+  }
+  
+  $userObj = user_load_by_name($user_details->name);
+  
+  if($userObj->field_student_email_id['und'][0]['value'] != $form_state['values']['primary-email']) {
+    form_set_error('primary-email', t('Primary email provided here is not matching with one you provided while agreement signup.'));
+    return;
+  }
+  
+  $form_state['values']['student_obj'] = $userObj;
+  
+}
+
+function schoolknot_auth_account_parents_submit($form, &$form_state) {
+  $parent_user_obj = $form_state['values']['student_obj'];
+  
+  //send email now
+  $module = 'schoolknot_user';
+  $key = 'user_authentication';
+  $to = $parent_user_obj->field_student_email_id['und'][0]['value'];
+  
+  $mail_body = '';
+  $timestamp = REQUEST_TIME;
+  $password_reste_url = url("schoolknot/reset/$parent_user_obj->uid/$timestamp/" . user_pass_rehash($parent_user_obj->pass, $timestamp, $parent_user_obj->login), array('absolute' => TRUE));
+  $mail_body .= _user_full_name_by_user_obj($parent_user_obj) . ',
+  Thank you for registering at SchoolKnot.com. Please activate your account by clicking this link or copying and pasting it to your browser:
+  
+  ' . $password_reste_url . '
+  
+  You will asked for password reset after activation. Please be ready with your password string.
+  
+  --  SchoolKnot.com team';
+  
+  $params = array(
+    'subject' => 'Account details for ' . _user_full_name_by_user_obj($parent_user_obj) . ' at SchoolKnot.com',
+    'body' => $mail_body,
+    'theme' => 'user_authentication'
+  );
+  $language = language_default();
+  $send = TRUE;
+  $result = drupal_mail($module, $key, $to, $language, $params, $from, $send);
+  if ($result['result'] == TRUE) {
+    drupal_set_message(t('Authentication email sent to ' . $to . '.'), 'error');
+  }
+  else {
+    drupal_set_message(t('There was a problem sending your message and it was not sent.'), 'error');
+  }
+  $result = drupal_mail($module, $key, $form_state['values']['alternative-email'], $language, $params, $from, $send);
+  if ($result['result'] == TRUE) {
+    drupal_set_message(t('Authentication email sent to ' . $form_state['values']['alternative-email'] . '.'), 'error');
+  }
+  else {
+    drupal_set_message(t('There was a problem sending your message and it was not sent.'), 'error');
+  }
+  
 }

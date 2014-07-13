@@ -921,5 +921,5 @@ html.js input.throbbing {
 #show-parents-forgetpassword,
 #show-schooladmin-auth-acccount,
 #show-parents-auth-acccount {display: inline-block;}
-.schooladmin-forgetpassword, .parents-forgetpassword{display: none;}
+.schooladmin-forgetpassword, .parents-forgetpassword, .schooladmin-auth-account, .parents-auth-account{display: none;}
 .rwd-admin-menu-toggle{display: none;}
