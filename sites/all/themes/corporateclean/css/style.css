@@ -165,7 +165,8 @@ select {border: 2px solid #B3B3B3;
 .schDtl h4, .schDtl h4 a{color:#003051;font-weight:600;}
 .posts{float:right;background:url(../images/greyArrow.gif) left top no-repeat;border-left:1px solid #eaeaea;width:469px;padding-left:12px;}
 .posts a{font-weight:600;color:#0e82d9;}
-.posts .totalLike{font-weight:600;color:#999999;}
+.posts .totalLike{color:#999999;}
+.posts .totalLike span	{color:#2e79b2; font-style: italic;}
 .postComment{background:#e6f4ff;padding:5px;overflow:hidden;margin:5px 0;}
 .postComment  .thumb{width:40px;height:40px;background:#7cc5e8;margin-right:5px;float: left;}
 .postComment  #comment_message textarea {border:1px solid #7cc5e8;height: 40px; resize: none; width: 459px; float: left; font-size: 12px; font-family: Open Sans; height:40px; padding:0 5px;}
@@ -174,6 +175,7 @@ select {border: 2px solid #B3B3B3;
 .commennts{padding:4px 0;}
 .commennts a.thumb{float:left;}
 .commennts .comment{margin-left: 0px;}
+.commennts .comment span.parent-name{color:#2e79b2; font-weight: 600;}
 .commennts .comment a{margin-right:5px;}
 .liveTime{color:#a2a2a2;display:block; font-size: 10px;}
 .loader{background:#e6f4ff;overflow:hidden;clear:both;}

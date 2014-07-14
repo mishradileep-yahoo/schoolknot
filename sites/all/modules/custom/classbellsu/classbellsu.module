@@ -441,7 +441,7 @@ function classbellsu_status_comment_form ($form, &$form_state, $post_id) {
 			//'#title' => t('Comment'),
 			'#type' => 'textarea',
 	    '#size' => 20,
-	    '#maxlength' => 128,
+	    '#maxlength' => 500,
 			'#prefix' => '<div id="comment_message">',
 			'#suffix' => '</div>',
 	    '#attributes' => array('placeholder' => array('comments...')),

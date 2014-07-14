@@ -18,9 +18,20 @@
  *   field id, then row number. This matches the index in $rows.
  * @ingroup views_templates
  */
+$total_like_count = count($rows);
+$index = 1;
 ?>
 <p class="totalLike">Parents of 
-<?php foreach ($rows as $row_count => $row): 
-	print l($row['field_student_first_name'] . ' ' . $row['field_student_last_name'] . ' ' . $row['field_student_middle_name'], 'user/');
-endforeach; ?>
+<?php foreach ($rows as $row_count => $row){
+  if($index == $total_like_count)  print ' and ';
+  elseif($index != 1) print ', ';
+  ?>
+  <span><?php print $row['field_student_first_name']; ?></span>
+  <?php 
+  $index++;
+  if($index > 5) break;
+} 
+if($total_like_count > 5) { ?>
+and <?php print ($total_like_count - 5); ?> others 
+<?php } ?>
  like this</p>

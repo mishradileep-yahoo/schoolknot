@@ -23,6 +23,7 @@
 <div class="commennts">
     <div class="comment">
         <p>
+        <span class="parent-name">
         <?php if($row['field_student_first_name'] != '') {?>
         Parent of  <?php print $row['field_student_first_name'] . ' ' . $row['field_student_last_name'];?> 
         <?php } else {?>
@@ -31,7 +32,7 @@
         ?>
         <?php } ?>
         
-        : <?php print _phonetic_apply_filter($row['comment_body'])?> </p>
+        : </span><?php print _phonetic_apply_filter($row['comment_body'])?> </p>
     	<span class="liveTime"><?php print $row['created']?></span>
     	
     </div>
