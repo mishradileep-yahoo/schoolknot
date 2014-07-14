@@ -236,8 +236,8 @@ function account_merge_confirm($amid, $decision) {
 	    $message = 'Dear Parent,' . "\n";
 		$message .= '' . "\n";
 		$message .= 'Your account merge request with ' . _user_full_name_by_user_obj($user) . ' has been confirmed.' . "\n";
-		$message .= 'You may now access profile of Bhanu Parkash from below URL by selecting Bhanu Prakash from seelect option at top.' . "\n";
-		$message .= l(url('student-tracker/progress-sheet'), 'student-tracker/progress-sheet');
+		//$message .= 'You may now access profile of Bhanu Parkash from below URL by selecting Bhanu Prakash from seelect option at top.' . "\n";
+		//$message .= l(url('student-tracker/progress-sheet'), 'student-tracker/progress-sheet');
 		$message .= '' . "\n";
 		$message .= 'Thanks,' . "\n";
 		$message .= 'Team SchoolKnot ';
