@@ -40,7 +40,7 @@
             <?php endif; ?>
             <?php print render($title_suffix); ?>
             
-            <?php if ($tabs): ?><?php //print render($tabs); ?><?php endif; ?>
+            <?php if ($tabs): ?><?php print render($tabs); ?><?php endif; ?>
             <?php } ?>
             
             
