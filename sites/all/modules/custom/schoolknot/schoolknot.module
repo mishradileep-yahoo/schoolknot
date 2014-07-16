@@ -110,6 +110,32 @@ function schoolknot_feeds_after_parse(FeedsSource $source, FeedsParserResult $re
   if($source->importer()->id == 'student_progress_data_feeds_xls_importer') {
     foreach($result->items as $key => $row) {
       $student_SR_number = $result->items[$key]['Student SR No'];
+      
+      if($result->items[$key]['Class'] == '') {
+      		drupal_set_message('Class at row ' . ($key + 2) . ' is blank. Progress data can\'t be imported.', 'warning');
+      		unset($result->items[$key]); continue;
+      	}
+      	if($result->items[$key]['Class'] != '') {
+  			$classQuery = db_select('node')
+  				->fields('node', array('nid', 'title'))
+  				->condition('uid', $user->uid, '=')
+  				->condition('type', 'classes', '=')
+  				->condition('title', $result->items[$key]['Class'], '=');
+  				
+  				$classRowCounts = $classQuery->execute()->rowCount();
+  				
+  
+      		if(!($classRowCounts > 0)) {
+      			drupal_set_message('Class at row ' . ($key + 2) . ' doesn\'t exist. Progress data can\'t be imported.', 'warning');
+      			unset($result->items[$key]); continue;
+      		}
+      		else {
+      			$classResult = $classQuery->execute()->fetchAll();
+      			$result->items[$key]['Class'] = $classResult[0]->nid;
+      		}
+      	}
+      
+      
     	if($result->items[$key]['Student SR No'] == '') {
     		drupal_set_message('Student Registration ID at row ' . ($key + 2) . ' is blank. Progress data can\'t be imported.', 'warning');
     		unset($result->items[$key]); continue;
@@ -117,8 +143,10 @@ function schoolknot_feeds_after_parse(FeedsSource $source, FeedsParserResult $re
     	if($result->items[$key]['Student SR No'] != '') {
     		$studentQuery = db_select('users');
 				$studentQuery->leftJoin('field_data_field_student_registration_id', 'srid', 'users.uid = srid.entity_id');
+				$studentQuery->leftJoin('field_data_field_class', 'class', 'users.uid = class.entity_id');
 				$studentQuery->fields('users', array('uid', 'name'))
-					->condition('srid.field_student_registration_id_value', $result->items[$key]['Student SR No'], '=');
+					->condition('srid.field_student_registration_id_value', $result->items[$key]['Student SR No'], '=')
+					->condition('class.field_class_target_id', $result->items[$key]['Class'], '=');
 				
 				
 				$studentRowCounts = $studentQuery->execute()->rowCount();
@@ -132,29 +160,7 @@ function schoolknot_feeds_after_parse(FeedsSource $source, FeedsParserResult $re
     			$result->items[$key]['Student SR No'] = $studentresults[0]->uid;
     		}
     	}
-    	if($result->items[$key]['Class'] == '') {
-    		drupal_set_message('Class at row ' . ($key + 2) . ' is blank. Progress data can\'t be imported.', 'warning');
-    		unset($result->items[$key]); continue;
-    	}
-    	if($result->items[$key]['Class'] != '') {
-			$classQuery = db_select('node')
-				->fields('node', array('nid', 'title'))
-				->condition('uid', $user->uid, '=')
-				->condition('type', 'classes', '=')
-				->condition('title', $result->items[$key]['Class'], '=');
-				
-				$classRowCounts = $classQuery->execute()->rowCount();
-				
-
-    		if(!($classRowCounts > 0)) {
-    			drupal_set_message('Class at row ' . ($key + 2) . ' doesn\'t exist. Progress data can\'t be imported.', 'warning');
-    			unset($result->items[$key]);
-    		}
-    		else {
-    			$classResult = $classQuery->execute()->fetchAll();
-    			$result->items[$key]['Class'] = $classResult[0]->nid;
-    		}
-    	}
+    	
     	if($result->items[$key]['Exam'] == '') {
     		drupal_set_message('Exam at row ' . ($key + 2) . ' is blank. Progress data can\'t be imported.', 'warning');
     		unset($result->items[$key]); continue;
