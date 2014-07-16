@@ -31,15 +31,17 @@
             <?php print render($action_links); ?>
             </ul>
             <?php endif; ?>
-            
 			<?php print render($title_prefix); ?>
+			
+						<?php if($node->type != 'school') {?>
+			
             <?php if ($title): ?>
             <h1><?php print $title; ?></h1>
             <?php endif; ?>
             <?php print render($title_suffix); ?>
             
-            <?php if ($tabs): ?><?php print render($tabs); ?><?php endif; ?>
-            
+            <?php if ($tabs): ?><?php //print render($tabs); ?><?php endif; ?>
+            <?php } ?>
             
             
             <?php print render($page['content']); ?>
