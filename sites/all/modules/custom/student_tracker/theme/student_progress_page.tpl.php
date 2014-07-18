@@ -66,6 +66,25 @@ print _get_merged_account_dd($user);
 ?>
 <?php if(!empty($marks['subject_wise'])) {?>
 <div class="profile"<?php print $attributes; ?>>
+
+	<div class="block">
+  	<h4>Student Information</h4>
+  	<?php 
+  	  $args = arg();
+  	  global $user;
+  	  if($args[0] == 'student-tracker' && $args[1] == 'progress-sheet') {
+        if(!isset($args[2])) {
+         $student_id = $user->uid;
+        }
+        else {
+          $student_id = $args[2];
+        }
+  	  }
+  	?>
+  	<?php print views_embed_view('student_information', 'block', $student_id); ?>
+  </div>
+
+
   <div class="block">
   	<h4>Complete Progress Sheet - Table</h4>
   	

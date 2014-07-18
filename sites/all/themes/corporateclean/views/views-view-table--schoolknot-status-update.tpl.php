@@ -50,7 +50,7 @@ $timestamp = REQUEST_TIME;
         <div class="load-more mbl">
           <?php print l('Comments', 'status-post/' . $row['nid'], array('attributes' => array('rel' => array('lightframe')))); ?>
         </div>
-        <?php if($userBlocked) { ?>
+        <?php if(_check_able_to_share($logedInUser, $row['uid'], $row['gid'])) { ?>
         <div class=""><?php print $row['ops'];?></div>
         <div class=""><?php print $row['sharethis'];?></div>
         <?php } ?>
@@ -65,7 +65,7 @@ $timestamp = REQUEST_TIME;
 			
 			<?php
 				global $user;
-				if($user->uid != 0 && ($userBlocked || in_array('School Administrator', $user->roles))) {
+				if($user->uid != 0 && (_check_able_to_share($logedInUser, $row['uid'], $row['gid']))) {
 				$block = module_invoke('classbellsu', 'block_view', 'classbellsu_comment_form', $row['nid']);
 				print '<div class="postComment dsk">';
 				print render($block['content']);
