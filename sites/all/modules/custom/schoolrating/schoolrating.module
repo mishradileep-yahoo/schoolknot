@@ -103,7 +103,7 @@ function schoolrating_rate_form($form, &$form_state) {
     		'#type' => 'radios',
     		'#title' => $question,
     		'#options' => $options,
-        //'#default_value' => (isset($user_rate_answers[$result->nid])) ? $user_rate_answers[$result->nid] : '-1',
+        '#default_value' => (isset($user_rate_answers[$result->nid])) ? $user_rate_answers[$result->nid] : '',
         //'#attributes' => array('class'=> array('star')),
         '#prefix' => '<div class="rating">',
         '#suffix' => '</div>',
