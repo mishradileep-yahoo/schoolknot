@@ -285,7 +285,7 @@ function schoolrating_rate_settings_form_submit($form, &$form_state) {
 	    $message .= $school_id['title'] . ' has enabled the school rating form. You can rate the school now!!.' . "\n";
 	    $message .= 'You may access school rating from from below link.' . "\n";
 	    $message .= l('School Rating Form', 'rating') . "\n";
-		$message .= '' . "\n";
+      $message .= '' . "\n";
 	    $message .= 'Thanks,' . "\n";
 	    $message .= 'Team SchoolKnot  ' . "\n";
 	    
@@ -293,8 +293,8 @@ function schoolrating_rate_settings_form_submit($form, &$form_state) {
 	    drupal_set_message(t('Rating is released to the parents successfully!'), 'status');
 	
 	}
-	
-	drupal_set_message('Rating is released to the parents successfully!.', 'status');
+  else {
+	drupal_set_message('Rating is disabled to the parents.', 'status'); }
 	
 }
 
