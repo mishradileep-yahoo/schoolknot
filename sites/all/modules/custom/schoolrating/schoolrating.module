@@ -294,7 +294,7 @@ function schoolrating_rate_settings_form_submit($form, &$form_state) {
 	
 	}
 	
-	drupal_set_message('Rating is released to the parents successfully!.', 'status');
+	drupal_set_message('Rating is disabled to the parents.', 'status');
 	
 }
 
