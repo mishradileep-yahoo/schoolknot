@@ -103,7 +103,7 @@ function schoolrating_rate_form($form, &$form_state) {
     		'#type' => 'radios',
     		'#title' => $question,
     		'#options' => $options,
-        '#default_value' => (isset($user_rate_answers[$result->nid])) ? $user_rate_answers[$result->nid] : '-1',
+        //'#default_value' => (isset($user_rate_answers[$result->nid])) ? $user_rate_answers[$result->nid] : '-1',
         //'#attributes' => array('class'=> array('star')),
         '#prefix' => '<div class="rating">',
         '#suffix' => '</div>',
@@ -134,7 +134,8 @@ function schoolrating_rate_form_validate($form, &$form_state) {
   foreach($question_ids as $question) {
     $question_input_id = 'question_'.$question;
     if(!isset($form_state['values'][$question_input_id]) || $form_state['values'][$question_input_id] == '') {
-      form_set_error($question_input_id, "Please rate for " . $form_state['complete form'][$question_input_id]['#title']);
+      form_set_error( 'choice', t("Please 'Check' all the options"));
+      break;
     }
   }
 }
