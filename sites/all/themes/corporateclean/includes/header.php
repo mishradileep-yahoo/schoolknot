@@ -60,6 +60,13 @@
 						</ul>
 					
 					
+				<?php } else if($loged_in_as['as'] == 'Teacher') { 
+				$admin_school = _get_school_node_id_for_school_admin_user();
+					?>
+					<li class="user">You are logged-in as Teacher of <?php print $loged_in_as['school']['title']; ?> <span class="user"></span> <?php //print l($loged_in_as['school']['title'] . ' <span class="user"></span>', 'node/' . $loged_in_as['school']['nid'], array('html' => true)); ?>
+						<ul id="user-submenu">
+							<li><?php print l('Reset Password', 'schoolknot/reset/password'); ?></li>
+						</ul>
 				<?php } ?>
 				
 				<li class="logout"><?php print l('Logout <span class="logout"></span>', 'user/logout', array('html' => true)); ?></li>

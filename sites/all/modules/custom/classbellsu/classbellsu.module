@@ -580,6 +580,12 @@ function _check_able_to_share($user, $node_author, $node_school) {
       return TRUE;
     }
   }
+  if(in_array('Teacher', $user->roles)) {
+    $parent_school = _get_school_node_id_for_school_admin_user($user->uid);
+    if($node_school == $parent_school['nid']) {
+      return TRUE;
+    }
+  }
   return FALSE;
 }
 

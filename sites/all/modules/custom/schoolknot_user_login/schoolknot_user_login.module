@@ -61,7 +61,15 @@ function schoolknot_user_login_menu() {
   	'title' => 'Create an individual student',
     'description' => 'Create an individual student',
   	'page callback' => 'drupal_get_form',
-	'page arguments' => array('schoolknot_create_user'),
+    'page arguments' => array('schoolknot_create_user'),
+  	'access arguments' 	=> array('schoolknot create user'),
+  	'type' => MENU_LOCAL_ACTION,
+  );
+  $items['create_teacher'] = array(
+  	'title' => 'Create an individual teacher',
+    'description' => 'Create an individual teacher',
+  	'page callback' => 'drupal_get_form',
+    'page arguments' => array('schoolknot_create_teacher'),
   	'access arguments' 	=> array('schoolknot create user'),
   	'type' => MENU_LOCAL_ACTION,
   );
@@ -286,6 +294,14 @@ function schoolknot_user_login_preprocess_page(&$vars) {
     		}
     	}
     }
+    if(in_array('Teacher', $user->roles)) {
+    	$useObj = user_load($user->uid);
+    	if(!isset($useObj->field_agreement_status['und']) || $useObj->field_agreement_status['und'][0]['value'] != 1) {
+    		if(drupal_is_front_page() || ($agrs[0] != 'schoolknot_user_login' && $agrs[1] != 'user_agreement')) {
+    		  drupal_goto('schoolknot_user_login/user_agreement');
+    		}
+    	}
+    }
     
     if($_GET['logout'] == '1'){
       drupal_set_message('Further instructions has been emailed to you.', 'status');
@@ -355,6 +371,97 @@ function schoolknot_user_agreeement_submit($form, &$form_state) {
 	}
 }
 
+function schoolknot_create_teacher($form, &$form_state) {
+	
+	$form['field_student_registration_id'] = array(
+		'#type' => 'textfield', 
+		'#title' => t('Teacher Registration ID'), 
+		'#size' => 60, 
+		'#maxlength' => 128,
+		'#required' => TRUE,
+	);
+	$form['field_student_first_name'] = array(
+		'#type' => 'textfield', 
+		'#title' => t('Teacher First Name'), 
+		'#size' => 60, 
+		'#maxlength' => 128, 
+		'#required' => TRUE,
+	);
+	$form['field_student_middle_name'] = array(
+		'#type' => 'textfield', 
+		'#title' => t('Teacher Middle Name'), 
+		'#size' => 60, 
+		'#maxlength' => 128, 
+	);
+	$form['field_student_last_name'] = array(
+		'#type' => 'textfield', 
+		'#title' => t('Teacher Last Name'), 
+		'#size' => 60, 
+		'#maxlength' => 128, 
+	);
+	
+	$form['field_student_date_of_birth'] = array(
+    '#title' => 'Teacher Date of Joining',
+    '#type' => 'date_popup', // Provided by the date_popup module
+    '#date_format' => 'j F Y', // Uses the PHP date() format - http://php.net/manual/en/function.date.php
+    '#date_year_range' => '-30:0', // Limits the year range to the next two upcoming years
+    '#required' => TRUE,
+    //'#default_value' => $user_dob, // Default value must be in 'Y-m-d' format.
+  );
+
+	$form['actions']['submit'] = array(
+		'#type' => 'submit',
+		'#value' => t('Create Teacher'),
+	);
+	
+	return $form;
+}
+function schoolknot_create_teacher_validate($form, &$form_state) {
+	global $user;
+  	$user_groups = og_get_groups_by_user();
+  	$user_school = reset($user_groups['node']);
+	
+	$username = $user_school . '_' . $form_state['values']['field_student_registration_id'];
+	$username = strtolower($username);
+	$username = preg_replace('@[^a-z0-9_]+@','_',$username);
+	
+	$validate_user = user_load_by_name($username);
+	if($validate_user){
+		form_set_error('field_student_registration_id', t('Teacher with same registration id alreday exist.'));
+	}
+	$form_state['values']['username'] = $username;
+	$form_state['values']['og_user_node'] = $user_school;
+	
+	//$usersample = user_load(102);
+//	pr($usersample); die;
+}
+
+function schoolknot_create_teacher_submit($form, &$form_state) {
+	$user_fields = array(
+		'name' => $form_state['values']['username'],
+		//'mail' => $form_state['values']['field_student_email_id'],
+		'pass' => str_replace('-', '', $form_state['values']['field_student_date_of_birth']),
+		'status' => 1,
+		'roles' => array(
+			DRUPAL_AUTHENTICATED_RID => 'authenticated user',
+			6 => 'Teacher',
+		),
+	);
+	$user_fields['field_student_registration_id']['und'][0]['value'] = $form_state['values']['field_student_registration_id'];
+	
+	$user_fields['field_student_first_name']['und'][0]['value'] = $form_state['values']['field_student_first_name'];
+	$user_fields['field_student_middle_name']['und'][0]['value'] = $form_state['values']['field_student_middle_name'];
+	$user_fields['field_student_last_name']['und'][0]['value'] = $form_state['values']['field_student_last_name'];
+	
+	$user_fields['field_student_date_of_birth']['und'][0]['value'] = $form_state['values']['field_student_date_of_birth'] . ' 00:00:00';
+	$user_fields['og_user_node']['und'][0]['target_id'] = $form_state['values']['og_user_node'];
+	$user_fields['field_schooladmin_blocked']['und'][0]['value'] = 1;
+	$user_fields['field_password_status']['und'][0]['value'] = 'email_not_verified';
+	$account = user_save('', $user_fields);
+
+	drupal_set_message('User created successfully.', 'status');
+	drupal_goto('school-admin-teachers-list');
+}
 function schoolknot_create_user($form, &$form_state) {
 	
 	$form['field_student_registration_id'] = array(
@@ -373,13 +480,6 @@ function schoolknot_create_user($form, &$form_state) {
 		'#required' => TRUE,
 	);
 	*/
-	$form['field_student_first_name'] = array(
-		'#type' => 'textfield', 
-		'#title' => t('Student First Name'), 
-		'#size' => 60, 
-		'#maxlength' => 128, 
-		'#required' => TRUE,
-	);
 	$form['field_student_first_name'] = array(
 		'#type' => 'textfield', 
 		'#title' => t('Student First Name'), 
@@ -579,25 +679,24 @@ function schoolknot_edit_user($form, &$form_state, $uid) {
   );
 	
 	if(!in_array('Teacher', $edit_user->roles)) {
-	// Get School Classes
-	global $user;
-	//pr($user);
-	$result = db_select('node')
-		->fields('node', array('nid', 'title'))
-		->condition('uid', $user->uid, '=')
-		->condition('type', 'classes', '=')
-		->execute()->fetchAll();
-	$class_options = array();
-	foreach($result as $class) {
-		$class_options[$class->nid] = $class->title;
-	}
-	
-	$form['field_class'] = array(
-		'#type' => 'select',
-		'#title' => t('Class'),
-		'#options' => $class_options,
-		'#default_value' => $edit_user->field_class['und'][0]['target_id'],
-	);
+    // Get School Classes
+    global $user;
+    $result = db_select('node')
+      ->fields('node', array('nid', 'title'))
+      ->condition('uid', $user->uid, '=')
+      ->condition('type', 'classes', '=')
+      ->execute()->fetchAll();
+    $class_options = array();
+    foreach($result as $class) {
+      $class_options[$class->nid] = $class->title;
+    }
+    
+    $form['field_class'] = array(
+      '#type' => 'select',
+      '#title' => t('Class'),
+      '#options' => $class_options,
+      '#default_value' => $edit_user->field_class['und'][0]['target_id'],
+    );
 	}
 	
 	$form['status'] = array(
@@ -609,7 +708,7 @@ function schoolknot_edit_user($form, &$form_state, $uid) {
 
 	$form['actions']['submit'] = array(
 		'#type' => 'submit',
-		'#value' => t('Update Student'),
+		'#value' => t('Update User'),
 	);
 	return $form;
 }

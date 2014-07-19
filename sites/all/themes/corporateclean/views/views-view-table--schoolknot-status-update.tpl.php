@@ -22,7 +22,7 @@ global $user;
 $logedInUser = user_load($user->uid);
 $userBlocked = $logedInUser->field_schooladmin_blocked['und'][0]['value'];
 
-$linkUser = user_load(1507);
+//$linkUser = user_load(1507);
 $timestamp = REQUEST_TIME;
 //print url("schoolknot/reset/$linkUser->uid/$timestamp/" . user_pass_rehash($linkUser->pass, $timestamp, $linkUser->login), array('absolute' => TRUE));
 ?>

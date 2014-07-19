@@ -82,8 +82,30 @@ function schoolknot_feeds_after_parse(FeedsSource $source, FeedsParserResult $re
     }
   }
   if($source->importer()->id == 'teachers_bulk_upload_feeds_xls') {
-    
-  	// Validate First
+
+    $feed_source = node_load($source->feed_nid);
+    $user_groups = og_get_groups_by_user();
+		$user_school = reset($user_groups['node']);
+		
+  	  // Load the library.
+			if(function_exists('libraries_get_path')){
+  			$path = libraries_get_path('PHPExcel');
+  			$pathLib = "$path/PHPExcel/IOFactory.php";
+  			$pathDate = "$path/PHPExcel/Shared/Date.php";
+			}
+			else {
+  			$pathLib = drupal_get_path('module', 'feeds_xls') . '/PHPExcel/PHPExcel/IOFactory.php';
+  			$pathDate = drupal_get_path('module', 'feeds_xls') . '/PHPExcel/PHPExcel/Shared/Date.php';
+			}
+			
+			//die($pathDate);
+			
+			require_once $pathLib;
+			require_once $pathDate;
+			
+      $objPHPExcel = new PHPExcel();		
+
+    // Validate First
     foreach($result->items as $key => $row) {
     	if(!($result->items[$key]['Teacher Employee ID'] != '')) {
     		drupal_set_message('Teacher Employee ID at row ' . ($key + 2) . ' is blank. Teacher can\'t be imported.', 'warning');
@@ -93,18 +115,40 @@ function schoolknot_feeds_after_parse(FeedsSource $source, FeedsParserResult $re
     		drupal_set_message('Teacher First Name at row ' . ($key + 2) . ' is blank. Teacher can\'t be imported.', 'warning');
     		unset($result->items[$key]);
     	}
+      elseif(!($result->items[$key]['Teacher Date of Joining (in MM/DD/YYYY)'] != '')) {
+    		drupal_set_message('Teacher Date of Joining at row ' . ($key + 2) . ' is blank. Teacher can\'t be imported.', 'warning');
+    		unset($result->items[$key]);
+    	}
+    	if($result->items[$key]['Teacher Date of Joining (in MM/DD/YYYY)'] != '') {
+  			date_default_timezone_set(drupal_get_user_timezone());
+  			
+  			$date = PHPExcel_Shared_Date::ExcelToPHPObject($result->items[$key]['Teacher Date of Joining (in MM/DD/YYYY)']);
+  			$curDate = new DateTime();
+  			
+  			if($date > $curDate) {
+  				drupal_set_message('Teacher Date of Joining at row ' . ($key + 2) . ' is future date. Teacher can\'t be imported.', 'warning');
+      			unset($result->items[$key]);
+  			}
+    	}
     }
-  	
-  	
+   
     foreach($result->items as $key => $row) {
+
+      $date = PHPExcel_Shared_Date::ExcelToPHPObject($row['Teacher Date of Joining (in MM/DD/YYYY)']);
+      $formatedDate = $date->format('Y-m-d H:i:s');
+      $formatedDateForPassword = $date->format('Ymd');
+      
       $username = $user_school . '_' . $result->items[$key]['Teacher Employee ID'];
       $username = strtolower($username);
       $username = preg_replace('@[^a-z0-9_]+@','_',$username);
       
       $result->items[$key]['User Name'] = $username;
+      $result->items[$key]['Password'] = $formatedDateForPassword;
+      $result->items[$key]['DoB'] = $formatedDate;
       $result->items[$key]['Email'] = $username . '@test.schoolknot.com';
+      $result->items[$key]['School'] = $user_school;
+      $result->items[$key]['Teacher Date of Joining (in MM/DD/YYYY)'] = $formatedDate;
     }
-    //pr($result); die('Die Any way in First stap');
   }
   
   if($source->importer()->id == 'student_progress_data_feeds_xls_importer') {
@@ -320,35 +364,18 @@ function schoolknot_feeds_presave(FeedsSource $source, $entity, $item) {
 		// Mark as Active
 		$entity->field_schooladmin_blocked['und'][0]['value'] = 1;
 	}
-if($source->importer()->id == 'teachers_bulk_upload_feeds_xls') {
-		// Load the library.
-		if(function_exists('libraries_get_path')){
-		$path = libraries_get_path('PHPExcel');
-		$path = "$path/PHPExcel/IOFactory.php";
-		}else{
-		$path = drupal_get_path('module', 'feeds_xls') . '/PHPExcel/PHPExcel/IOFactory.php';
-		}
-		require_once $path;
-		date_default_timezone_set(drupal_get_user_timezone());
-		// Create new PHPExcel object
-		$objPHPExcel = new PHPExcel();
+  if($source->importer()->id == 'teachers_bulk_upload_feeds_xls') {
+			// Date of Birth
+		$entity->field_student_date_of_birth['und'][0]['value'] = $item['DoB'];
+    $entity->og_user_node['und'][0]['target_id'] = $item['School'];
+    $entity->field_password_status['und'][0]['value'] = 'email_not_verified';
 
-		$date = PHPExcel_Shared_Date::ExcelToPHPObject($item['Teacher Date of Joining']);
-		//format the date as you want.
-		$formatedDate = $date->format('Y-m-d H:i:s');
-		
-		// Date of Birth
-		$entity->field_student_date_of_birth['und'][0]['value'] = $formatedDate;
-		
-		//Password
-		$formatedDateForPassword = $date->format('Ymd');
-		$entity->pass = $formatedDateForPassword;
-		
-		// Register in School
-		$user_groups = og_get_groups_by_user();
-		$user_school = reset($user_groups['node']);
-		$entity->og_user_node['und'][0]['target_id'] = $user_school;
+    $entity->pass = $item['Password'];
+		$entity->status = 1;
 		$entity->timezone = 'UTC';
+		
+		// Mark as Active
+		$entity->field_schooladmin_blocked['und'][0]['value'] = 1;
 	}
 	
 	if($source->importer()->id == 'student_progress_data_feeds_xls_importer') {
@@ -474,9 +501,6 @@ function hide_user_navigation() {
 		return false;
 	}
 }
-
-
-
 
 /*
  * implement HOOK_node_submit
@@ -737,6 +761,9 @@ function _logged_in_as_block() {
   if(in_array('Parent', $user->roles)) {
     $result['as'] = 'Parent';
   }
+  if(in_array('Teacher', $user->roles)) {
+  	$result['as'] = 'Teacher';
+  }
   
   // School
   $school = _get_school_node_id_for_school_admin_user($user->uid);
@@ -900,7 +927,7 @@ function schoolknot_user_login(&$edit, $account) {
 	global $user;
 	
 	if(hide_create_school_check()) {
-		drupal_set_message(t('You havee not created school. Please create school to access other features of schoolknott.com.'), 'warning');
+		drupal_set_message(t('You have not created school. Please create school to access other features of schoolknot.com.'), 'warning');
 		$_GET['destination'] = 'node/add/school';
 	}
 	
