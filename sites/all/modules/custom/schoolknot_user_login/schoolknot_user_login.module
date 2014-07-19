@@ -1239,7 +1239,7 @@ function schoolknot_auth_account_school_submit($form, &$form_state) {
 
 function schoolknot_auth_account_parents($form, &$form_state) {
   $form['show_form'] = array(
-		'#markup' => '<div class="clearer"></div>'.l('Parents', 'javascript:void(0);', 
+		'#markup' => '<div class="clearer"></div>'.l('Parents/Teacher', 'javascript:void(0);', 
 	    array('external' => TRUE, 
 	    			'attributes' => array('class' => 'form-submit forgetpassword', 'id' => 'show-parents-auth-acccount')
 	    )
