@@ -138,7 +138,7 @@ function schoolknot_feeds_after_parse(FeedsSource $source, FeedsParserResult $re
       $formatedDate = $date->format('Y-m-d H:i:s');
       $formatedDateForPassword = $date->format('Ymd');
       
-      $username = $user_school . '_' . $result->items[$key]['Teacher Employee ID'];
+      $username = $user_school . '_te_' . $result->items[$key]['Teacher Employee ID'];
       $username = strtolower($username);
       $username = preg_replace('@[^a-z0-9_]+@','_',$username);
       
