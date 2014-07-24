@@ -685,7 +685,7 @@ function _get_all_group_member_ids($group_id) {
       ->condition('u.status', '1', '=');
       $result = $query->execute();
     foreach ($result as $student) {
-      pr($student);
+      //pr($student);
     }
 }
 

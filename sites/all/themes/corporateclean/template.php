@@ -119,6 +119,15 @@ function corporateclean_form_alter(&$form, &$form_state, $form_id) {
 
 function corporateclean_preprocess_page(&$variables, $hook) {
   $alias = drupal_get_path_alias();
+  if (isset($variables['node'])) {
+    $variables['theme_hook_suggestions'][] = 'page__' . $variables['node']->type;
+  }
+  
+  $args = arg();
+  if($args[0] == 'group' && $args[1] == 'node' && $args[3] == 'subscribe' && $args[4] == 'og_user_node') {
+    $variables['theme_hook_suggestions'][] = 'page__school_group';
+  }
+  
   if ($alias == 'site_landing_page') {
 	  //$variables['theme_hook_suggestions'][] = 'page__site-landing-page';
   }
