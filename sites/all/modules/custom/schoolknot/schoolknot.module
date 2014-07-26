@@ -642,6 +642,25 @@ function schoolknot_node_insert($node){
 
     _send_private_message($users, $suject, $message);
   }
+  if($node->type == 'examination') {
+    $school_id = _get_school_node_id_for_school_admin_user();
+    $node->og_group_ref[$node->language][0]['target_id'] = $school_id['nid'];
+    
+    $parents_list = _get_all_parents_for_school($school_id['nid']);
+    $parent_ids = array();
+    foreach($parents_list as $parent) {
+      $parent_ids[] = $parent->uid;
+    }
+    $suject = $node->title .' Scheduled';
+    $message = 'Dear Parent,' . "\n";
+    $message .= 'Exams has been scheduled by school of your child.' . "\n";
+    //$message .= $node->title . "\n";
+    $message .= "From " . date('F j, Y', strtotime($node->field_exam_schedule['und'][0]['value'])) . " to " . date('F j, Y', strtotime($node->field_exam_schedule['und'][0]['value2'])) . "\n\n";
+    //$message .= 'Please click below link for list of Exams' . "\n";
+    //$message .= l('School Exams', 'school-holidays/'.$school_id['nid']) . "\n";
+    $users = user_load_multiple($parent_ids);
+    _send_private_message($users, $suject, $message);
+  }
 }
 
 function _get_school_node_id_for_school_admin() {
@@ -795,7 +814,6 @@ function _logged_in_as_block() {
 function _user_full_name_by_user_obj($user) {
   $name = '';
   $user = user_load($user->uid);
-  
   if(isset($user->field_student_first_name['und'])) {
     $name = $user->field_student_first_name['und'][0]['value'];
   }
@@ -807,7 +825,6 @@ function _user_full_name_by_user_obj($user) {
   }
   $name = ($name == '') ? $user->name : $name;
   return $name;
-  
 }
 
 
