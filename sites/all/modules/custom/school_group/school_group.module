@@ -43,29 +43,49 @@ function school_group_menu(){
 }
 
 function school_group_invite($form, &$form_state, $group_id) {
-  	$form['title'] = array(
+  $form['invitee_school'] = array(
 		'#type' => 'textfield',
 		'#title' => t('School Name'), 
-		'#description' => t('Type school name and select desired school from options below.'),
+		'#description' => t('Type school name and select desired school from options below.<br>Invited school will be added as member immediately.'),
 		'#autocomplete_path' => 'school_group/school_autocomplete/'.$group_id,
 		'#size' => 60,
 		'#maxlength' => 128,
 		'#required' => TRUE,
 		'#attributes' => array('placeholder' => array('Type school name')),
 	);
+	$form['group_id'] = array(
+		'#type' => 'hidden',
+		'#value' => $group_id,
+		
+	);
 	$form['actions']['submit'] = array(
 		'#type' => 'submit',
-		'#value' => t('Login'),
+		'#value' => t('Add School to Group'),
 	);
 		
 	return $form;
+}
+function school_group_invite_validate($form, &$form_state) {
+  $result = preg_match('/\(([0-9 ]+?)\)/', $form_state['values']['invitee_school'], $matches);
+  $form_state['values']['invitee_school'] = $matches[$result];
+}
+
+function school_group_invite_submit($form, &$form_state) {
+  $school = node_load($form_state['values']['invitee_school']);
+  $school_admin = user_load($school->uid);
+  $group_subscription = array(
+    'entity_type' => 'user',
+    'entity' => $school_admin
+  );
+  og_group('node', $form_state['values']['group_id'], $group_subscription);
+  drupal_set_message($school->title . ' added successfully to this group.');
+  drupal_goto('group-members/'.$form_state['values']['group_id']);
 }
 
 
 function school_group_school_name_autocomplete($group_id, $string = '') {
 	if ($string) {
 	  global $user;
-	  //$user_school = _get_school_node_id_for_school_admin_user();
 	  $group_members = _get_school_in_group($group_id);
 		$query = db_select('node', 'n');
 		$query->fields('n', array('title', 'nid'))
@@ -83,7 +103,7 @@ function school_group_school_name_autocomplete($group_id, $string = '') {
 }
 
 /**
- * Get all users of a group
+ * Get all school of a group
  */
 function _get_school_in_group($gid) {
   $query = db_select("og_membership", "ogm");
@@ -473,7 +493,7 @@ function _get_group_join_leave_link ($gid, $userObj = '') {
       return l('Unsubscribe Group', 'group/node/' . $gid . '/unsubscribe');
     }
     else {
-      return l('Invite Memebers', 'school_group/' . $gid . '/invite');
+      return l('Add Memebers', 'school_group/' . $gid . '/invite');
     }
   }
   else {

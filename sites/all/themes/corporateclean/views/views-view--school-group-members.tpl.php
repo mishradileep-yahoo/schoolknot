@@ -54,6 +54,7 @@
   	<li><?php print l('Group Details', 'node/' . arg(1)); ?></li>
   	<li><?php print l('Group Updates', 'group-status-update/' . arg(1)); ?></li>
   	<li class="active"><?php print l('Group Members', 'group-members/' . arg(1)); ?></li>
+  	<li><?php print _get_group_join_leave_link(arg(1));?></li>
   </ul>
   <?php if ($rows): ?>
     <div class="view-content">
