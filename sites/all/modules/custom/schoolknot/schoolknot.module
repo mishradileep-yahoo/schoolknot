@@ -708,6 +708,25 @@ function _get_all_parents_for_school($school_id) {
   return $return;
 }
 
+function _get_all_teachers_for_school($school_id) {
+  global $user;
+  $query = db_select('users', 'u');
+    $query->leftJoin('og_membership', 'ogm', 'u.uid = ogm.etid');
+    $query->leftJoin('users_roles', 'ur', 'u.uid = ur.uid');
+    $query
+      ->fields('u', array('uid', 'name'))
+      ->condition('ogm.gid', $school_id, '=')
+      ->condition('ur.rid', '6', '=')
+      ->condition('u.status', '1', '=');
+      $result = $query->execute();
+      
+     $return  = array();
+    foreach ($result as $student) {
+     $return[$student->uid] = $student;
+    }
+  return $return;
+}
+
 function _get_all_active_parents_for_school($school_id) {
   global $user;
   $query = db_select('users', 'u');
