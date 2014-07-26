@@ -795,12 +795,17 @@ function _logged_in_as_block() {
 function _user_full_name_by_user_obj($user) {
   $name = '';
   $user = user_load($user->uid);
-
-  $fname = (isset($user->field_student_first_name['und'])) ? $user->field_student_first_name['und'][0]['value'] : ' ';
-  $mname = (isset($user->field_student_middle_name['und'])) ? $user->field_student_middle_name['und'][0]['value'] : ' ';
-  $lname = (isset($user->field_student_last_name['und'])) ? $user->field_student_last_name['und'][0]['value'] : ' ';
   
-  $name = $fname . ' ' . $mname . ' ' . $lname;
+  if(isset($user->field_student_first_name['und'])) {
+    $name = $user->field_student_first_name['und'][0]['value'];
+  }
+  if(isset($user->field_student_middle_name['und'])) {
+    $name.= ' '. $user->field_student_middle_name['und'][0]['value'];
+  }
+  if(isset($user->field_student_last_name['und'])) {
+    $name .= ' '. $user->field_student_last_name['und'][0]['value'];
+  }
+  $name = ($name == '') ? $user->name : $name;
   return $name;
   
 }
