@@ -181,6 +181,16 @@ select {border: 2px solid #B3B3B3;
 .loader{background:#e6f4ff;overflow:hidden;clear:both;}
 .loader p{color:#489fe2;text-align:center;padding:8px;}
 .loader p a{color:#489fe2;}
+
+.view-school-group-status-update .posts {
+	/*float: none;
+	background: none;
+	border-left: none;
+	width: auto;
+	padding-left: 0;*/
+}
+
+
 .footer{
 	border-top: 1px solid #0c82da;
 	padding: 5px 0;
@@ -925,3 +935,24 @@ html.js input.throbbing {
 #show-parents-auth-acccount {display: inline-block;}
 .schooladmin-forgetpassword, .parents-forgetpassword, .schooladmin-auth-account, .parents-auth-account{display: none;}
 .rwd-admin-menu-toggle{display: none;}
+
+/* Groups Page */
+.school-groups{clear:both}
+.school-groups .group-item{width: 45%; margin-right: 10%; float: left}
+.school-groups .group-item:last-child {margin-right: 0%;}
+.school-groups .group-item .logo{width: 100px; margin: 0 20px 0 0;}
+
+.school-groups .group-item .details a{font-weight: 600; color: #2E79B2;}
+.school-groups .group-item .details p{color: #2E79B2; margin: 5px 0;}
+.school-groups .group-item .details p i{color: #b3b3b3; font-size: 10px;}
+
+.school-groups-details  .group-item{width: 100%; margin: 0}
+.school-groups-details  .group-item .logo{width: 150px; height:150px; margin: 0 20px 0 0;}
+
+
+.view-school-group-members .schoolInfo{
+	width: 50%;
+	float: left;
+	margin: 20px 0;
+}
+.view-school-group-members .schoolInfo .schDtl {float: left}
