@@ -168,6 +168,25 @@ function schoolmessages_form_submit($form, &$form_state) {
     	drupal_set_message(t('Your message was not delivered.'), 'error');
     }
   }
+  
+  // To All Teachers
+  if($form_state['values']['recipent_type'] == 3) {
+    $school_id = _get_school_node_id_for_school_admin();
+    $teachers_for_school = _get_all_teachers_for_school($school_id['nid']);
+    
+    $teacher_ids = array();
+    foreach($teachers_for_school as $teacher_id => $teacher) {
+      array_push($teacher_ids, $teacher_id);
+    }
+    $recipients = user_load_multiple($teacher_ids);
+    if($recipients) {
+    	_send_private_message($recipients, $form_state['values']['subject'], $form_state['values']['message'], $form_state['values']['recipent_type']);
+    	drupal_set_message(t('Your message was delivered successfully.'), 'status');
+    }
+    else {
+    	drupal_set_message(t('Your message was not delivered.'), 'error');
+    }
+  }
 }
 
 function _send_private_message($recipients, $subject, $message, $recipient_type) {
