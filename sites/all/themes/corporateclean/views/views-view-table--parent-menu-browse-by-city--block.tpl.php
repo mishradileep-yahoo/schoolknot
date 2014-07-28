@@ -20,7 +20,10 @@
 		<?php } // End Schol?>
 		
 		<?php print _get_school_rating_link_for_parent(); ?>
-		
+		<?php if($loged_in_as['as'] == 'Teacher') {
+		?>
+			<li><?php print l('Notifications', 'messages', array('html' => TRUE,)); ?></li>
+		<?php } ?>
 	</ul>
 </div>
 

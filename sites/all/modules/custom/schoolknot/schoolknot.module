@@ -636,10 +636,30 @@ function schoolknot_node_insert($node){
     $suject = 'Homework assigned for ' . _get_datefield_value_from_dob($node->field_homework_date[$node->language][0]['value']);
     $message = 'Dear Parent,' . "\n";
     $message .= 'Please find homework for ' . _get_datefield_value_from_dob($node->field_homework_date[$node->language][0]['value']) . ' below to your child' . "\n";
+    $message .= $node->title . "\n";
     $message .= $node->body[$node->language][0]['value'] . "\n";
     
     $users = user_load_multiple($parent_ids);
 
+    _send_private_message($users, $suject, $message);
+  }
+  if($node->type == 'examination') {
+    $school_id = _get_school_node_id_for_school_admin_user();
+    $node->og_group_ref[$node->language][0]['target_id'] = $school_id['nid'];
+    
+    $parents_list = _get_all_parents_for_school($school_id['nid']);
+    $parent_ids = array();
+    foreach($parents_list as $parent) {
+      $parent_ids[] = $parent->uid;
+    }
+    $suject = $node->title .' Scheduled';
+    $message = 'Dear Parent,' . "\n";
+    $message .= 'Exams has been scheduled by school of your child.' . "\n";
+    //$message .= $node->title . "\n";
+    $message .= "From " . date('F j, Y', strtotime($node->field_exam_schedule['und'][0]['value'])) . " to " . date('F j, Y', strtotime($node->field_exam_schedule['und'][0]['value2'])) . "\n\n";
+    //$message .= 'Please click below link for list of Exams' . "\n";
+    //$message .= l('School Exams', 'school-holidays/'.$school_id['nid']) . "\n";
+    $users = user_load_multiple($parent_ids);
     _send_private_message($users, $suject, $message);
   }
 }
@@ -698,6 +718,25 @@ function _get_all_parents_for_school($school_id) {
       ->fields('u', array('uid', 'name'))
       ->condition('ogm.gid', $school_id, '=')
       ->condition('ur.rid', '5', '=')
+      ->condition('u.status', '1', '=');
+      $result = $query->execute();
+      
+     $return  = array();
+    foreach ($result as $student) {
+     $return[$student->uid] = $student;
+    }
+  return $return;
+}
+
+function _get_all_teachers_for_school($school_id) {
+  global $user;
+  $query = db_select('users', 'u');
+    $query->leftJoin('og_membership', 'ogm', 'u.uid = ogm.etid');
+    $query->leftJoin('users_roles', 'ur', 'u.uid = ur.uid');
+    $query
+      ->fields('u', array('uid', 'name'))
+      ->condition('ogm.gid', $school_id, '=')
+      ->condition('ur.rid', '6', '=')
       ->condition('u.status', '1', '=');
       $result = $query->execute();
       
@@ -776,14 +815,17 @@ function _logged_in_as_block() {
 function _user_full_name_by_user_obj($user) {
   $name = '';
   $user = user_load($user->uid);
-
-  $fname = (isset($user->field_student_first_name['und'])) ? $user->field_student_first_name['und'][0]['value'] : ' ';
-  $mname = (isset($user->field_student_middle_name['und'])) ? $user->field_student_middle_name['und'][0]['value'] : ' ';
-  $lname = (isset($user->field_student_last_name['und'])) ? $user->field_student_last_name['und'][0]['value'] : ' ';
-  
-  $name = $fname . ' ' . $mname . ' ' . $lname;
+  if(isset($user->field_student_first_name['und'])) {
+    $name = $user->field_student_first_name['und'][0]['value'];
+  }
+  if(isset($user->field_student_middle_name['und'])) {
+    $name.= ' '. $user->field_student_middle_name['und'][0]['value'];
+  }
+  if(isset($user->field_student_last_name['und'])) {
+    $name .= ' '. $user->field_student_last_name['und'][0]['value'];
+  }
+  $name = ($name == '') ? $user->name : $name;
   return $name;
-  
 }
 
 
