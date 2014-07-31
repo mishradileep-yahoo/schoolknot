@@ -136,7 +136,7 @@ function corporateclean_preprocess_page(&$variables, $hook) {
   	$variables['theme_hook_suggestions'][] = 'page__contact';
   }
   	
-  if($page_args[0] == 'compare' || $page_args[0] == 'school-research' || $page_args[0] == 'browse_by_city' || $page_args[0] == 'compare-schools' ||$page_args[0] == 'browse-schools-by-city' || $page_args[0] == 'account_merge' || $page_args[0] == 'school-homework') {
+  if($page_args[0] == 'compare' || $page_args[0] == 'school-research' || $page_args[0] == 'parentmessage' || $page_args[0] == 'browse_by_city' || $page_args[0] == 'compare-schools' ||$page_args[0] == 'browse-schools-by-city' || $page_args[0] == 'account_merge' || $page_args[0] == 'school-homework') {
   	$variables['theme_hook_suggestions'][] = 'page__compare';
   }
     
