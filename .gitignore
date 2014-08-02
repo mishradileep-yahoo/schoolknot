@@ -10,3 +10,4 @@ sites/*/private
 /.settings
 /.buildpath
 /sites/default/settings.php
+user_import_storage
