@@ -286,7 +286,7 @@ function schoolknot_user_login_user_login(&$edit, $account) {
   if(in_array('School Administrator', $just_loged_in->roles)) {
     if($just_loged_in->field_password_status['und'][0]['value'] == 'reset_requested') {
       $just_loged_in->field_password_status['und'][0]['value'] == 'normal';
-      $user_fields['field_password_status']['und'][0]['value'] = 'reset_requested';
+      $user_fields['field_password_status']['und'][0]['value'] = 'normal';
       $account = user_save($just_loged_in, $user_fields);
       drupal_goto('schoolknot/reset/password');
     }
