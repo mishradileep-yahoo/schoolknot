@@ -956,3 +956,22 @@ html.js input.throbbing {
 	margin: 20px 0;
 }
 .view-school-group-members .schoolInfo .schDtl {float: left}
+
+/* forget Password */
+#account_trouble_warpper {
+	margin: 10px 0;
+	color: #2E79B2;
+}
+#account_trouble_warpper h4 {
+	font-size: 14px;
+}
+#account_trouble_warpper ul {
+	list-style-type:circle;
+	margin: 0 0 0 20px;
+}
+#account_trouble_warpper a {
+	color: #2E79B2;
+}
+#account_trouble_warpper a:hover {
+	text-decoration: underline;
+}
