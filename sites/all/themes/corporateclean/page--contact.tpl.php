@@ -60,9 +60,7 @@ $schoolId = _get_school_node_id_for_school_admin_user(); ?>
             <?php 
             if($loged_in_as['as'] == 'Parent') { 
               $stuent_school = node_load($loged_in_as['school']['nid']);
-              //pr($stuent_school);
               ?>
-              
                 <div class="profileDetail contact-us">
                 <p> Please contact you school administrator on below details or go to <?php print l(t($stuent_school->title), 'node/'.$schoolId['nid'], array('attributes' => array('class' => array('showcase', $variables['addAnotherTabClass'])), 'html' => TRUE));?> detail page.</p>
                   <div class="section">

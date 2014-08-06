@@ -261,6 +261,12 @@ function theme_privatemsg_username($variables) {
   if (!isset($recipient->uid)) {
     $recipient->uid = $recipient->recipient;
   }
+  if ((in_array("Parent", $recipient->roles)) || (in_array("Teacher", $recipient->roles))) {
+    $recipient_name = $recipient->field_student_registration_id['und'][0]['value']; 
+  }
+  else {
+    $recipient_name = $recipient->name; 
+  }
   if (!empty($options['plain'])) {
     $name = strip_tags(format_username($recipient));
     if (!empty($options['unique'])) {
@@ -268,8 +274,9 @@ function theme_privatemsg_username($variables) {
     }
     return $name;
   }
+
   else {
-    return theme('username', array('account' => $recipient));
+    return $recipient_name;//theme('username', array('account' => $recipient));
   }
 }
 
