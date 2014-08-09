@@ -186,7 +186,7 @@ function schoolknot_user_login_step2($form, &$form_state, $school_name) {
 		'#maxlength' => 128,
 		'#required' => TRUE,
 		'#attributes' => array('placeholder' => array('Password')),
-		'#description' => 'Please enter the student date of birth in YYYYMMDD format for first time login.',
+		'#description' => 'Please enter the student date of birth in <b>YYYYMMDD</b> format for first time login.',
 	);
 	$form['school_title'] = array(
 		'#type' => 'hidden',
@@ -335,7 +335,7 @@ function schoolknot_user_login_preprocess_page(&$vars) {
     }
     
     if($_GET['logout'] == '1'){
-      drupal_set_message('Further instructions has been emailed to you.', 'status');
+      drupal_set_message("Further instructions has been emailed to you.<br><b>Didn't get the email?</b> <br>First check your spam or junk folder. If you still can't find it please click here to <b><a href='schoolknot/auth-account'>resend activation email</a></b>.  Please contact your school administrator for any assistance", 'status');
     }
     //$timestamp = REQUEST_TIME;
     //drupal_set_message(url("schoolknot/reset/$user->uid/$timestamp/" . user_pass_rehash($user->pass, $timestamp, $user->login), array('absolute' => TRUE)));
