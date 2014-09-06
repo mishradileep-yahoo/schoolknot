@@ -52,12 +52,19 @@
 				<?php } else if($loged_in_as['as'] == 'School Administrator') { 
 				$admin_school = _get_school_node_id_for_school_admin_user();
 					?>
+					
+					<?php if(!hide_create_school_check()) { ?>
 					<li class="user">You are logged-in as Admin of <?php print $loged_in_as['school']['title']; ?> <span class="user"></span> <?php //print l($loged_in_as['school']['title'] . ' <span class="user"></span>', 'node/' . $loged_in_as['school']['nid'], array('html' => true)); ?>
 						<ul id="user-submenu">
+							
 							<li><?php print l('School Profile', 'node/' . $admin_school['nid'] ); ?></li>
 							<li><?php print l('Edit School', 'node/' . $admin_school['nid'] . '/edit'); ?></li>
+							
 							<li><?php print l('Reset Password', 'schoolknot/reset/password'); ?></li>
 						</ul>
+						<?php } else { ?>
+						<li class="user"><?php print l('Create School', 'node/add/school'); ?></li>
+						<?php } ?>
 					
 					
 				<?php } else if($loged_in_as['as'] == 'Teacher') { 

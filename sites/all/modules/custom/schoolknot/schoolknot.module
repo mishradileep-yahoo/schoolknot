@@ -970,7 +970,7 @@ function schoolknot_user_login(&$edit, $account) {
 	
 	if(hide_create_school_check()) {
 		drupal_set_message(t('You have not created school. Please create school to access other features of schoolknot.com.'), 'warning');
-		$_GET['destination'] = 'node/add/school';
+		//$_GET['destination'] = 'node/add/school';
 	}
 	
 	if($user->uid != 0 || in_array('Parent', $user->roles)) {
