@@ -288,11 +288,11 @@ function schoolknot_user_login_user_login(&$edit, $account) {
       $just_loged_in->field_password_status['und'][0]['value'] == 'normal';
       $user_fields['field_password_status']['und'][0]['value'] = 'normal';
       $account = user_save($just_loged_in, $user_fields);
-      drupal_goto('schoolknot/reset/password');
+      //drupal_goto('schoolknot/reset/password');
     }
     else if(in_array('School Administrator', $just_loged_in->roles)) {
       $school = _get_school_node_id_for_school_admin_user();
-      drupal_goto('node/' . $school['nid']);
+      //drupal_goto('node/' . $school['nid']);
     }
   } 
 }
