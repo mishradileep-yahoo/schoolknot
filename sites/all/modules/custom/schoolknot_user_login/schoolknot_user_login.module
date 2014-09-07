@@ -1241,6 +1241,8 @@ function schoolknot_auth_account_school_submit($form, &$form_state) {
   
   ' . $password_reste_url . '
   
+  Your account username is ' . $form_state['values']['username'] . '
+  
   You will asked for password reset after activation. Please be ready with your password string.
   
   --  SchoolKnot.com team';
