@@ -281,18 +281,28 @@ function schoolknot_user_login_step2_submit($form, &$form_state) {
 }
 
 function schoolknot_user_login_user_login(&$edit, $account) {
-  
   $just_loged_in = user_load($account->uid);
   if(in_array('School Administrator', $just_loged_in->roles)) {
+    //pr($just_loged_in);
     if($just_loged_in->field_password_status['und'][0]['value'] == 'reset_requested') {
-      $just_loged_in->field_password_status['und'][0]['value'] == 'normal';
-      $user_fields['field_password_status']['und'][0]['value'] = 'normal';
-      $account = user_save($just_loged_in, $user_fields);
+       //pr($just_loged_in); die;
+      
+      $password_reset_update = db_update('field_data_field_password_status')
+      ->fields(array('field_password_status_value' => 'reset_requested'))
+      ->condition('entity_id', $just_loged_in->uid, '=');
+      $password_reset_update->execute();
+     
       drupal_goto('schoolknot/reset/password');
     }
     else if(in_array('School Administrator', $just_loged_in->roles)) {
       $school = _get_school_node_id_for_school_admin_user();
-      drupal_goto('node/' . $school['nid']);
+      if(!isset($school['nid'])) {
+        drupal_goto('node/add/school');
+      }
+      else {
+        drupal_goto('node/' . $school['nid']);
+      }
+      
     }
   } 
 }
@@ -1072,6 +1082,10 @@ global $user;
           $user_fields['status'] = 1;
 	        $user_fields['field_password_status']['und'][0]['value'] = 'reset_requested';
           $account = user_save($user, $user_fields);
+          
+          $password_reset_update = db_update('field_data_field_password_status')
+          ->fields(array('field_password_status_value' => 'reset_requested'))
+          ->condition('entity_id', $user->uid, '=')->execute();
 	        
           user_login_finalize();
           watchdog('user', 'User %name used one-time login link at time %timestamp.', array('%name' => $account->name, '%timestamp' => $timestamp));
@@ -1084,7 +1098,7 @@ global $user;
         else {
           $user = $account;
 	        $user_fields['field_password_status']['und'][0]['value'] = 'normal';
-          $account = user_save($user, $user_fields);
+          //$account = user_save($user, $user_fields);
           
           $form['message'] = array('#markup' => t('<p>This is a one-time login for %user_name and will expire on %expiration_date.</p><p>Click on this button to log in to the site and change your password.</p>', array('%user_name' => _user_full_name_by_user_obj($user), '%expiration_date' => format_date($timestamp + $timeout))));
           $form['help'] = array('#markup' => '<p>' . t('This login can be used only once.') . '</p>');
@@ -1129,8 +1143,15 @@ function schoolknot_user_reset_password($form, &$form_state){
 function schoolknot_user_reset_password_submit($form, &$form_state){
   global $user;
   $edit['pass'] = $form_state['values']['pass'];
+  
+  $password_reset_update = db_update('field_data_field_password_status')
+      ->fields(array('field_password_status_value' => 'normal'))
+      ->condition('entity_id', $user->uid, '=');
+      $password_reset_update->execute();
+      
   user_save($user, $edit);
   drupal_set_message('Password Successfully Reset.');
+  //die('asdasd');
   drupal_goto();
 }
 
@@ -1451,7 +1472,7 @@ function schoolknot_user_login_form_alter(&$form, &$form_state, $form_id) {
 }
 
 function schoolknot_user_login_user_presave(&$edit, $account, $category) {
-  if(in_array('School Administrator', $account->roles)) {
+  if(in_array('School Administrator', $account->roles) && $account->is_new == 1) {
     $edit['field_password_status']['und'][0]['value'] = 'reset_requested';
   }
 }
