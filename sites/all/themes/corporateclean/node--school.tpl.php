@@ -59,7 +59,7 @@
 	<div class="tabLists">
 		<ul>
 			<li><?php print l('About', 'node/' . $node->nid); ?></li>
-			<li><?php print l('Showcase', 'school-timeline/' . $node->nid); ?></li>
+			<li><?php print l('Showcase', 'schoolknot-timeline/' . $node->nid); ?></li>
 			<li><?php print l('Photos', 'school-album/' . $node->nid); ?></li>
 		</ul>
 	</div>
