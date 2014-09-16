@@ -34,6 +34,20 @@ $node = node_load($node_id);
 $field_city_district = taxonomy_term_load($node->field_city_district[$node->language][0]['tid']);
 $field_state = taxonomy_term_load($node->field_state[$node->language][0]['tid']);
 ?>
+<?php $loged_in_as = _logged_in_as_block();
+if($loged_in_as['as'] == 'Parent') {
+  $schoolId = _get_school_node_id_for_school_admin_user();
+?>
+   	<div class="tabLists student-progress-tabs">
+     	<ul>
+     		<li><?php print l(t('<span>Notifications</span>'), 'messages', array('attributes' => array('class' => array('notification', $variables['notificationTabClass'])), 'html' => TRUE));?></li>
+       	<li><?php print l(t('<span>Progress Sheet</span>'), 'student-tracker/progress-sheet', array('attributes' => array('class' => array('progress', $variables['progressTabClass'])), 'html' => TRUE));?></li>
+       	<!-- <li><?php // print l(t('<span>Attendance</span>'), '/', array('attributes' => array('class' => array('attendance', $variables['attendenceTabClass'])), 'html' => TRUE));?></li> -->
+       	<li><?php print l(t('<span>Add Another Student</span>'), 'account_merge/merge', array('attributes' => array('class' => array('add-another', $variables['addAnotherTabClass'])), 'html' => TRUE));?></li>
+     	<li><?php print l(t('<span>School Showcase</span>'), 'schoolknot-showcase/'.$schoolId['nid'], array('attributes' => array('class' => array('showcase', $variables['addAnotherTabClass'])), 'html' => TRUE));?></li>
+   	</ul>
+ 	</div>
+<?php } ?>
 <div class="profileWrap">
   <?php
   	  if(isset($node->field_school_profile_image['und'][0]['uri'])) {
@@ -95,20 +109,7 @@ $field_state = taxonomy_term_load($node->field_state[$node->language][0]['tid'])
 			<li><?php // print l('Groups', 'my-groups/' . $node->uid); ?></li>
 		</ul>
 	</div>
-<?php $loged_in_as = _logged_in_as_block();
-if($loged_in_as['as'] == 'Parent') {
-  $schoolId = _get_school_node_id_for_school_admin_user();
-?>
-   	<div class="tabLists student-progress-tabs">
-     	<ul>
-     		<li><?php print l(t('<span>Notifications</span>'), 'messages', array('attributes' => array('class' => array('notification', $variables['notificationTabClass'])), 'html' => TRUE));?></li>
-       	<li><?php print l(t('<span>Progress Sheet</span>'), 'student-tracker/progress-sheet', array('attributes' => array('class' => array('progress', $variables['progressTabClass'])), 'html' => TRUE));?></li>
-       	<!-- <li><?php // print l(t('<span>Attendance</span>'), '/', array('attributes' => array('class' => array('attendance', $variables['attendenceTabClass'])), 'html' => TRUE));?></li> -->
-       	<li><?php print l(t('<span>Add Another Student</span>'), 'account_merge/merge', array('attributes' => array('class' => array('add-another', $variables['addAnotherTabClass'])), 'html' => TRUE));?></li>
-     	<li><?php print l(t('<span>School Showcase</span>'), 'schoolknot-showcase/'.$schoolId['nid'], array('attributes' => array('class' => array('showcase', $variables['addAnotherTabClass'])), 'html' => TRUE));?></li>
-   	</ul>
- 	</div>
-<?php } ?>
+
   <?php
       $block = block_load('classbellsu', 'classbellsu_complete_status_form');
       $render_array = _block_get_renderable_array( _block_render_blocks( array($block) ));

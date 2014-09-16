@@ -47,10 +47,11 @@ $timestamp = REQUEST_TIME;
 			<?php } ?>
 			<span class="liveTime"><em class="placeholder"><?php print $row['created'];?></em></span>
       <div class="likeShare">
+        
+        <?php if(_check_able_to_share($logedInUser, $row['uid'], $row['gid'])) { ?>
         <div class="load-more mbl">
           <?php print l('Comments', 'status-post/' . $row['nid'], array('attributes' => array('rel' => array('lightframe')))); ?>
         </div>
-        <?php if(_check_able_to_share($logedInUser, $row['uid'], $row['gid'])) { ?>
         <div class=""><?php print $row['ops'];?></div>
         <div class=""><?php print $row['sharethis'];?></div>
         <?php } ?>
