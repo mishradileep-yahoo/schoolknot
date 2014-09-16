@@ -554,7 +554,7 @@ function classbellsu_node_presave($node) {
 function classbellsu_node_load($nodes, $types) {
   global $user;
   $args = arg();
-  
+  if($user->uid == 1) return '';
   if($args[0] == 'node' && $args[2] == 'edit' && $nodes[$args[1]]->type == 'school' && $nodes[$args[1]]->uid != $user->uid) {
     drupal_set_message('You are not allowed to edit this school.', 'warning');
     drupal_goto($args[0] . '/' . $args[1]);
