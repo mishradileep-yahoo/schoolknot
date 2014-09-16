@@ -1110,12 +1110,7 @@ function _get_download_timetable() {
 		$class_id = $user->field_class['und'][0]['target_id'];
 		$node_class = node_load($class_id);
 		$image_fid = $node_class->field_time_table['und'][0]['fid'];
-    if($image_fid !=''){
-      return l('Class Timetable Download','download/file/fid/'.$image_fid);
-    }
-    else{ 
-      return NULL;
-    }	
+		return l('Class Timetable Download','download/file/fid/'.$image_fid);
 }
 
 /*

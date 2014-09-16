@@ -13,10 +13,6 @@ function jstor_block_info() {
   
    return $blocks;
 }
-
-
-
-
 /**
  * Implementation of hook_block_configure().
  */

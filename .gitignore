@@ -11,4 +11,3 @@ sites/*/private
 /.buildpath
 /sites/default/settings.php
 user_import_storage
-/sites/default/files_OLD

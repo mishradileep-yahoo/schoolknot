@@ -262,7 +262,7 @@ function theme_privatemsg_username($variables) {
     $recipient->uid = $recipient->recipient;
   }
   if ((in_array("Parent", $recipient->roles)) || (in_array("Teacher", $recipient->roles))) {
-    $recipient_name = 'From registration number: ' . $recipient->field_student_registration_id['und'][0]['value']; 
+    $recipient_name = $recipient->field_student_registration_id['und'][0]['value']; 
   }
   else {
     $recipient_name = $recipient->name; 

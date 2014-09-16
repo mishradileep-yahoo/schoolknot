@@ -25,7 +25,6 @@ function phonetic_permission() {
   );
 }
 
-
 /**
  * Implements hook_menu().
  */
