@@ -9,6 +9,7 @@ function schoolknot_feeds_after_parse(FeedsSource $source, FeedsParserResult $re
   $user_school = reset($user_groups['node']);
     
   if($source->importer()->id == 'students_bulk_upload_feeds_xls') {
+   
     $feed_source = node_load($source->feed_nid);
     $user_groups = og_get_groups_by_user();
 		$user_school = reset($user_groups['node']);
@@ -30,13 +31,9 @@ function schoolknot_feeds_after_parse(FeedsSource $source, FeedsParserResult $re
 			require_once $pathDate;
 			
       $objPHPExcel = new PHPExcel();		
-      
+
     // Validate First
     foreach($result->items as $key => $row) {
-      
-      //$date_str_export = explode('/', $result->items[$key]['Student Date of Birth (in MM/DD/YYYY)']);
-      //pr($date_str_export);
-      
     	if(!($result->items[$key]['Student Registration ID'] != '')) {
     		drupal_set_message('Student Registration ID at row ' . ($key + 2) . ' is blank. Student can\'t be imported.', 'warning');
     		unset($result->items[$key]);
@@ -50,20 +47,12 @@ function schoolknot_feeds_after_parse(FeedsSource $source, FeedsParserResult $re
     		unset($result->items[$key]);
     	}
     	
-      
-      
-    	
+
 			  
     	if($result->items[$key]['Student Date of Birth (in MM/DD/YYYY)'] != '') {
   			date_default_timezone_set(drupal_get_user_timezone());
   			
-      	if (strpos($result->items[$key]['Student Date of Birth (in MM/DD/YYYY)'], '/') !== false) {
-          $date_tmp = PHPExcel_Shared_Date::stringToExcel($result->items[$key]['Student Date of Birth (in MM/DD/YYYY)']);
-          $result->items[$key]['Student Date of Birth (in MM/DD/YYYY)'] = $date_tmp;
-        }
-
-  			$date = PHPExcel_Shared_Date::ExcelToPHPObject($date_tmp);
-  			
+  			$date = PHPExcel_Shared_Date::ExcelToPHPObject($result->items[$key]['Student Date of Birth (in MM/DD/YYYY)']);
   			$curDate = new DateTime();
   			
   			if($date > $curDate) {
@@ -1121,12 +1110,7 @@ function _get_download_timetable() {
 		$class_id = $user->field_class['und'][0]['target_id'];
 		$node_class = node_load($class_id);
 		$image_fid = $node_class->field_time_table['und'][0]['fid'];
-    if($image_fid !=''){
-      return l('Class Timetable Download','download/file/fid/'.$image_fid);
-    }
-    else{ 
-      return NULL;
-    }	
+		return l('Class Timetable Download','download/file/fid/'.$image_fid);
 }
 
 /*
