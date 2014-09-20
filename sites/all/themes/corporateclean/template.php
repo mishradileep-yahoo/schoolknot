@@ -223,13 +223,45 @@ function compare_school_print_boolean($filed) {
   
 }
 
+
+function ConvertOneTimezoneToAnotherTimezone($time,$currentTimezone,$timezoneRequired)
+{
+    $system_timezone = date_default_timezone_get();
+    $local_timezone = $currentTimezone;
+    date_default_timezone_set($local_timezone);
+    $local = date("Y-m-d h:i:s A");
+ 
+    date_default_timezone_set("GMT");
+    $gmt = date("Y-m-d h:i:s A");
+ 
+    $require_timezone = $timezoneRequired;
+    date_default_timezone_set($require_timezone);
+    $required = date("Y-m-d h:i:s A");
+ 
+    date_default_timezone_set($system_timezone);
+
+    $diff1 = (strtotime($gmt) - strtotime($local));
+    $diff2 = (strtotime($required) - strtotime($gmt));
+
+    $date = new DateTime($time);
+    $date->modify("+$diff1 seconds");
+    $date->modify("+$diff2 seconds");
+    $timestamp = $date->format("m-d-Y H:i:s");
+    return $timestamp;
+}
+
 function compare_school_print_school_timings($filed) {
   $output = '';
+  $timezone = $filed['und'][0]['timezone_db'];
+  $timezoneRequired = $filed['und'][0]['timezone'];
+  $time_value1 = ConvertOneTimezoneToAnotherTimezone($filed['und'][0]['value'],$timezone,$timezoneRequired);
+  $time_value2 = ConvertOneTimezoneToAnotherTimezone($filed['und'][0]['value2'],$timezone,$timezoneRequired);
   if(isset($filed['und'][0]['value']) && isset($filed['und'][0]['value2'])){
-    $output .= date('h:i A', strtotime($filed['und'][0]['value'])) . ' - ' . date('h:i A', strtotime($filed['und'][0]['value2']));
+    $output .= date('h:i A', strtotime($time_value1)) . ' - ' . date('h:i A', strtotime($time_value2));
   }
   return $output;
 }
+
 
 function compare_school_print_school_age($filed) {
   $output = '';
