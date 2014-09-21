@@ -24,6 +24,7 @@
 		<?php if($loged_in_as['as'] == 'Teacher') {
 		?>
 			<li><?php print l('Notifications', 'messages', array('html' => TRUE,)); ?></li>
+      <li><?php print l('Create Notification', 'teachermessage/message', array('html' => TRUE,)); ?></li>
 		<?php } ?>
 	</ul>
 </div>

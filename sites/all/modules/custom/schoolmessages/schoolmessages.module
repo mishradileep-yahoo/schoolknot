@@ -37,6 +37,14 @@ function schoolmessages_menu() {
     'access callback' => TRUE,
   	'type' => MENU_CALLBACK,
   );
+  $items['teachermessage/message'] = array(
+  	'title' => 'Compose a message',
+    'description' => 'Compose a message and send to selected recipient.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('teachermessage_form'),
+    'access callback' => TRUE,
+  	'type' => MENU_CALLBACK,
+  );
   $items['schoolmessage/parents_autocomplete'] = array(
   	'title' => 'Message to school members',
     'page callback' => 'schoolmessage_parent_autocomplate_callback',
@@ -50,6 +58,57 @@ function schoolmessages_menu() {
     'access callback' => TRUE,
   );
   return $items;
+}
+
+function teachermessage_form($form, &$form_state) {
+  global $user;
+    
+  $schoolmessage_module_path = drupal_get_path('module', 'schoolmessages');
+  
+  $recipent_type = array('To your School');
+  $form['recipent_type'] = array(
+    '#type' => 'select', 
+    '#title' => t('Select'),
+    '#options' => $recipent_type,
+    '#description' => t('Select a recipient type to send message.'),
+    '#prefix' => '<div class="message-recipent-type">',
+    '#suffix' => '</div>',
+  );
+  $form['subject'] = array(
+      '#type' => 'textfield', 
+  	  '#title' => t('Subject'),
+      '#description' => t('Write subject of a message.'),
+      '#required' => TRUE,
+    );
+    $form['message'] = array(
+      '#type' => 'textarea', 
+  	  '#title' => t('Message'),
+      '#description' => t('.'),
+      '#required' => TRUE,
+    );
+    $form['actions']['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Submit'),
+  );
+  return $form;
+}
+
+function teachermessage_form_submit($form, &$form_state) {
+  global $user;
+  
+  // To School
+  if($form_state['values']['recipent_type'] == 0) {
+    $school_id = _get_school_node_id_for_school_admin();
+    $recipent_user = node_load($school_id);
+    $recipients = user_load_multiple(array($recipent_user->uid));
+    if($recipients) {
+    	_send_private_message($recipients, $form_state['values']['subject'], $form_state['values']['message'], $form_state['values']['recipent_type']);
+    	drupal_set_message(t('Your message was delivered successfully.'), 'status');
+    }
+    else {
+    	drupal_set_message(t('Your message was not delivered.'), 'error');
+    }
+  }
 }
 
 function usermessage_form($form, &$form_state) {
