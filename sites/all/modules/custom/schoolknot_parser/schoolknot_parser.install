@@ -1,0 +1,71 @@
+<?php
+/**
+ * Implements hook_schema().
+ */
+function schoolknot_parser_schema() {
+  $schema['schoolknot_parser'] = array(
+  	'description' => 'Source definitions for schoolknot parser.',
+    'fields' => array(
+      'parid' => array(
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => 'Parser unique ID.',
+      ),
+      'schid' => array(
+        'type' => 'int',
+        'description' => 'School ID which is creating Parser',
+      ),
+      'type' => array(
+        'type' => 'varchar',
+        'length' => 128,
+        'default' => '',
+        'description' => 'Type as Students, Teachers, Marks etc.',
+      ),
+      'title' => array(
+        'type' => 'varchar',
+        'length' => 128,
+        'default' => '',
+        'description' => 'Title of the parser.',
+      ),
+      'fid' => array(
+        'type' => 'int',
+        'description' => 'Parser file ID',
+      ),
+      'uid' => array(
+        'description' => 'The {users}.uid that owns this node; initially, this is the user that created it.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'status' => array(
+        'description' => 'Boolean indicating whether the node is published (visible to non-administrators).',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 1,
+      ),
+      'created' => array(
+        'description' => 'The Unix timestamp when the node was created.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'changed' => array(
+        'description' => 'The Unix timestamp when the node was most recently saved.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      '	last_parsed' => array(
+        'description' => 'The Unix timestamp when the parser was parsed last time.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+  
+    ),
+    'primary key' => array('parid'),
+  );
+  
+  return $schema;
+}

@@ -1143,3 +1143,25 @@ function schoolknot_cron() {
 
 }
 */
+
+
+
+function _get_all_classes_for_school($author = 0) {
+  if($author == 0) return '';
+  
+  $query = db_select('node', 'n');
+  $query->fields('n', array('nid', 'title'))
+    ->condition('type', 'classes', '=')
+    ->condition('n.uid', $author, '=')
+    ->condition('n.status', 1, '=');
+  
+  $classes = array();
+  $result = $query->execute()->fetchAll();
+  foreach ($result as $class) {
+    $classes['nids'][$class->nid] = $class->title;
+    $classes['titles'][$class->title] = $class->nid;
+  }
+  
+  return $classes;
+  
+}

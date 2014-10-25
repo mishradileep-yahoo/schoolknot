@@ -1,0 +1,214 @@
+<?php
+/**
+ * Implements hook_permission().
+ */
+function schoolknot_parser_permission () {
+  return array(
+      'parse schoolknot xlss' => array(
+          'title' => t('Parse Schoolknot Xlss'),
+          'description' => t('Allow school administrators to Parse Schoolknot Xlss.')
+      )
+  );
+}
+
+function schoolknot_parser_menu() {
+  $items['schoolknot_parser/parents'] = array(
+  	'title' => 'Import parents',
+    'description' => 'Import parents.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('_schoolknot_parser_import_parents'),
+    'access arguments' => array('parse schoolknot xlss'),
+  	'type' => MENU_CALLBACK,
+  );
+  $items['schoolknot_parser/list/students'] = array(
+    'title' => 'List parents parsers',
+    'type' => MENU_NORMAL_ITEM,
+    'page callback' => '_schoolknot_parser_list_parents',
+    'access arguments' => array('parse schoolknot xlss'),
+  );
+  $items['schoolknot_parser/parser/%/edit'] = array(
+    'title' => 'Import parents',
+    'description' => 'Import parents.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('_schoolknot_parser_import_parents', 2),
+    'access arguments' => array('parse schoolknot xlss'),
+  	'type' => MENU_CALLBACK,
+  );
+  return $items;
+}
+
+function schoolknot_parser_theme() {
+  $themes = array();
+  $themes['parser_list'] = array(
+    'variables' => array('parsers' => NULL),
+    'path' => drupal_get_path('module', 'schoolknot_parser') . '/templates',
+    'template' => 'parser-list',
+  );
+  return $themes;
+}
+
+function _schoolknot_parser_import_parents($form, &$form_state, $parid = '') {
+  // Load parser if edit is called
+  if($parid == '') {
+   
+  }
+  
+  $form = array();
+  $form['title'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Title'),
+    '#size' => 60,
+    '#maxlength' => 128,
+    '#required' => TRUE,
+  );
+  $form['parents_excel_sheet'] = array(
+    '#type' => 'managed_file',
+    '#name' => 'parents_excel_sheet',
+    '#title' => t('Block image'),
+    '#size' => 40,
+    '#description' => t("Upload your students sheet."),
+    '#upload_location' => 'public://parent_excel',
+    '#upload_validators' => array(
+      'file_validate_extensions' => array('xls xlsx'),
+      'file_validate_size' => array(MAX_FILE_SIZE*1024*1024),
+    ),
+  ); 
+  $school_id = _get_school_node_id_for_school_admin_user();
+  $form['school_id'] = array(
+    '#value' => $school_id['nid'],
+    '#type' => 'hidden',
+  );
+  $form['buttons']['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Import'),
+  );
+  return $form;
+}
+
+function _schoolknot_parser_import_parents_submit($form, &$form_state) {
+  global $user;
+  if (isset($form_state['values']['parents_excel_sheet'])) {
+    $file = file_load($form_state['values']['parents_excel_sheet']);
+    $file->status = FILE_STATUS_PERMANENT;
+    $uploade_file = file_save($file);
+  }
+  
+  
+  $nid = db_insert('schoolknot_parser')
+  ->fields(array(
+    'schid' => $form_state['values']['school_id'],
+    'type' => 'students',
+    'title' => $form_state['values']['title'],
+    'fid' => $uploade_file->fid,
+    'uid' => $user->uid,
+    'status' => 1,
+    'created' => REQUEST_TIME,
+    'changed' => REQUEST_TIME,
+  ))
+  ->execute();
+    
+  
+  $inputFileName = drupal_realpath($uploade_file->uri);
+  //$inputFileName = 'D:\wamp\www\schoolknot\sites\default\files\parent_excel\TEMPLATE-students_bulk_upload_feeds.xls';
+  $school_id = _get_school_node_id_for_school_admin_user();
+  $batch_definition = _schoolknot_parser_set_batch($inputFileName, $school_id['nid'], '_schoolknot_parser_set_batch_students');
+  
+  batch_set($batch_definition);
+}
+
+function _schoolknot_parser_set_batch($uploade_file, $school_id, $callback){
+  
+  // Load the library.
+  if(function_exists('libraries_get_path')){
+    $path = libraries_get_path('PHPExcel');
+    $pathLib = "$path/PHPExcel/IOFactory.php";
+    $pathDate = "$path/PHPExcel/Shared/Date.php";
+  }
+  else {
+    $pathLib = drupal_get_path('module', 'feeds_xls') . '/PHPExcel/PHPExcel/IOFactory.php';
+    $pathDate = drupal_get_path('module', 'feeds_xls') . '/PHPExcel/PHPExcel/Shared/Date.php';
+  }
+  require_once $pathLib;
+	require_once $pathDate;
+  $objPHPExcel = new PHPExcel();
+  
+  $objPHPExcel = PHPExcel_IOFactory::load($uploade_file);
+  $sheetData = $objPHPExcel->getActiveSheet()->toArray(null,true,true,true);
+  unset($sheetData[1]);
+  $operations = array();
+  
+  // Get All Classes
+  global $user;
+  $classes = _get_all_classes_for_school($user->uid);
+  foreach($sheetData as $data) {
+    $data['school_id'] = $school_id;
+    
+    // Format date for PHP reading
+    $excel_date = explode('-', $data['B']);
+    if($excel_date[2] < 100) {
+      $excel_date[2] += 2000;
+    }
+    $date = new DateTime();
+    $date->setDate($excel_date[2], $excel_date[0], $excel_date[1]);
+    $data['B'] = $date->format('Y-m-d') . ' 00:00:00';
+    
+    $data['pass'] = $date->format('Ymd');
+    $data['class'] = $classes['titles'][$data['C']];
+    
+    $operations[] = array($callback, array($data, t('(Importing @operation)', array('@operation' => $data['A']))));    
+  }
+  
+  $batch = array(
+    'operations' => $operations,
+    'finished' => '_schoolknot_parser_batch_finished',
+  );
+  return $batch;
+}
+
+function _schoolknot_parser_set_batch_students($data, $operation_details, &$context) {
+  //pr($data); pr($classes); pr($operation_details); pr($context); die;
+  $context['results'][] = $data;
+  $user_fields = array(
+		'name' => $data['A'],
+		'pass' => $data['pass'],
+    'mail' => 'test@test.com',
+		'status' => 1,
+		'roles' => array(
+			DRUPAL_AUTHENTICATED_RID => 'authenticated user',
+			5 => 'Parent',
+		),
+	);
+	
+	$user_fields['field_student_registration_id']['und'][0]['value'] = $data['A'];
+	
+	$user_fields['field_student_first_name']['und'][0]['value'] = $data['D'];
+	$user_fields['field_student_middle_name']['und'][0]['value'] = $data['E'];
+	$user_fields['field_student_last_name']['und'][0]['value'] = $data['F'];
+	
+	$user_fields['field_student_date_of_birth']['und'][0]['value'] = $data['B'];
+	$user_fields['og_user_node']['und'][0]['target_id'] = $data['school_id'];
+	$user_fields['field_class']['und'][0]['target_id'] = $data['class'];
+	$user_fields['field_schooladmin_blocked']['und'][0]['value'] = 1;
+	$user_fields['field_password_status']['und'][0]['value'] = 'email_not_verified';
+	$account = user_save('', $user_fields);
+	
+  $context['message'] = t('Importing student  "@srnumber"', array('@srnumber' => $data['A'])) . ' ' . $operation_details;
+}
+
+function _schoolknot_parser_batch_finished($success, $results, $operations) {
+  drupal_set_message(t('@count records imported', array('@count' => count($results))));
+}
+
+function _schoolknot_parser_list_parents() {
+  global $user;
+  $school_id = _get_school_node_id_for_school_admin_user();
+  $ParserQuery = db_select('schoolknot_parser')
+    ->fields('schoolknot_parser', array('parid', 'title', 'fid', 'created'))
+    ->condition('uid', $user->uid, '=')
+    ->condition('schid', $school_id['nid'], '=')
+    ->condition('status', 1, '=');
+    
+  $parsers = $ParserQuery->execute()->fetchAll();
+  return theme('parser_list', array('parsers' => $parsers));
+  pr($parsers); die;
+}
