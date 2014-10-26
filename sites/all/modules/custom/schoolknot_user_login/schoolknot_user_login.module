@@ -1100,6 +1100,9 @@ function schoolknot_user_reset_password_submit($form, &$form_state){
   $edit['pass'] = $form_state['values']['pass'];
   user_save($user, $edit);
   drupal_set_message('Password Successfully Reset.');
+  if(hide_create_school_check()) {
+    drupal_goto('node/add/school');
+  }
   drupal_goto();
 }
 
