@@ -28,6 +28,18 @@
 	</ul>
 </div>
 
+<?php 
+  $loged_in_as = _logged_in_as_block(); 
+  if($loged_in_as['as'] == 'School Administrator') {
+  $file =  file_create_url('public://SchoolKnot-School-Admin-User-Manual.pdf');
+  $link_options = array('attributes' => array('target' => array('_blank')), 'html' => TRUE);
+  $link = l('<img src="' . base_path() . path_to_theme() . '/images/download-banner.png">', $file, $link_options);
+?>
+<div class="round-box leftMenu">
+	<?php print $link; ?>
+</div>
+<?php } ?>
+
 	<ul class="mobileMenu">
 		<li>
 			<ul class="mobileMenu">
