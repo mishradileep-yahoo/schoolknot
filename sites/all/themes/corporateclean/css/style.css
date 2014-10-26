@@ -956,3 +956,5 @@ html.js input.throbbing {
 	margin: 20px 0;
 }
 .view-school-group-members .schoolInfo .schDtl {float: left}
+
+.fb-like.fb_iframe_widget {position: absolute;}
