@@ -53,6 +53,7 @@ $timestamp = REQUEST_TIME;
         </div>
         <div class=""><?php print $row['ops'];?></div>
         <div class=""><?php print $row['sharethis'];?></div>
+        <div class="fb-like" data-href="<?php print url('node/' . $row['nid']);?>" data-layout="button" data-action="like" data-show-faces="true" data-share="true"></div>
         <?php } ?>
       </div>
 			<?php print views_embed_view('post_liked_users', 'block', $row['nid']); ?>
