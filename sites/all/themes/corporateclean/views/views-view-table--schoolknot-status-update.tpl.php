@@ -52,8 +52,15 @@ $timestamp = REQUEST_TIME;
           <?php print l('Comments', 'status-post/' . $row['nid'], array('attributes' => array('rel' => array('lightframe')))); ?>
         </div>
         <div class=""><?php print $row['ops'];?></div>
-        <div class=""><?php print $row['sharethis'];?></div>
-        <div class="fb-like" data-href="<?php print url('node/' . $row['nid']);?>" data-layout="button" data-action="like" data-show-faces="true" data-share="true"></div>
+        <div class=""><?php //print $row['sharethis'];?></div>
+        <div class="clearer"></div>
+        <div class="" style="">
+        	
+        	<div class="clearer"></div>
+        	<a href="https://twitter.com/share" class="twitter-share-button" data-url="<?php print url('node/' . $row['nid']);?>" data-text="<?php print _phonetic_apply_filter($row['body']);?>" >Tweet</a>
+					<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+					<div class="fb-like" data-href="<?php print url('node/' . $row['nid']);?>" data-layout="button" data-action="like" data-show-faces="true" data-share="true"></div>
+       </div>
         <?php } ?>
       </div>
 			<?php print views_embed_view('post_liked_users', 'block', $row['nid']); ?>

@@ -958,3 +958,7 @@ html.js input.throbbing {
 .view-school-group-members .schoolInfo .schDtl {float: left}
 
 .fb-like.fb_iframe_widget {position: absolute;}
+.twitter-share-button.twitter-tweet-button.twitter-share-button {
+	position: rel ative;
+	top:30 px;
+}
