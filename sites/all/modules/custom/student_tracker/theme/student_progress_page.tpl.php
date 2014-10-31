@@ -92,21 +92,28 @@ print _get_merged_account_dd($user);
     	<thead>
       	<tr>
       		<th class="views-field views-field-body">Subject / Exam</th>
-      		<?php foreach($exam_header as $header) {?>
+      		<?php foreach($exam_header as $header) { ?>
         		<th class="views-field views-field-title"><?php print $header; ?></th>
         	<?php } ?>
+        	<!-- 
         	<th class="views-field views-field-body">Total</th>
         	<th class="views-field views-field-edit-node">Status</th>
+        	 -->
       	</tr>
     	</thead>
     	<tbody>
-    		<?php foreach($marks['subject_wise'] as $subject_marks) { //pr($subject_marks['marks']); ?>
+    		<?php 
+    		$total = array();
+    		foreach($marks['subject_wise'] as $subject_id => $subject_marks) { ?>
   				<tr class="odd views-row-first">
   					<td class="views-field views-field-title"><?php print $subject_marks['subject_title']; ?></td>
   					<?php foreach($subject_marks['marks'] as $exam => $mark) { ?>
   							<?php if($mark['data_status'] == 'NA') {?>
   								<td class="views-field views-field-title">NA</td>
-  							<?php } else { ?>
+  							<?php } else { 
+  							  $total[$exam]['scored'][] = $mark['scored_marks'];
+  							  $total[$exam]['max'][] = $mark['max_marks'];
+  							  ?>
       						<td class="views-field views-field-title">
       							<?php if($mark['scored_marks'] > $mark['passing_marks']) { ?>
       							<?php print $mark['scored_marks'] . ' / ' . $mark['max_marks']?>
@@ -116,10 +123,28 @@ print _get_merged_account_dd($user);
       						</td>
   							<?php } ?>
   					<?php } ?>
+  					<!-- 
   					<td class="views-field views-field-title"><?php print $subject_marks['total']['scored_marks'] . ' / ' . $subject_marks['total']['max_marks']; ?></td>
   					<td class="views-field views-field-title"><?php print $subject_marks['total']['percentage'] . '%'; ?></td>
+  					 -->
   				</tr>
 				<?php } ?>
+					<tr>
+        		<th class="views-field views-field-body">Total</th>
+        		<?php foreach($exam_header as $exam => $header) { ?>
+          		<th class="views-field views-field-title">
+          		  <?php print array_sum($total[$exam]['scored']); ?>/<?php print array_sum($total[$exam]['max']); ?>
+          		  </th>
+          	<?php } ?>
+        	</tr>
+        	<tr>
+        		<th class="views-field views-field-body">Percentage</th>
+        		<?php foreach($exam_header as $exam => $header) { ?>
+          		<th class="views-field views-field-title">
+          		  <?php print round(( array_sum($total[$exam]['scored']) / array_sum($total[$exam]['max'])) * 100, 1); ?> %
+          		  </th>
+          	<?php } ?>
+        	</tr>
 			</tbody>
     </table>
   	
