@@ -641,7 +641,7 @@ function schoolknot_node_insert($node){
     }
     $suject = 'Homework assigned for ' . _get_datefield_value_from_dob($node->field_homework_date[$node->language][0]['value']);
     $message = 'Dear Parent,' . "\n";
-    $message .= 'Please find homework for ' . _get_datefield_value_from_dob($node->field_homework_date[$node->language][0]['value']) . ' below to your child' . "\n";
+    $message .= 'Please find homework for ' . _get_datefield_value_from_dob($node->field_homework_date[$node->language][0]['value']) . ' of your child' . "\n";
     $message .= $node->title . "\n";
     $message .= $node->body[$node->language][0]['value'] . "\n";
     
