@@ -13,3 +13,4 @@ sites/*/private
 user_import_storage
 /sites/default/files_OLD
 sites/*/files_*
+examples

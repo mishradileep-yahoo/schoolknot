@@ -303,7 +303,7 @@ function schoolknot_user_login_preprocess_page(&$vars) {
     	}
     }
     
-    if($_GET['logout'] == '1'){
+    if(isset($_GET['logout']) && $_GET['logout'] == '1'){
       drupal_set_message('Further instructions has been emailed to you.', 'status');
     }
     //$timestamp = REQUEST_TIME;
