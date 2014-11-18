@@ -1393,3 +1393,33 @@ function schoolknot_auth_account_parents_submit($form, &$form_state) {
   }
   
 }
+
+//implement hook_form_FORM_ID_alter
+function schoolknot_user_login_form_user_register_form_alter(&$form, $form_state, $form_id) {
+  //define validation function
+  $form['#validate'][] = 'schoolknot_user_register_validate';
+  //overwrite the username help text
+  $form['account']['name']['#description'] = 'Username has to be between 5-15 characters long and can only contain letters and numbers';
+}
+
+function schoolknot_user_register_validate($form, &$form_state) {
+
+  $output['error'] = FALSE;
+  $username = $form_state['input']['name'];
+  $password = $form_state['input']['pass']['pass1'];
+
+  if (strlen($username) < 5 || strlen($username) > 15) {
+    $output['error'] = TRUE;
+    $output['msg'] = t('The username has to be between 5 and 15 characters long. ');
+  }
+  if (strpos($username,' ') > 0 || strpos($username,'.') > 0 || strpos($username,'-') > 0 || strpos($username,'_') > 0 || strpos($username, "'") !== FALSE ){
+    $output['error'] = TRUE;
+    $output['msg'] = t('Username cannot contain spaces . - _ ' . chr(39)  );
+  }
+
+//display username errors
+  if ($output['error']){
+    //drupal_set_message( $output['msg'], 'error');
+    form_set_error('name', $output['msg']);
+  }
+}
