@@ -353,8 +353,8 @@ function schoolknot_user_agreeement_submit($form, &$form_state) {
 		$logedInUser->field_agreement_status['und'][0]['value'] = 1;
 		$logedInUser->field_student_email_id['und'][0]['value'] = $form_state['values']['student_email'];
 		user_save($logedInUser);
-		schoolknot_user_mail_send($user);
 		
+		schoolknot_user_mail_send($user);
 		global $user;
 
     watchdog('user', 'Session closed for %name.', array('%name' => $user->name));
@@ -911,7 +911,7 @@ function schoolknot_user_tokens($type, $tokens, array $data = array(), array $op
   
 }
 
-function schoolknot_user_mail($key, &$message, $params) {
+function schoolknot_user_login_mail($key, &$message, $params) {
   
   global $user;
   $options = array(
@@ -921,14 +921,27 @@ function schoolknot_user_mail($key, &$message, $params) {
   switch ($key) {
     case 'user_authentication':
       $message['subject'] = t('Activate your @site-name account.', array('@site-name' => variable_get('site_name', 'Drupal')), $options);
-      $message['body'][] = check_plain($params['body']);
+      $message['body'][] = $params['body'];
       break;
+  }
+  $headers = array(
+    'MIME-Version' => '1.0',
+    'Content-Type' => 'text/html; charset=UTF-8; format=flowed',
+    'Content-Transfer-Encoding' => '8Bit',
+    'X-Mailer' => 'Drupal',
+    'Return-Path' => 'support@schoolknot.com',
+    'Sender' => 'support@schoolknot.com',
+    'From' => 'support@schoolknot.com'
+  );
+  
+  foreach ($headers as $key => $value) {
+    $message['headers'][$key] = $value;
   }
 }
 
 function schoolknot_user_mail_send($user) {
   $userObj = user_load($user->uid);
-  $module = 'schoolknot_user';
+  $module = 'schoolknot_user_login';
   $key = 'user_authentication';
   
   
@@ -939,28 +952,21 @@ function schoolknot_user_mail_send($user) {
     $to = $userObj->mail;
   }
   
-  $from = variable_get('site_mail', 'admin@example.com');
-  
-  $mail_body = '';
+  $from = variable_get('site_mail', 'support@schoolknot.com');
   $timestamp = REQUEST_TIME;
   $password_reste_url = url("schoolknot/reset/$userObj->uid/$timestamp/" . user_pass_rehash($userObj->pass, $timestamp, $userObj->login), array('absolute' => TRUE));
-  $mail_body .= _user_full_name_by_user_obj($user) . ',
-Thank you for registering at SchoolKnot.com. Please activate your account by clicking this link or copying and pasting it to your browser:
-
-' . $password_reste_url . '
-
-You will asked for password reset after activation. Please be ready with your password string.
-
---  SchoolKnot.com team';
+  $recipient_data = array('name' => _user_full_name_by_user_obj($user), 'password_reste_url' => $password_reste_url);
+  $mail_body = theme('user_authentication', array('data' => $recipient_data));
+  
   
   $params = array(
-		'subject' => 'Account details for ' . _user_full_name_by_user_obj($userObj) . ' at SchoolKnot.com',
+		'subject' => 'SchoolKnot activation',
 		'body' => $mail_body,
-    'theme' => 'user_authentication'
 	);
   
   $language = language_default();
   $send = TRUE;
+  
   
   $result = drupal_mail($module, $key, $to, $language, $params, $from, $send);
   if ($result['result'] == TRUE) {
@@ -972,17 +978,21 @@ You will asked for password reset after activation. Please be ready with your pa
 }
 
 
-function schoolknot_user_theme() {
-  $themes = array (
-    'user_authentication' => array(
-			'variables' => array(),
-    ),
+function schoolknot_user_login_theme() {
+  $module_path = drupal_get_path('module', 'schoolknot_user_login');
+  $base = array(
+    'path' => $module_path . '/email_templates',   
   );
-  foreach ($themes as $hook => $theme) {
-    $themes[$hook]['path'] = drupal_get_path('module', 'schoolknot_user') . '/email_templates';
-    $themes[$hook]['template'] = str_replace('_', '-', $hook);
-  }
-  return $themes;
+  return array(
+    'user_authentication' => $base + array(
+      'template' => 'user-authentication',  //leave off .tpl.php
+      'variables' => array('data' => NULL,),
+    ),
+    'schooladmin_registration' => $base + array(
+      'template' => 'schooladmin-registration',  //leave off .tpl.php
+      'variables' => array('data' => NULL,),
+    ),   
+  ); 
 }
 
 function schoolknot_user_auth_account($form, &$form_state, $uid, $timestamp, $hashed_pass, $action = NULL) {
@@ -1420,5 +1430,21 @@ function schoolknot_user_register_validate($form, &$form_state) {
   if ($output['error']){
     //drupal_set_message( $output['msg'], 'error');
     form_set_error('name', $output['msg']);
+  }
+}
+
+
+function schoolknot_user_login_mail_alter (&$message) {
+  if($message['id'] == 'user_register_no_approval_required') {
+    
+    $userObj = $message['params']['account'];
+    
+    $timestamp = REQUEST_TIME;
+    $password_reste_url = url("schoolknot/reset/$userObj->uid/$timestamp/" . user_pass_rehash($userObj->pass, $timestamp, $userObj->login), array('absolute' => TRUE));
+    $recipient_data = array('name' => $userObj->name, 'password_reste_url' => $password_reste_url);
+    
+    $message['body'][0] = theme('schooladmin_registration', array('data' => $recipient_data));
+    $message['headers']['Content-Type'] = 'text/html; charset=UTF-8; format=flowed';
+  
   }
 }
