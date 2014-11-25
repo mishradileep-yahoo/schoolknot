@@ -1445,7 +1445,6 @@ function schoolknot_user_login_mail_alter (&$message) {
     
     $message['body'][0] = theme('schooladmin_registration', array('data' => $recipient_data));
     $message['headers']['Content-Type'] = 'text/html; charset=UTF-8; format=flowed';
-    pr($message); die;
   
   }
 }
