@@ -991,6 +991,10 @@ function schoolknot_user_login_theme() {
     'schooladmin_registration' => $base + array(
       'template' => 'schooladmin-registration',  //leave off .tpl.php
       'variables' => array('data' => NULL,),
+    ), 
+    'schooladmin_admin_created' => $base + array(
+      'template' => 'schooladmin-admin-created',  //leave off .tpl.php
+      'variables' => array('data' => NULL,),
     ),   
   ); 
 }
@@ -1435,16 +1439,18 @@ function schoolknot_user_register_validate($form, &$form_state) {
 
 
 function schoolknot_user_login_mail_alter (&$message) {
+  $userObj = $message['params']['account'];
   if($message['id'] == 'user_register_no_approval_required') {
-    
-    $userObj = $message['params']['account'];
-    
     $timestamp = REQUEST_TIME;
     $password_reste_url = url("schoolknot/reset/$userObj->uid/$timestamp/" . user_pass_rehash($userObj->pass, $timestamp, $userObj->login), array('absolute' => TRUE));
     $recipient_data = array('name' => $userObj->name, 'password_reste_url' => $password_reste_url);
-    
     $message['body'][0] = theme('schooladmin_registration', array('data' => $recipient_data));
-    $message['headers']['Content-Type'] = 'text/html; charset=UTF-8; format=flowed';
-  
   }
+  if($message['id'] == 'user_register_admin_created') {
+    $timestamp = REQUEST_TIME;
+    $password_reste_url = url("schoolknot/reset/$userObj->uid/$timestamp/" . user_pass_rehash($userObj->pass, $timestamp, $userObj->login), array('absolute' => TRUE));
+    $recipient_data = array('name' => $userObj->name, 'password_reste_url' => $password_reste_url);
+    $message['body'][0] = theme('schooladmin_admin_created', array('data' => $recipient_data));
+  }
+  $message['headers']['Content-Type'] = 'text/html; charset=UTF-8; format=flowed';
 }
